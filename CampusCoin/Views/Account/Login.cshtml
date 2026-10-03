@@ -1,0 +1,1613 @@
+@{
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+
+    ViewData["Title"] = "Sign in";
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; margin: 0; }
+
+        .lg-page {
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            height: 100vh;
+            overflow: hidden;
+            background: #f6eee4;
+        }
+
+        /* ══════════ MOBILE-ONLY TOP BAR ══════════ */
+        .lg-mobile-bar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 20px 8px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .lg-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px 9px 12px;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(22, 11, 33, 0.06);
+            color: #241232;
+            font-size: 13.5px;
+            font-weight: 700;
+            letter-spacing: -.005em;
+            text-decoration: none;
+            transition: all .22s cubic-bezier(.22, 1, .36, 1);
+            box-shadow: 0 6px 18px -10px rgba(107, 58, 146, 0.35), inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        .lg-back-btn:hover {
+            background: #fff;
+            color: #6d4aff;
+            transform: translateX(-2px);
+            box-shadow: 0 10px 24px -10px rgba(107, 58, 146, 0.45), inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        .lg-back-btn i { font-size: 16px; transition: transform .22s cubic-bezier(.22, 1, .36, 1); }
+        .lg-back-btn:hover i { transform: translateX(-3px); }
+
+        .lg-mobile-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: -.02em;
+        }
+        .lg-mobile-brand svg {
+            width: 30px; height: 30px; flex: none;
+            filter: drop-shadow(0 4px 10px rgba(109, 74, 255, .3));
+        }
+        .lg-mobile-brand b { color: #1a0b2e; font-weight: 700; }
+        .lg-mobile-brand span {
+            background: linear-gradient(115deg, #a78bfa 0%, #c084fc 40%, #f0a3c4 100%);
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent; -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* ══════════ LEFT · PLUM ART PANEL ══════════ */
+        .lg-art {
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            padding: 2rem 3rem;
+            display: flex;
+            flex-direction: column;
+            isolation: isolate;
+            background:
+                radial-gradient(ellipse 55% 60% at 10% 15%, rgba(155, 111, 216, .5), transparent 65%),
+                radial-gradient(ellipse 50% 55% at 95% 80%, rgba(212, 121, 159, .4), transparent 65%),
+                linear-gradient(140deg, #241232 0%, #160b21 60%, #0f0619 100%);
+        }
+        .lg-art::before,
+        .lg-art::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .lg-art::before {
+            width: 400px; height: 400px; top: -15%; left: -10%;
+            background: radial-gradient(circle, rgba(155, 111, 216, .7), transparent 65%);
+            opacity: .6;
+            animation: lgFloatA 20s ease-in-out infinite;
+        }
+        .lg-art::after {
+            width: 340px; height: 340px; bottom: -15%; right: -10%;
+            background: radial-gradient(circle, rgba(212, 121, 159, .55), transparent 65%);
+            opacity: .55;
+            animation: lgFloatB 24s ease-in-out infinite;
+        }
+        @@keyframes lgFloatA {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%      { transform: translate(40px, -30px) scale(1.1); }
+        }
+        @@keyframes lgFloatB {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%      { transform: translate(-40px, 30px) scale(1.15); }
+        }
+
+        .lg-art-inner {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .lg-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: .75rem;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            color: #fff;
+            flex: none;
+        }
+        .lg-brand:hover { color: #fff; opacity: .9; }
+        .lg-brand svg { width: 36px; height: 36px; display: block; flex: none; }
+        .lg-brand .name-wrap { display: inline-flex; align-items: baseline; gap: 4px; }
+        .lg-brand b { color: #fff; font-weight: 700; }
+        .lg-brand .coin {
+            background: linear-gradient(115deg, #a78bfa 0%, #c084fc 40%, #f0a3c4 100%);
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent; -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .lg-art-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 0;
+        }
+
+        .lg-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .3rem .8rem;
+            border-radius: 99px;
+            background: rgba(155, 111, 216, .15);
+            border: 1px solid rgba(155, 111, 216, .35);
+            color: #d5b8ff;
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            align-self: flex-start;
+        }
+
+        .lg-title {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: clamp(1.85rem, 2.8vw, 2.5rem);
+            line-height: 1.05;
+            letter-spacing: -.03em;
+            font-weight: 700;
+            color: #fff;
+            margin: 1rem 0 1.25rem;
+        }
+        .lg-title em {
+            font-style: italic;
+            font-weight: 400;
+            background: linear-gradient(115deg, #a78bfa 0%, #c084fc 45%, #f0a3c4 100%);
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent; -webkit-text-fill-color: transparent;
+        }
+
+        /* ══════════ ANIMATED SCENE ══════════ */
+        .lg-scene {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+            display: grid;
+            place-items: center;
+        }
+
+        .lg-ripple {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 60%; height: 60%;
+            margin: -30% 0 0 -30%;
+            border-radius: 50%;
+            border: 1px solid rgba(168, 140, 230, .4);
+            pointer-events: none;
+            opacity: 0;
+            animation: lgRipple 6s ease-out infinite;
+        }
+        .lg-ripple-2 { animation-delay: 2s; border-color: rgba(200, 175, 245, .35); }
+        .lg-ripple-3 { animation-delay: 4s; border-color: rgba(212, 160, 200, .3); }
+        @@keyframes lgRipple {
+            0%   { transform: scale(.5);  opacity: 0; }
+            20%  { opacity: .8; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .lg-ring {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .lg-ring-1 { inset: 8%;  border: 1px dashed rgba(168, 140, 230, .28); animation: lgSpin 40s linear infinite; }
+        .lg-ring-2 { inset: 20%; border: 1px solid rgba(200, 175, 245, .15);  animation: lgSpin 60s linear infinite reverse; }
+        .lg-ring-3 { inset: 32%; border: 1.5px dashed rgba(212, 160, 200, .25); animation: lgSpin 30s linear infinite; }
+        @@keyframes lgSpin { to { transform: rotate(360deg); } }
+
+        .lg-ticks {
+            position: absolute;
+            inset: 4%;
+            border-radius: 50%;
+            pointer-events: none;
+            background: repeating-conic-gradient(
+                from 0deg,
+                rgba(168, 140, 230, .35) 0deg 1deg,
+                transparent 1deg 30deg);
+            -webkit-mask: radial-gradient(circle, transparent 66%, black 67%, black 68%, transparent 69%);
+                    mask: radial-gradient(circle, transparent 66%, black 67%, black 68%, transparent 69%);
+            animation: lgSpin 90s linear infinite;
+            opacity: .75;
+        }
+
+        .lg-glow {
+            position: absolute;
+            width: 65%; height: 65%;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                rgba(200, 165, 245, .55) 0%,
+                rgba(139, 111, 240, .35) 40%,
+                transparent 70%);
+            filter: blur(55px);
+            animation: lgGlowPulse 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @@keyframes lgGlowPulse {
+            0%, 100% { transform: scale(1); opacity: .85; }
+            50%      { transform: scale(1.15); opacity: 1; }
+        }
+
+        .lg-arc {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            transform: rotate(-90deg);
+            filter: drop-shadow(0 0 10px rgba(168, 140, 230, .55));
+        }
+        .lg-arc-fill { animation: lgArcDraw 2.4s cubic-bezier(.22, 1, .36, 1) .6s forwards; }
+        @@keyframes lgArcDraw { to { stroke-dashoffset: 92; } }
+
+        /* ══════════ GOLD COIN ══════════ */
+        .lg-coin {
+            position: relative;
+            width: 46%;
+            aspect-ratio: 1 / 1;
+            z-index: 2;
+            perspective: 900px;
+        }
+        .lg-coin-3d {
+            position: relative;
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            animation: lgCoinHover 11s cubic-bezier(.45, 0, .55, 1) infinite;
+        }
+        @@keyframes lgCoinHover {
+            0%   { transform: translateY(0)     rotateY(-38deg) rotateX(-5deg) rotateZ(-1deg); }
+            20%  { transform: translateY(-10px) rotateY(-8deg)  rotateX(-12deg) rotateZ(2deg); }
+            50%  { transform: translateY(-16px) rotateY(38deg)  rotateX(-5deg)  rotateZ(1deg); }
+            80%  { transform: translateY(-8px)  rotateY(-8deg)  rotateX(-12deg) rotateZ(-2deg); }
+            100% { transform: translateY(0)     rotateY(-38deg) rotateX(-5deg)  rotateZ(-1deg); }
+        }
+
+        .lg-coin-edge {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(180deg,
+                #E5B020 0%,
+                #C49010 40%,
+                #8B5E00 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 220, 150, .4);
+            transform-style: preserve-3d;
+        }
+        .lg-coin-edge.e1 { transform: translateZ(-2px); background: linear-gradient(180deg, #DDA51A 0%, #B07800 40%, #7A5000 100%); }
+        .lg-coin-edge.e2 { transform: translateZ(-4px); background: linear-gradient(180deg, #D19B10 0%, #A47800 40%, #6B4A00 100%); }
+        .lg-coin-edge.e3 { transform: translateZ(-6px); background: linear-gradient(180deg, #BE8A08 0%, #8B5E00 40%, #5A3D00 100%); }
+        .lg-coin-edge.e4 { transform: translateZ(-8px); background: linear-gradient(180deg, #A47800 0%, #7A5000 40%, #4A3200 100%); }
+
+        .lg-coin-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            transform: translateZ(0);
+            background:
+                radial-gradient(circle at 30% 25%,
+                    rgba(255, 255, 235, .95) 0%,
+                    rgba(255, 250, 200, .4) 12%,
+                    transparent 24%),
+                radial-gradient(circle at 72% 78%,
+                    rgba(90, 55, 0, .55) 0%,
+                    transparent 48%),
+                radial-gradient(circle at 45% 45%,
+                    #FFE45C 0%,
+                    #FFD020 22%,
+                    #F4B400 48%,
+                    #D18B00 72%,
+                    #A47800 88%,
+                    #8B5E00 100%);
+            box-shadow:
+                inset 0 2px 3px rgba(255, 250, 200, .9),
+                inset 0 -6px 16px rgba(100, 60, 0, .55),
+                inset 5px 5px 14px rgba(255, 240, 150, .45),
+                inset -5px -5px 14px rgba(90, 55, 0, .5),
+                0 0 0 1px rgba(139, 94, 0, .55),
+                0 0 0 2px rgba(255, 215, 100, .55),
+                0 0 0 3px rgba(139, 94, 0, .35),
+                0 0 30px rgba(255, 200, 0, .5);
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .lg-coin-rim {
+            position: absolute;
+            inset: 9%;
+            border-radius: 50%;
+            border: 1.5px solid rgba(139, 94, 0, .55);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 250, 200, .7),
+                0 1px 0 rgba(255, 250, 200, .45);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .lg-coin-rim::after {
+            content: "";
+            position: absolute;
+            inset: 8%;
+            border-radius: 50%;
+            border: 1px dashed rgba(139, 94, 0, .35);
+        }
+
+        .lg-coin-symbol {
+            position: relative;
+            z-index: 3;
+            font-family: 'Fraunces', Georgia, serif;
+            font-style: italic;
+            font-size: clamp(40px, 5vw, 58px);
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(180deg,
+                #FFF6C0 0%,
+                #FFE066 35%,
+                #F4B400 65%,
+                #A47800 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            filter:
+                drop-shadow(0 1px 0 rgba(255, 250, 200, .75))
+                drop-shadow(0 -1px 0 rgba(90, 60, 0, .8))
+                drop-shadow(0 4px 8px rgba(90, 60, 0, .45));
+        }
+
+        .lg-coin-shine {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg,
+                transparent 0deg,
+                rgba(255, 255, 255, .55) 25deg,
+                rgba(255, 255, 255, .2) 55deg,
+                transparent 85deg,
+                transparent 360deg);
+            animation: lgCoinShine 5s linear infinite;
+            z-index: 4;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+        @@keyframes lgCoinShine {
+            to { transform: rotate(360deg); }
+        }
+
+        .lg-coin-face::after {
+            content: "";
+            position: absolute;
+            top: 4%;
+            left: 12%;
+            width: 70%;
+            height: 20%;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center,
+                rgba(255, 255, 255, .55) 0%,
+                transparent 70%);
+            filter: blur(3px);
+            animation: lgCoinTopShine 11s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @@keyframes lgCoinTopShine {
+            0%, 100% { transform: translateX(-8%) scaleX(1);    opacity: .5; }
+            50%      { transform: translateX(8%)  scaleX(1.15); opacity: .9; }
+        }
+
+        .lg-spark {
+            position: absolute;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: #FFE45C;
+            box-shadow:
+                0 0 10px rgba(255, 220, 100, .95),
+                0 0 20px rgba(255, 200, 0, .6);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 4;
+        }
+        .lg-spark.s1 { left: 30%; top: 70%; animation: lgSparkFloat 6s ease-in-out infinite 0s; }
+        .lg-spark.s2 { left: 65%; top: 72%; animation: lgSparkFloat 7s ease-in-out infinite 1.2s; background: #FFD93D; }
+        .lg-spark.s3 { left: 22%; top: 55%; animation: lgSparkFloat 8s ease-in-out infinite 2.4s; background: #FFEC9E; }
+        .lg-spark.s4 { left: 78%; top: 58%; animation: lgSparkFloat 6.5s ease-in-out infinite 3.6s; background: #FFC93C; }
+        .lg-spark.s5 { left: 45%; top: 78%; animation: lgSparkFloat 5.5s ease-in-out infinite 4.2s; width: 3px; height: 3px; }
+        .lg-spark.s6 { left: 55%; top: 25%; animation: lgSparkFloat 7.5s ease-in-out infinite 2s; width: 4px; height: 4px; background: #FFD93D; }
+        @@keyframes lgSparkFloat {
+            0%   { transform: translate(0, 0) scale(0); opacity: 0; }
+            15%  { opacity: 1; transform: translate(0, -10px) scale(1); }
+            85%  { opacity: .8; }
+            100% { transform: translate(0, -60px) scale(.3); opacity: 0; }
+        }
+
+        .lg-orbit {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+        }
+        .lg-dot {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 9px; height: 9px;
+            margin: -4.5px 0 0 -4.5px;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 0 14px rgba(168, 140, 230, .8);
+            animation: lgDotDepth 24s linear infinite;
+        }
+        .lg-dot.d1 { --a: 0deg;   --r: 130px; background: linear-gradient(140deg, #c4aee0, #8b6ff0); animation-delay: 0s; }
+        .lg-dot.d2 { --a: 120deg; --r: 130px; background: linear-gradient(140deg, #f0a3c4, #d4799f); animation-delay: -8s; }
+        .lg-dot.d3 { --a: 240deg; --r: 130px; background: linear-gradient(140deg, #a78bfa, #6d4aff); animation-delay: -16s; }
+        .lg-dot.d4 { --a: 60deg;  --r: 100px; width: 6px; height: 6px; margin: -3px 0 0 -3px; background: #c4aee0; animation-duration: 20s; }
+        .lg-dot.d5 { --a: 180deg; --r: 100px; width: 6px; height: 6px; margin: -3px 0 0 -3px; background: #f0a3c4; animation-duration: 20s; animation-delay: -7s; }
+        .lg-dot.d6 { --a: 300deg; --r: 100px; width: 6px; height: 6px; margin: -3px 0 0 -3px; background: #a78bfa; animation-duration: 20s; animation-delay: -14s; }
+        @@keyframes lgDotDepth {
+            0%   { transform: rotate(var(--a)) translateY(calc(var(--r) * -1)) scale(1); }
+            25%  { transform: rotate(calc(var(--a) + 90deg))  translateY(calc(var(--r) * -1)) scale(1.4); }
+            50%  { transform: rotate(calc(var(--a) + 180deg)) translateY(calc(var(--r) * -1)) scale(1); }
+            75%  { transform: rotate(calc(var(--a) + 270deg)) translateY(calc(var(--r) * -1)) scale(.7); }
+            100% { transform: rotate(calc(var(--a) + 360deg)) translateY(calc(var(--r) * -1)) scale(1); }
+        }
+
+        .lg-card {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .09);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, .16);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 18px 40px -16px rgba(0, 0, 0, .5);
+            color: #fff;
+            z-index: 5;
+            min-width: 130px;
+        }
+        .lg-card-1 { top: 8%; left: -2%; animation: lgFloatCard1 7s ease-in-out infinite; }
+        .lg-card-2 { bottom: 8%; right: -2%; animation: lgFloatCard2 8.5s ease-in-out infinite; }
+        @@keyframes lgFloatCard1 {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50%      { transform: translateY(-8px) rotate(-2deg); }
+        }
+        @@keyframes lgFloatCard2 {
+            0%, 100% { transform: translateY(0) rotate(2deg); }
+            50%      { transform: translateY(8px) rotate(2deg); }
+        }
+
+        .lg-card-icon {
+            width: 30px; height: 30px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            flex: none;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25);
+        }
+        .lg-card-icon.violet { background: linear-gradient(140deg, #8b6ff0, #6d4aff); color: #fff; }
+        .lg-card-icon.gold {
+            background: linear-gradient(140deg, #FFD93D, #D18B00);
+            color: #5a3d00;
+            box-shadow: inset 0 1px 0 rgba(255, 250, 200, .6), 0 4px 10px -4px rgba(244, 180, 0, .6);
+        }
+
+        .lg-card b {
+            display: block;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: -.02em;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+        .lg-card small {
+            display: block;
+            font-size: 9.5px;
+            color: rgba(255, 255, 255, .6);
+            margin-top: 3px;
+            letter-spacing: .02em;
+        }
+
+        .lg-trusts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            flex: none;
+        }
+        .lg-trust {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: .32rem .7rem;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            font-size: .68rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .85);
+        }
+        .lg-trust i { font-size: .78rem; color: #c4aee0; }
+
+        /* ══════════ RIGHT · GLASS FORM PANEL ══════════ */
+        .lg-form-panel {
+            position: relative;
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+            isolation: isolate;
+            background:
+                radial-gradient(ellipse 50% 45% at 15% 20%, rgba(186, 160, 225, .85), transparent 65%),
+                radial-gradient(ellipse 45% 45% at 90% 30%, rgba(240, 180, 210, .7), transparent 65%),
+                radial-gradient(ellipse 55% 50% at 50% 95%, rgba(168, 232, 200, .55), transparent 70%),
+                linear-gradient(180deg, #f4ebff 0%, #efe2f8 100%);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(107, 58, 146, .25) transparent;
+        }
+        .lg-form-panel::-webkit-scrollbar { width: 8px; }
+        .lg-form-panel::-webkit-scrollbar-thumb {
+            background: rgba(107, 58, 146, .2);
+            border-radius: 99px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        .lg-form-panel::-webkit-scrollbar-thumb:hover {
+            background: rgba(107, 58, 146, .35);
+            background-clip: content-box;
+        }
+
+        .lg-form-panel::before,
+        .lg-form-panel::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: .8;
+        }
+        .lg-form-panel::before {
+            width: 380px; height: 380px;
+            top: -12%; right: 20%;
+            background: radial-gradient(circle, rgba(155, 111, 216, .85), transparent 70%);
+            animation: lgOrbA 18s ease-in-out infinite;
+        }
+        .lg-form-panel::after {
+            width: 340px; height: 340px;
+            bottom: -10%; right: -6%;
+            background: radial-gradient(circle, rgba(212, 121, 159, .7), transparent 70%);
+            animation: lgOrbB 22s ease-in-out infinite;
+        }
+        @@keyframes lgOrbA {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%      { transform: translate(50px, -40px) scale(1.15); }
+        }
+        @@keyframes lgOrbB {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%      { transform: translate(-40px, 40px) scale(1.12); }
+        }
+
+        /* ══════════ GLASS CARD ══════════ */
+        .lg-card-wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            margin: auto 0;
+            padding: 2.25rem 2rem 1.9rem;
+            border-radius: 28px;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.65) 0%,
+                rgba(255, 255, 255, 0.42) 45%,
+                rgba(250, 240, 255, 0.52) 100%);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+                inset -2px -3px 10px rgba(107, 58, 146, 0.08),
+                0 30px 65px -22px rgba(107, 58, 146, 0.4),
+                0 70px 110px -40px rgba(76, 45, 120, 0.3);
+            overflow: hidden;
+            animation: lgCardIn .9s cubic-bezier(.16, 1, .3, 1) both;
+        }
+        @@keyframes lgCardIn {
+            from { opacity: 0; transform: translateY(24px) scale(.96); }
+            to   { opacity: 1; transform: none; }
+        }
+        .lg-card-wrap::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #8b6ff0 0%, #d4799f 50%, #6ecfa8 100%);
+            z-index: 2;
+            border-radius: inherit;
+        }
+        .lg-card-wrap::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 65%; height: 55%;
+            background: radial-gradient(
+                ellipse at top left,
+                rgba(255, 255, 255, 0.8) 0%,
+                rgba(255, 255, 255, 0.15) 40%,
+                transparent 70%);
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .lg-card-wrap > * { position: relative; z-index: 1; }
+
+        /* ── Welcome chip ── */
+        .lg-hello {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 12px 5px 9px;
+            border-radius: 99px;
+            background: rgba(123, 92, 231, 0.08);
+            border: 1px solid rgba(123, 92, 231, 0.18);
+            color: #4b2568;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .01em;
+            margin-bottom: 0.9rem;
+        }
+        .lg-hello-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #4ba77f;
+            box-shadow: 0 0 0 0 rgba(75, 167, 127, .5);
+            animation: lgHelloPulse 2.4s ease-out infinite;
+        }
+        @@keyframes lgHelloPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(75, 167, 127, .55); }
+            70%  { box-shadow: 0 0 0 7px rgba(75, 167, 127, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(75, 167, 127, 0); }
+        }
+
+        /* ── Head ── */
+        .lg-head { margin-bottom: 1.35rem; }
+
+        .lg-head h2 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: clamp(1.75rem, 2.4vw, 2.1rem);
+            font-weight: 700;
+            letter-spacing: -.035em;
+            color: #150828;
+            margin: 0 0 .4rem;
+            line-height: 1.08;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+        .lg-head h2 em {
+            font-style: italic;
+            font-weight: 500;
+            background: linear-gradient(115deg, #7b5ce7 0%, #a486e0 40%, #d4799f 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        .lg-head p {
+            font-size: 0.9rem;
+            color: #5a4a6b;
+            margin: 0;
+            line-height: 1.5;
+            max-width: 340px;
+        }
+        .lg-head-accent {
+            display: block;
+            width: 36px;
+            height: 3px;
+            border-radius: 99px;
+            background: linear-gradient(90deg, #8b6ff0, #d4799f);
+            margin: 0.7rem 0 0;
+            opacity: .9;
+        }
+
+        /* ── Fields ── */
+        .lg-field { margin-bottom: 0.95rem; }
+
+        .lg-field > label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #2a1e3d;
+            margin-bottom: 0.42rem;
+            letter-spacing: -.005em;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+        .lg-field > label > span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lg-forgot-inline {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #6d4aff;
+            text-decoration: none;
+            letter-spacing: 0;
+            transition: color .2s ease;
+        }
+        .lg-forgot-inline:hover { color: #4b2568; }
+
+        .lg-input {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1.5px solid rgba(107, 58, 146, 0.14);
+            border-radius: 13px;
+            transition: all .28s cubic-bezier(.22, 1, .36, 1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 -1px 3px rgba(107, 58, 146, 0.05),
+                0 2px 6px -3px rgba(107, 58, 146, 0.08);
+            position: relative;
+        }
+        .lg-input:hover {
+            border-color: rgba(107, 58, 146, 0.24);
+            background: rgba(255, 255, 255, 0.85);
+            transform: translateY(-1px);
+        }
+        .lg-input:focus-within {
+            border-color: transparent;
+            background: #fff;
+            transform: translateY(-1px);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                0 0 0 1.5px rgba(109, 74, 255, 0.75),
+                0 0 0 5px rgba(109, 74, 255, 0.15),
+                0 14px 28px -14px rgba(109, 74, 255, 0.45);
+        }
+        .lg-input i.ico {
+            width: 2.6rem;
+            display: grid;
+            place-items: center;
+            color: #a89fb0;
+            font-size: 1rem;
+            transition: color .2s ease, transform .2s ease;
+            flex: none;
+        }
+        .lg-input:focus-within i.ico {
+            color: #6d4aff;
+            transform: scale(1.08);
+        }
+        .lg-input input {
+            flex: 1;
+            border: 0;
+            background: transparent;
+            padding: 0.82rem 0.85rem 0.82rem 0;
+            font-size: 0.92rem;
+            color: #150828;
+            outline: none;
+            font-family: inherit;
+            font-weight: 500;
+        }
+        .lg-input input::placeholder { color: #b0a7be; font-weight: 400; }
+
+        .lg-toggle {
+            width: 2.5rem; height: 2.5rem;
+            border: 0; background: transparent;
+            color: #a89fb0;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color .2s ease, background .2s ease;
+            flex: none;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            margin-right: 4px;
+        }
+        .lg-toggle:hover { color: #6d4aff; background: rgba(109, 74, 255, .08); }
+
+        /* ── Remember row ── */
+        .lg-check-block {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.8rem;
+            color: #3d2f48;
+            cursor: pointer;
+            user-select: none;
+            font-weight: 500;
+            margin: 0.15rem 0 1.15rem;
+            position: relative;
+        }
+        .lg-check-block input {
+            position: absolute;
+            opacity: 0; width: 0; height: 0;
+            pointer-events: none;
+        }
+        .lg-check-box {
+            width: 18px; height: 18px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.75);
+            border: 1.5px solid rgba(107, 58, 146, 0.25);
+            display: grid; place-items: center;
+            flex: none;
+            transition: all .22s cubic-bezier(.22, 1, .36, 1);
+            position: relative;
+        }
+        .lg-check-block:hover .lg-check-box { border-color: rgba(109, 74, 255, 0.6); }
+        .lg-check-block input:checked + .lg-check-box {
+            background: linear-gradient(135deg, #8b6ff0, #6d4aff);
+            border-color: transparent;
+            box-shadow: 0 4px 10px -4px rgba(109, 74, 255, 0.6);
+        }
+        .lg-check-block input:checked + .lg-check-box::after {
+            content: "";
+            width: 5px; height: 8px;
+            border: 2px solid #fff;
+            border-top: 0; border-left: 0;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+
+        /* ── Primary CTA ── */
+        .lg-cta {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px;
+            border-radius: 13px;
+            background: linear-gradient(115deg, #8b6ff0 0%, #6d4aff 55%, #5a3ce0 100%);
+            background-size: 180% 100%;
+            background-position: 0% 50%;
+            border: 1px solid rgba(109, 74, 255, .9);
+            color: #fff;
+            font-size: 0.94rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .35s cubic-bezier(.22, 1, .36, 1);
+            box-shadow:
+                0 2px 4px rgba(109, 74, 255, 0.2),
+                0 14px 30px -12px rgba(109, 74, 255, 0.65),
+                inset 0 1px 0 rgba(255, 255, 255, 0.28);
+            font-family: inherit;
+            letter-spacing: -.005em;
+            overflow: hidden;
+        }
+        .lg-cta::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -120%;
+            width: 60%; height: 100%;
+            background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.4) 50%, transparent 80%);
+            transform: skewX(-22deg);
+            transition: left .9s cubic-bezier(.22, 1, .36, 1);
+            pointer-events: none;
+        }
+        .lg-cta:hover {
+            background-position: 100% 50%;
+            transform: translateY(-2px);
+            box-shadow:
+                0 2px 4px rgba(109, 74, 255, 0.3),
+                0 22px 44px -14px rgba(109, 74, 255, 0.85),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+        .lg-cta:hover::after { left: 130%; }
+        .lg-cta:active { transform: translateY(0); }
+        .lg-cta i {
+            font-size: 1.1rem;
+            transition: transform .28s cubic-bezier(.22, 1, .36, 1);
+            position: relative;
+            z-index: 1;
+        }
+        .lg-cta:hover i { transform: translateX(4px); }
+
+        /* ── Trust note under CTA ── */
+        .lg-trust-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin: 0.7rem 0 0;
+            font-size: 0.72rem;
+            color: #7a6d7f;
+            font-weight: 500;
+        }
+        .lg-trust-note i {
+            font-size: 0.82rem;
+            color: #4ba77f;
+        }
+
+        /* ── Divider ── */
+        .lg-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 1.25rem 0 0.95rem;
+            color: #a89fb0;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .lg-divider::before,
+        .lg-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(107, 58, 146, 0.18), transparent);
+        }
+
+        /* ── Secondary action ── */
+        .lg-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 13px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid rgba(107, 58, 146, 0.14);
+            color: #241232;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: -.005em;
+            transition: all .25s cubic-bezier(.22, 1, .36, 1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        .lg-secondary:hover {
+            background: #fff;
+            color: #6d4aff;
+            border-color: rgba(109, 74, 255, 0.4);
+            transform: translateY(-1px);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                0 12px 24px -14px rgba(109, 74, 255, 0.5);
+        }
+        .lg-secondary i {
+            font-size: 1rem;
+            transition: transform .25s cubic-bezier(.22, 1, .36, 1);
+        }
+        .lg-secondary:hover i { transform: translateX(3px); }
+
+        /* ── Terms ── */
+        .lg-terms {
+            margin: 1.15rem 0 0;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(107, 58, 146, 0.12);
+            text-align: center;
+            font-size: 0.72rem;
+            color: #7a6d7f;
+            line-height: 1.55;
+        }
+        .lg-terms a {
+            color: #6d4aff;
+            font-weight: 700;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+        .lg-terms a:hover { color: #4b2568; }
+
+        /* ════════════════════════════════════════════════════════════
+           RESPONSIVE
+           ════════════════════════════════════════════════════════════ */
+
+        @@media (max-width: 1100px) and (min-width: 901px) {
+            .lg-art { padding: 2.25rem 2rem 2rem; }
+            .lg-art-body { padding: .5rem 0; justify-content: center; gap: .5rem; }
+            .lg-title { font-size: clamp(1.85rem, 3.2vw, 2.35rem); margin: .85rem 0 1rem; }
+            .lg-eyebrow { font-size: .72rem; padding: .35rem .9rem; }
+            .lg-scene { max-width: 320px; margin: .75rem auto; }
+            .lg-card { padding: 9px 12px; min-width: 128px; border-radius: 12px; }
+            .lg-card-1 { top: 5%; left: -2%; }
+            .lg-card-2 { bottom: 5%; right: -2%; }
+            .lg-card-icon { width: 30px; height: 30px; font-size: 14px; }
+            .lg-trusts { justify-content: center; gap: 7px; }
+            .lg-trust { padding: .36rem .8rem; font-size: .72rem; }
+            .lg-form-panel { padding: 2rem 1.75rem; }
+            .lg-card-wrap { max-width: 400px; padding: 2rem 1.75rem 1.75rem; }
+            .lg-head h2 { font-size: 1.75rem; }
+            .lg-head p { font-size: .86rem; }
+        }
+
+        @@media (max-width: 900px) {
+            .lg-page {
+                grid-template-columns: 1fr;
+                height: auto;
+                min-height: 100vh;
+                overflow: visible;
+            }
+            .lg-art {
+                padding: 1.75rem 1.5rem 1.25rem;
+                min-height: auto;
+            }
+            .lg-art-inner { justify-content: flex-start; gap: 1.25rem; }
+            .lg-art-body {
+                padding: .5rem 0 0;
+                align-items: center;
+                text-align: center;
+            }
+            .lg-eyebrow { align-self: center; }
+            .lg-title {
+                text-align: center;
+                font-size: clamp(1.5rem, 4vw, 2rem);
+                margin: .75rem 0;
+            }
+            .lg-scene { max-width: 260px; margin: .5rem auto 0; }
+            .lg-dot.d4, .lg-dot.d5, .lg-dot.d6 { display: none; }
+            .lg-dot.d1, .lg-dot.d2, .lg-dot.d3 { --r: 100px; }
+            .lg-card { padding: 7px 10px; min-width: 110px; border-radius: 10px; }
+            .lg-card-1 { top: 4%; left: 0; }
+            .lg-card-2 { bottom: 4%; right: 0; }
+            .lg-card-icon { width: 26px; height: 26px; font-size: 13px; border-radius: 8px; }
+            .lg-card b { font-size: 11px; }
+            .lg-card small { font-size: 9px; margin-top: 2px; }
+            .lg-trusts { justify-content: center; }
+
+            .lg-form-panel {
+                height: auto;
+                min-height: 100vh;
+                padding: 2.5rem 1.5rem 3rem;
+            }
+            .lg-card-wrap { max-width: 500px; padding: 2.25rem 2rem 1.9rem; }
+        }
+
+        @@media (max-width: 640px) {
+            .lg-page {
+                display: flex;
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+                overflow: visible;
+                background: linear-gradient(180deg, #f4ebff 0%, #efe2f8 60%, #e9dceb 100%);
+            }
+            .lg-mobile-bar {
+                display: flex;
+                position: sticky;
+                top: 0;
+                background: linear-gradient(180deg, rgba(244, 235, 255, .95), rgba(244, 235, 255, .7) 70%, transparent);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                padding: 14px 16px 12px;
+                z-index: 20;
+            }
+            .lg-art { display: none !important; }
+            .lg-form-panel {
+                height: auto;
+                flex: 1;
+                min-height: calc(100vh - 70px);
+                padding: 1rem 1rem 2.5rem;
+                background:
+                    radial-gradient(ellipse 70% 45% at 15% 10%, rgba(186, 160, 225, .65), transparent 60%),
+                    radial-gradient(ellipse 60% 45% at 90% 30%, rgba(240, 180, 210, .55), transparent 60%),
+                    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(168, 232, 200, .45), transparent 65%),
+                    linear-gradient(180deg, #f4ebff 0%, #efe2f8 100%);
+            }
+            .lg-form-panel::before,
+            .lg-form-panel::after { opacity: .65; filter: blur(75px); }
+            .lg-card-wrap {
+                max-width: 100%;
+                width: 100%;
+                padding: 1.85rem 1.4rem 1.6rem;
+                border-radius: 24px;
+                margin: 0;
+            }
+            .lg-hello { font-size: 10.5px; padding: 4px 11px 4px 8px; }
+            .lg-head { margin-bottom: 1.2rem; }
+            .lg-head h2 { font-size: 1.55rem; }
+            .lg-head p { font-size: 0.84rem; }
+            .lg-field { margin-bottom: 0.9rem; }
+            .lg-input { border-radius: 12px; }
+            .lg-input i.ico { width: 2.4rem; font-size: 0.95rem; }
+            .lg-input input { padding: 0.78rem 0.8rem 0.78rem 0; font-size: 0.88rem; }
+            .lg-toggle { width: 2.35rem; height: 2.35rem; font-size: 0.95rem; }
+            .lg-check-block { font-size: 0.78rem; margin-bottom: 1rem; }
+            .lg-cta { padding: 13px; font-size: 0.9rem; border-radius: 12px; }
+            .lg-trust-note { font-size: 0.68rem; }
+            .lg-divider { margin: 1.15rem 0 0.85rem; font-size: 0.64rem; }
+            .lg-secondary { padding: 12px 16px; font-size: 0.86rem; }
+            .lg-terms { margin-top: 1.05rem; padding-top: 0.9rem; font-size: 0.68rem; }
+        }
+
+        @@media (max-width: 400px) {
+            .lg-mobile-bar { padding: 12px 14px 10px; }
+            .lg-back-btn { padding: 8px 13px 8px 10px; font-size: 12.5px; }
+            .lg-back-btn i { font-size: 15px; }
+            .lg-mobile-brand { font-size: 14px; gap: 6px; }
+            .lg-mobile-brand svg { width: 26px; height: 26px; }
+            .lg-form-panel { padding: 0.75rem 0.9rem 2rem; }
+            .lg-card-wrap { padding: 1.55rem 1.15rem 1.35rem; border-radius: 22px; }
+            .lg-head h2 { font-size: 1.35rem; }
+            .lg-head p { font-size: 0.8rem; }
+            .lg-input input { font-size: 0.85rem; }
+            .lg-cta { font-size: 0.88rem; padding: 12px; }
+            .lg-secondary { font-size: 0.84rem; }
+            .lg-terms { font-size: 0.66rem; }
+        }
+
+        @@media (max-height: 500px) and (orientation: landscape) {
+            .lg-page { height: auto; overflow: visible; }
+            .lg-art { display: none !important; }
+            .lg-mobile-bar { display: flex; position: static; }
+            .lg-form-panel {
+                height: auto;
+                padding: 0.75rem 1.5rem 1.5rem;
+                align-items: flex-start;
+                min-height: auto;
+            }
+            .lg-card-wrap { max-width: 460px; margin: 0 auto; }
+        }
+
+        @@media (max-width: 320px) {
+            .lg-form-panel { padding: 0.5rem 0.75rem 1.75rem; }
+            .lg-card-wrap { padding: 1.3rem 1rem 1.15rem; }
+            .lg-head h2 { font-size: 1.2rem; }
+        }
+
+        @@media (prefers-reduced-motion: reduce) {
+            .lg-art::before, .lg-art::after,
+            .lg-ripple, .lg-ring, .lg-ticks, .lg-glow,
+            .lg-coin-3d, .lg-coin-shine, .lg-coin-face::after,
+            .lg-spark, .lg-dot, .lg-card,
+            .lg-hello-dot, .lg-card-wrap {
+                animation: none !important;
+                transition: none !important;
+            }
+            .lg-arc-fill { stroke-dashoffset: 92; }
+            .lg-card-wrap { opacity: 1; transform: none; }
+        }
+    </style>
+}
+
+<div class="lg-page">
+
+    <!-- ══════════ MOBILE-ONLY TOP BAR ══════════ -->
+    <div class="lg-mobile-bar">
+        <a asp-controller="Home" asp-action="Index" class="lg-back-btn" aria-label="Back to home">
+            <i class="ri-arrow-left-line"></i>
+            Back
+        </a>
+
+        <a asp-controller="Home" asp-action="Index" class="lg-mobile-brand" aria-label="CashCampus home">
+            <svg viewBox="0 0 44 44" fill="none" aria-hidden="true">
+                <defs>
+                    <linearGradient id="lgMobBg" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                        <stop offset="0" stop-color="#6b3a92"/>
+                        <stop offset="1" stop-color="#241232"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="22" cy="22" r="21" fill="url(#lgMobBg)"/>
+                <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5"
+                      stroke="#FFD93D" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                <path d="M31 12c0 2.2-1.3 3.5-3.5 3.5 2.2 0 3.5 1.3 3.5 3.5 0-2.2 1.3-3.5 3.5-3.5-2.2 0-3.5-1.3-3.5-3.5z" fill="#FFD93D"/>
+            </svg>
+            <span><b>Cash</b><span>Campus</span></span>
+        </a>
+    </div>
+
+    <!-- ══════════ LEFT · Art panel ══════════ -->
+    <aside class="lg-art">
+        <div class="lg-art-inner">
+
+            <a asp-controller="Home" asp-action="Index" class="lg-brand">
+                <svg viewBox="0 0 44 44" fill="none" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="lgBg" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#6b3a92"/>
+                            <stop offset="1" stop-color="#241232"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="22" cy="22" r="21" fill="url(#lgBg)"/>
+                    <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5"
+                          stroke="#FFD93D" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                    <path d="M31 12c0 2.2-1.3 3.5-3.5 3.5 2.2 0 3.5 1.3 3.5 3.5 0-2.2 1.3-3.5 3.5-3.5-2.2 0-3.5-1.3-3.5-3.5z" fill="#FFD93D"/>
+                </svg>
+                <span class="name-wrap"><b>Cash</b><span class="coin">Campus</span></span>
+            </a>
+
+            <div class="lg-art-body">
+                <span class="lg-eyebrow">
+                    <i class="ri-sparkling-2-fill"></i> Welcome home
+                </span>
+
+                <h1 class="lg-title">
+                    Your money story<br>
+                    is <em>waiting.</em>
+                </h1>
+
+                <div class="lg-scene" aria-hidden="true">
+
+                    <span class="lg-ripple lg-ripple-1"></span>
+                    <span class="lg-ripple lg-ripple-2"></span>
+                    <span class="lg-ripple lg-ripple-3"></span>
+
+                    <span class="lg-ring lg-ring-1"></span>
+                    <span class="lg-ring lg-ring-2"></span>
+                    <span class="lg-ring lg-ring-3"></span>
+
+                    <span class="lg-ticks"></span>
+                    <span class="lg-glow"></span>
+
+                    <svg class="lg-arc" viewBox="0 0 100 100" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="lgArcGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#c4aee0"/>
+                                <stop offset="0.5" stop-color="#a486e0"/>
+                                <stop offset="1" stop-color="#d4799f"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(168, 140, 230, .14)" stroke-width=".8"/>
+                        <circle cx="50" cy="50" r="46" fill="none" stroke="url(#lgArcGrad)" stroke-width="1.4"
+                                stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289" class="lg-arc-fill"/>
+                    </svg>
+
+                    <div class="lg-coin">
+                        <div class="lg-coin-3d">
+                            <span class="lg-coin-edge e4"></span>
+                            <span class="lg-coin-edge e3"></span>
+                            <span class="lg-coin-edge e2"></span>
+                            <span class="lg-coin-edge e1"></span>
+
+                            <span class="lg-coin-face">
+                                <span class="lg-coin-rim"></span>
+                                <span class="lg-coin-symbol">₹</span>
+                                <span class="lg-coin-shine"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <span class="lg-spark s1"></span>
+                    <span class="lg-spark s2"></span>
+                    <span class="lg-spark s3"></span>
+                    <span class="lg-spark s4"></span>
+                    <span class="lg-spark s5"></span>
+                    <span class="lg-spark s6"></span>
+
+                    <div class="lg-orbit">
+                        <span class="lg-dot d1"></span>
+                        <span class="lg-dot d2"></span>
+                        <span class="lg-dot d3"></span>
+                        <span class="lg-dot d4"></span>
+                        <span class="lg-dot d5"></span>
+                        <span class="lg-dot d6"></span>
+                    </div>
+
+                    <div class="lg-card lg-card-1">
+                        <span class="lg-card-icon violet"><i class="ri-wallet-3-line"></i></span>
+                        <div>
+                            <b>Rs. 24,850</b>
+                            <small>Total balance</small>
+                        </div>
+                    </div>
+
+                    <div class="lg-card lg-card-2">
+                        <span class="lg-card-icon gold"><i class="ri-arrow-up-line"></i></span>
+                        <div>
+                            <b>Rs. 4,200</b>
+                            <small>Saved this month</small>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="lg-trusts">
+                <span class="lg-trust"><i class="ri-shield-check-line"></i> No bank link</span>
+                <span class="lg-trust"><i class="ri-lock-2-line"></i> Private by default</span>
+                <span class="lg-trust"><i class="ri-gift-line"></i> Free forever</span>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- ══════════ RIGHT · Glass form ══════════ -->
+    <main class="lg-form-panel">
+        <div class="lg-card-wrap">
+
+            <span class="lg-hello">
+                <span class="lg-hello-dot"></span>
+                Welcome back
+            </span>
+
+            <div class="lg-head">
+                <h2>Good to see<br>you <em>again.</em></h2>
+                <p>Sign in to pick up right where you left off.</p>
+                <span class="lg-head-accent"></span>
+            </div>
+
+            <div id="errorAlert" style="display:none; margin-bottom:16px; padding:12px 16px; border-radius:12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); color:#b91c1c; font-size:13px; font-weight:600;"></div>
+            <form id="loginForm" onsubmit="return handleLogin(event);" method="post" action="#">
+                <div class="lg-field">
+                    <label for="email">
+                        <span>Email address</span>
+                    </label>
+                    <div class="lg-input">
+                        <i class="ri-mail-line ico"></i>
+                        <input type="email" id="email" name="email"
+                               placeholder="you@@university.edu" autocomplete="email" />
+                    </div>
+                </div>
+
+                <div class="lg-field">
+                    <label for="password">
+                        <span>Password</span>
+                        <a class="lg-forgot-inline" asp-controller="Account" asp-action="ForgotPassword">
+                            Forgot?
+                        </a>
+                    </label>
+                    <div class="lg-input">
+                        <i class="ri-lock-2-line ico"></i>
+                        <input type="password" id="password" name="password"
+                               placeholder="Enter your password" autocomplete="current-password" />
+                        <button type="button" class="lg-toggle" id="pwToggle" aria-label="Show password">
+                            <i class="ri-eye-line"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <label class="lg-check-block">
+                    <input type="checkbox" name="remember" />
+                    <span class="lg-check-box"></span>
+                    <span>Keep me signed in on this device</span>
+                </label>
+
+                <button type="submit" class="lg-cta">
+                    <span>Sign in securely</span>
+                    <i class="ri-arrow-right-line"></i>
+                </button>
+
+                <p class="lg-trust-note">
+                    <i class="ri-shield-check-line"></i>
+                    Your data stays encrypted &amp; private
+                </p>
+            </form>
+
+            <div class="lg-divider">New to CashCampus?</div>
+
+            <a asp-controller="Account" asp-action="Register" class="lg-secondary">
+                Create your free account <i class="ri-arrow-right-line"></i>
+            </a>
+
+            <p class="lg-terms">
+                By signing in you agree to our
+                <a href="/Home/Terms" target="_blank" rel="noopener">Terms</a> &amp;
+                <a href="/Home/Privacy" target="_blank" rel="noopener">Privacy Policy</a>.
+            </p>
+
+        </div>
+    </main>
+
+</div>
+
+@section Scripts {
+    <style>
+        .lg-field-error {
+            display: none;
+            margin-top: 6px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.22);
+            color: #b91c1c;
+            font-size: 12.5px;
+            font-weight: 600;
+            line-height: 1.35;
+            animation: lgErrIn .22s ease;
+        }
+        .lg-field-error.show { display: block; }
+        .lg-input.invalid {
+            border-color: rgba(239, 68, 68, 0.55) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
+        }
+        .lg-input.invalid i.ico { color: #ef4444 !important; }
+        @@keyframes lgErrIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        #errorAlert {
+            display: none;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.28);
+            color: #b91c1c;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        #errorAlert.show { display: block; }
+    </style>
+    <script>
+        function showFieldError(inputId, message) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const wrap = input.closest('.lg-input') || input.parentElement;
+            if (wrap) wrap.classList.add('invalid');
+            let err = document.getElementById(inputId + 'Error');
+            if (!err) {
+                err = document.createElement('div');
+                err.id = inputId + 'Error';
+                err.className = 'lg-field-error';
+                const field = input.closest('.lg-field') || wrap.parentElement;
+                field.appendChild(err);
+            }
+            err.textContent = message;
+            err.classList.add('show');
+        }
+
+        function clearFieldError(inputId) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                const wrap = input.closest('.lg-input') || input.parentElement;
+                if (wrap) wrap.classList.remove('invalid');
+            }
+            const err = document.getElementById(inputId + 'Error');
+            if (err) { err.classList.remove('show'); err.textContent = ''; }
+        }
+
+        function clearAllLoginErrors() {
+            ['email', 'password'].forEach(clearFieldError);
+            const box = document.getElementById('errorAlert');
+            if (box) { box.classList.remove('show'); box.style.display = 'none'; }
+        }
+
+        function validateLogin() {
+            clearAllLoginErrors();
+            let ok = true;
+            const email = (document.getElementById('email')?.value || '').trim();
+            const password = document.getElementById('password')?.value || '';
+
+            if (!email) {
+                showFieldError('email', 'Email is required.');
+                ok = false;
+            } else if (!/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(email)) {
+                showFieldError('email', 'Please enter a valid email address.');
+                ok = false;
+            }
+
+            if (!password) {
+                showFieldError('password', 'Password is required.');
+                ok = false;
+            } else if (password.length < 6) {
+                showFieldError('password', 'Password must be at least 6 characters.');
+                ok = false;
+            }
+            return ok;
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            if (!validateLogin()) return false;
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.querySelector('input[name="remember"]')?.checked || false;
+            const btn = document.querySelector('.lg-cta');
+            let alertBox = document.getElementById('errorAlert');
+            if (!alertBox) {
+                alertBox = document.createElement('div');
+                alertBox.id = 'errorAlert';
+                const form = document.getElementById('loginForm');
+                if (form) form.parentNode.insertBefore(alertBox, form);
+            }
+
+            const originalHtml = btn ? btn.innerHTML : '';
+            if (btn) { btn.innerHTML = '<span>Signing In...</span>'; btn.disabled = true; }
+            alertBox.classList.remove('show');
+            alertBox.style.display = 'none';
+
+            try {
+                const res = await fetch('/Auth/Login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password, rememberMe: rememberMe })
+                });
+                const raw = await res.text();
+                let data = {};
+                try { data = JSON.parse(raw); } catch (_) {}
+
+                if (res.ok && data.success) {
+                    window.location.href = data.redirectUrl || '/Dashboard/Index';
+                    return false;
+                } else {
+                    alertBox.textContent = data.message || ('Login failed (HTTP ' + res.status + ')');
+                    alertBox.classList.add('show');
+                    alertBox.style.display = 'block';
+                    if (btn) { btn.innerHTML = originalHtml; btn.disabled = false; }
+                }
+            } catch (err) {
+                alertBox.textContent = 'Network or server error. Is the backend running?';
+                alertBox.classList.add('show');
+                alertBox.style.display = 'block';
+                if (btn) { btn.innerHTML = originalHtml; btn.disabled = false; }
+            }
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            ['email', 'password'].forEach(function (id) {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', function () { clearFieldError(id); });
+            });
+            const toggle = document.getElementById('pwToggle');
+            const input = document.getElementById('password');
+            if (toggle && input) {
+                toggle.addEventListener('click', function () {
+                    const isPw = input.type === 'password';
+                    input.type = isPw ? 'text' : 'password';
+                    const icon = toggle.querySelector('i');
+                    if (icon) icon.className = isPw ? 'ri-eye-off-line' : 'ri-eye-line';
+                    toggle.setAttribute('aria-label', isPw ? 'Hide password' : 'Show password');
+                });
+            }
+        });
+    
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                var flash = sessionStorage.getItem('cc_flash');
+                if (flash) {
+                    sessionStorage.removeItem('cc_flash');
+                    var alertBox = document.getElementById('errorAlert');
+                    if (alertBox) {
+                        alertBox.innerHTML = '<i class="fa-solid fa-circle-check" style="margin-right:8px;"></i>' + flash;
+                        alertBox.classList.add('show');
+                        alertBox.style.display = 'block';
+                        alertBox.style.background = 'rgba(16, 185, 129, 0.12)';
+                        alertBox.style.borderColor = 'rgba(16, 185, 129, 0.32)';
+                        alertBox.style.color = '#047857';
+                        alertBox.style.borderRadius = '14px';
+                        alertBox.style.padding = '14px 16px';
+                        alertBox.style.fontWeight = '600';
+                    }
+                }
+            } catch (_) {}
+        });
+</script>
+}

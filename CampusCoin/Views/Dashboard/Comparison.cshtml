@@ -1,0 +1,100 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <link rel="stylesheet" href="/css/student-theme.css" />
+    <link rel="stylesheet" href="/css/cc-animations.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Comparison — CampusCoin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        body { margin: 0; font-family: system-ui, sans-serif; background: #f4f0fa; color: #1a0b2e; }
+        .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px 60px; }
+        .card { background: #fff; border-radius: 20px; padding: 22px; box-shadow: 0 10px 40px -20px rgba(109,74,255,.2); border: 1px solid rgba(109,74,255,.08); margin-bottom: 18px; }
+        h1 { font-size: 1.4rem; font-weight: 800; margin: 0 0 6px; }
+        .sub { color: #6b5b76; font-size: 13px; margin-bottom: 18px; }
+        .back { display: inline-flex; align-items: center; gap: 6px; color: #6d4aff; font-weight: 700; text-decoration: none; font-size: 13px; margin-bottom: 16px; }
+        .chart-box { height: 340px; position: relative; }
+        .list { display: grid; gap: 10px; }
+        .row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: #faf7ff; }
+        .up { color: #e11d48; font-weight: 800; }
+        .down { color: #059669; font-weight: 800; }
+        .same { color: #6b5b76; font-weight: 700; }
+        .empty { text-align: center; padding: 40px; color: #8b7d94; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <a class="back" href="/Dashboard/Index"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="card">
+            <h1>This Month vs Last Month</h1>
+            <p class="sub" id="periodLabel">Comparing spending by category</p>
+            <div class="chart-box"><canvas id="cmpChart"></canvas></div>
+        </div>
+        <div class="card">
+            <h1 style="font-size:1.1rem;">Category changes</h1>
+            <div class="list" id="cmpList">
+                <div class="empty">Loading…</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        async function loadComparison() {
+            try {
+                const res = await fetch('/api/dashboard/expense-comparison', { credentials: 'same-origin' });
+                const data = await res.json();
+                if (!data.success) return;
+                document.getElementById('periodLabel').textContent =
+                    (data.thisMonthLabel || 'This month') + ' vs ' + (data.lastMonthLabel || 'Last month');
+
+                const ctx = document.getElementById('cmpChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels || [],
+                        datasets: [
+                            { label: data.thisMonthLabel || 'This month', data: data.thisMonth || [], backgroundColor: 'rgba(109,74,255,0.75)', borderRadius: 8 },
+                            { label: data.lastMonthLabel || 'Last month', data: data.lastMonth || [], backgroundColor: 'rgba(16,185,129,0.55)', borderRadius: 8 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top' } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+
+                const list = document.getElementById('cmpList');
+                const cats = data.categories || [];
+                if (!cats.length) {
+                    list.innerHTML = '<div class="empty">No expense data yet for comparison.</div>';
+                    return;
+                }
+                list.innerHTML = cats.map(c => {
+                    const cls = c.direction === 'up' ? 'up' : (c.direction === 'down' ? 'down' : 'same');
+                    const arrow = c.direction === 'up' ? '↑' : (c.direction === 'down' ? '↓' : '→');
+                    const sign = c.changePercent > 0 ? '+' : '';
+                    return `<div class="row">
+                        <div>
+                            <div style="font-weight:800">${c.category}</div>
+                            <div style="font-size:12px;color:#6b5b76">This: Rs. ${Number(c.thisMonth).toFixed(2)} · Last: Rs. ${Number(c.lastMonth).toFixed(2)}</div>
+                        </div>
+                        <div class="${cls}">${c.category}: ${sign}${c.changePercent}% ${arrow}</div>
+                    </div>`;
+                }).join('');
+            } catch (e) {
+                document.getElementById('cmpList').innerHTML = '<div class="empty">Could not load comparison.</div>';
+            }
+        }
+        loadComparison();
+    </script>
+</body>
+</html>

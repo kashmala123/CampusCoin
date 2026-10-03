@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>48207ee3-1ca0-48e9-9a60-e972e5023ec4</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- EF Core (8.0.x LTS line) -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+    <!-- MailKit: 4.8.0 had STARTTLS injection (fixed in 4.16.0+). Use current secure release. -->
+    <PackageReference Include="MailKit" Version="4.18.0" />
+
+    <!-- Explicit overrides for transitive vulnerable packages -->
+    <!-- CVE-2024-43483: Microsoft.Extensions.Caching.Memory <= 8.0.0 → fixed in 8.0.1 -->
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+
+    <!-- Azure.Identity 1.10.3 had elevation-of-privilege advisories → 1.13.2 is secure -->
+    <!-- Requires Microsoft.Identity.Client >= 4.67.2 (do not pin lower) -->
+    <PackageReference Include="Azure.Identity" Version="1.13.2" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.67.2" />
+  </ItemGroup>
+
+</Project>

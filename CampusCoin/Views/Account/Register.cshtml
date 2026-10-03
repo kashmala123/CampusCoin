@@ -1,0 +1,1829 @@
+@{
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+
+    ViewData["Title"] = "Create account";
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            overflow-x: hidden;
+            height: 100%;
+        }
+
+        body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+
+        .lg-page {
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            height: 100vh;
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden;
+            background: #f6eee4;
+        }
+
+        /* ══════════ MOBILE-ONLY TOP BAR ══════════ */
+        .lg-mobile-bar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .lg-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px 9px 12px;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(22, 11, 33, 0.06);
+            color: #241232;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all .22s cubic-bezier(.22, 1, .36, 1);
+            box-shadow: 0 6px 18px -10px rgba(107, 58, 146, 0.35), inset 0 1px 0 rgba(255, 255, 255, 1);
+            white-space: nowrap;
+        }
+        .lg-back-btn:hover {
+            background: #fff;
+            color: #6d4aff;
+            transform: translateX(-2px);
+        }
+        .lg-back-btn i { font-size: 16px; }
+
+        .lg-mobile-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: -.02em;
+        }
+        .lg-mobile-brand svg {
+            width: 30px; height: 30px; flex: none;
+            filter: drop-shadow(0 4px 10px rgba(109, 74, 255, .3));
+        }
+        .lg-mobile-brand b { color: #1a0b2e; font-weight: 700; }
+        .lg-mobile-brand span {
+            background: linear-gradient(115deg, #a78bfa 0%, #c084fc 40%, #f0a3c4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* ══════════ LEFT · ART PANEL ══════════ */
+        .lg-art {
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            padding: 2rem 3rem;
+            display: flex;
+            flex-direction: column;
+            isolation: isolate;
+            background:
+                radial-gradient(ellipse 55% 60% at 10% 15%, rgba(155, 111, 216, .5), transparent 65%),
+                radial-gradient(ellipse 50% 55% at 95% 80%, rgba(212, 121, 159, .4), transparent 65%),
+                linear-gradient(140deg, #241232 0%, #160b21 60%, #0f0619 100%);
+        }
+
+        .lg-art::before,
+        .lg-art::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .lg-art::before {
+            width: 400px; height: 400px; top: -15%; left: -10%;
+            background: radial-gradient(circle, rgba(155, 111, 216, .7), transparent 65%);
+            opacity: .6;
+            animation: lgFloatA 20s ease-in-out infinite;
+        }
+        .lg-art::after {
+            width: 340px; height: 340px; bottom: -15%; right: -10%;
+            background: radial-gradient(circle, rgba(212, 121, 159, .55), transparent 65%);
+            opacity: .55;
+            animation: lgFloatB 24s ease-in-out infinite;
+        }
+
+        @@keyframes lgFloatA {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%      { transform: translate(40px, -30px) scale(1.1); }
+        }
+        @@keyframes lgFloatB {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%      { transform: translate(-40px, 30px) scale(1.15); }
+        }
+
+        .lg-art-inner {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .lg-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: .75rem;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            color: #fff;
+            flex: none;
+        }
+        .lg-brand:hover { color: #fff; opacity: .9; }
+        .lg-brand svg { width: 36px; height: 36px; display: block; flex: none; }
+        .lg-brand .name-wrap { display: inline-flex; align-items: baseline; gap: 4px; }
+        .lg-brand b { color: #fff; font-weight: 700; }
+        .lg-brand .coin {
+            background: linear-gradient(115deg, #a78bfa 0%, #c084fc 40%, #f0a3c4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .lg-art-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 0;
+        }
+
+        .lg-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .3rem .8rem;
+            border-radius: 99px;
+            background: rgba(155, 111, 216, .15);
+            border: 1px solid rgba(155, 111, 216, .35);
+            color: #d5b8ff;
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            align-self: flex-start;
+        }
+
+        .lg-title {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: clamp(1.85rem, 2.8vw, 2.5rem);
+            line-height: 1.05;
+            letter-spacing: -.03em;
+            font-weight: 700;
+            color: #fff;
+            margin: 1rem 0 1.25rem;
+        }
+        .lg-title em {
+            font-style: italic;
+            font-weight: 400;
+            background: linear-gradient(115deg, #a78bfa 0%, #c084fc 45%, #f0a3c4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ══════════ ANIMATED SCENE ══════════ */
+        .lg-scene {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+            display: grid;
+            place-items: center;
+        }
+
+        .lg-ripple {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 60%; height: 60%;
+            margin: -30% 0 0 -30%;
+            border-radius: 50%;
+            border: 1px solid rgba(168, 140, 230, .4);
+            pointer-events: none;
+            opacity: 0;
+            animation: lgRipple 6s ease-out infinite;
+        }
+        .lg-ripple-2 { animation-delay: 2s; border-color: rgba(200, 175, 245, .35); }
+        .lg-ripple-3 { animation-delay: 4s; border-color: rgba(212, 160, 200, .3); }
+
+        @@keyframes lgRipple {
+            0%   { transform: scale(.5);  opacity: 0; }
+            20%  { opacity: .8; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .lg-ring { position: absolute; border-radius: 50%; pointer-events: none; }
+        .lg-ring-1 { inset: 8%;  border: 1px dashed rgba(168, 140, 230, .28); animation: lgSpin 40s linear infinite; }
+        .lg-ring-2 { inset: 20%; border: 1px solid rgba(200, 175, 245, .15);  animation: lgSpin 60s linear infinite reverse; }
+        .lg-ring-3 { inset: 32%; border: 1.5px dashed rgba(212, 160, 200, .25); animation: lgSpin 30s linear infinite; }
+
+        @@keyframes lgSpin { to { transform: rotate(360deg); } }
+
+        .lg-ticks {
+            position: absolute;
+            inset: 4%;
+            border-radius: 50%;
+            pointer-events: none;
+            background: repeating-conic-gradient(
+                from 0deg,
+                rgba(168, 140, 230, .35) 0deg 1deg,
+                transparent 1deg 30deg);
+            -webkit-mask: radial-gradient(circle, transparent 66%, black 67%, black 68%, transparent 69%);
+                    mask: radial-gradient(circle, transparent 66%, black 67%, black 68%, transparent 69%);
+            animation: lgSpin 90s linear infinite;
+            opacity: .75;
+        }
+
+        .lg-glow {
+            position: absolute;
+            width: 65%; height: 65%;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                rgba(200, 165, 245, .55) 0%,
+                rgba(139, 111, 240, .35) 40%,
+                transparent 70%);
+            filter: blur(55px);
+            animation: lgGlowPulse 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @@keyframes lgGlowPulse {
+            0%, 100% { transform: scale(1); opacity: .85; }
+            50%      { transform: scale(1.15); opacity: 1; }
+        }
+
+        .lg-arc {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            transform: rotate(-90deg);
+            filter: drop-shadow(0 0 10px rgba(168, 140, 230, .55));
+        }
+        .lg-arc-fill { animation: lgArcDraw 2.4s cubic-bezier(.22, 1, .36, 1) .6s forwards; }
+        @@keyframes lgArcDraw { to { stroke-dashoffset: 92; } }
+
+        /* ══════════ GOLD COIN ══════════ */
+        .lg-coin {
+            position: relative;
+            width: 46%;
+            aspect-ratio: 1 / 1;
+            z-index: 2;
+            perspective: 900px;
+        }
+        .lg-coin-3d {
+            position: relative;
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            animation: lgCoinHover 11s cubic-bezier(.45, 0, .55, 1) infinite;
+        }
+        @@keyframes lgCoinHover {
+            0%   { transform: translateY(0)     rotateY(-38deg) rotateX(-5deg) rotateZ(-1deg); }
+            20%  { transform: translateY(-10px) rotateY(-8deg)  rotateX(-12deg) rotateZ(2deg); }
+            50%  { transform: translateY(-16px) rotateY(38deg)  rotateX(-5deg)  rotateZ(1deg); }
+            80%  { transform: translateY(-8px)  rotateY(-8deg)  rotateX(-12deg) rotateZ(-2deg); }
+            100% { transform: translateY(0)     rotateY(-38deg) rotateX(-5deg)  rotateZ(-1deg); }
+        }
+
+        .lg-coin-edge {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #E5B020 0%, #C49010 40%, #8B5E00 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 220, 150, .4);
+            transform-style: preserve-3d;
+        }
+        .lg-coin-edge.e1 { transform: translateZ(-2px); background: linear-gradient(180deg, #DDA51A 0%, #B07800 40%, #7A5000 100%); }
+        .lg-coin-edge.e2 { transform: translateZ(-4px); background: linear-gradient(180deg, #D19B10 0%, #A47800 40%, #6B4A00 100%); }
+        .lg-coin-edge.e3 { transform: translateZ(-6px); background: linear-gradient(180deg, #BE8A08 0%, #8B5E00 40%, #5A3D00 100%); }
+        .lg-coin-edge.e4 { transform: translateZ(-8px); background: linear-gradient(180deg, #A47800 0%, #7A5000 40%, #4A3200 100%); }
+
+        .lg-coin-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            transform: translateZ(0);
+            background:
+                radial-gradient(circle at 30% 25%, rgba(255, 255, 235, .95) 0%, rgba(255, 250, 200, .4) 12%, transparent 24%),
+                radial-gradient(circle at 72% 78%, rgba(90, 55, 0, .55) 0%, transparent 48%),
+                radial-gradient(circle at 45% 45%, #FFE45C 0%, #FFD020 22%, #F4B400 48%, #D18B00 72%, #A47800 88%, #8B5E00 100%);
+            box-shadow:
+                inset 0 2px 3px rgba(255, 250, 200, .9),
+                inset 0 -6px 16px rgba(100, 60, 0, .55),
+                inset 5px 5px 14px rgba(255, 240, 150, .45),
+                inset -5px -5px 14px rgba(90, 55, 0, .5),
+                0 0 0 1px rgba(139, 94, 0, .55),
+                0 0 0 2px rgba(255, 215, 100, .55),
+                0 0 0 3px rgba(139, 94, 0, .35),
+                0 0 30px rgba(255, 200, 0, .5);
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .lg-coin-rim {
+            position: absolute;
+            inset: 9%;
+            border-radius: 50%;
+            border: 1.5px solid rgba(139, 94, 0, .55);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 250, 200, .7),
+                0 1px 0 rgba(255, 250, 200, .45);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .lg-coin-rim::after {
+            content: "";
+            position: absolute;
+            inset: 8%;
+            border-radius: 50%;
+            border: 1px dashed rgba(139, 94, 0, .35);
+        }
+
+        .lg-coin-symbol {
+            position: relative;
+            z-index: 3;
+            font-family: 'Fraunces', Georgia, serif;
+            font-style: italic;
+            font-size: clamp(40px, 5vw, 58px);
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(180deg, #FFF6C0 0%, #FFE066 35%, #F4B400 65%, #A47800 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            filter:
+                drop-shadow(0 1px 0 rgba(255, 250, 200, .75))
+                drop-shadow(0 -1px 0 rgba(90, 60, 0, .8))
+                drop-shadow(0 4px 8px rgba(90, 60, 0, .45));
+        }
+
+        .lg-coin-shine {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 255, 255, .55) 25deg, rgba(255, 255, 255, .2) 55deg, transparent 85deg, transparent 360deg);
+            animation: lgCoinShine 5s linear infinite;
+            z-index: 4;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+        @@keyframes lgCoinShine { to { transform: rotate(360deg); } }
+
+        .lg-coin-face::after {
+            content: "";
+            position: absolute;
+            top: 4%;
+            left: 12%;
+            width: 70%;
+            height: 20%;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, .55) 0%, transparent 70%);
+            filter: blur(3px);
+            animation: lgCoinTopShine 11s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @@keyframes lgCoinTopShine {
+            0%, 100% { transform: translateX(-8%) scaleX(1);    opacity: .5; }
+            50%      { transform: translateX(8%)  scaleX(1.15); opacity: .9; }
+        }
+
+        .lg-spark {
+            position: absolute;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: #FFE45C;
+            box-shadow: 0 0 10px rgba(255, 220, 100, .95), 0 0 20px rgba(255, 200, 0, .6);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 4;
+        }
+        .lg-spark.s1 { left: 30%; top: 70%; animation: lgSparkFloat 6s ease-in-out infinite 0s; }
+        .lg-spark.s2 { left: 65%; top: 72%; animation: lgSparkFloat 7s ease-in-out infinite 1.2s; background: #FFD93D; }
+        .lg-spark.s3 { left: 22%; top: 55%; animation: lgSparkFloat 8s ease-in-out infinite 2.4s; background: #FFEC9E; }
+        .lg-spark.s4 { left: 78%; top: 58%; animation: lgSparkFloat 6.5s ease-in-out infinite 3.6s; background: #FFC93C; }
+        .lg-spark.s5 { left: 45%; top: 78%; animation: lgSparkFloat 5.5s ease-in-out infinite 4.2s; width: 3px; height: 3px; }
+        .lg-spark.s6 { left: 55%; top: 25%; animation: lgSparkFloat 7.5s ease-in-out infinite 2s; background: #FFD93D; }
+
+        @@keyframes lgSparkFloat {
+            0%   { transform: translate(0, 0) scale(0); opacity: 0; }
+            15%  { opacity: 1; transform: translate(0, -10px) scale(1); }
+            85%  { opacity: .8; }
+            100% { transform: translate(0, -60px) scale(.3); opacity: 0; }
+        }
+
+        .lg-orbit { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+
+        .lg-dot {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 9px; height: 9px;
+            margin: -4.5px 0 0 -4.5px;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 0 14px rgba(168, 140, 230, .8);
+            animation: lgDotDepth 24s linear infinite;
+        }
+        .lg-dot.d1 { --a: 0deg;   --r: 130px; background: linear-gradient(140deg, #c4aee0, #8b6ff0); animation-delay: 0s; }
+        .lg-dot.d2 { --a: 120deg; --r: 130px; background: linear-gradient(140deg, #f0a3c4, #d4799f); animation-delay: -8s; }
+        .lg-dot.d3 { --a: 240deg; --r: 130px; background: linear-gradient(140deg, #a78bfa, #6d4aff); animation-delay: -16s; }
+        .lg-dot.d4 { --a: 60deg;  --r: 100px; width: 6px; height: 6px; margin: -3px 0 0 -3px; background: #c4aee0; animation-duration: 20s; }
+        .lg-dot.d5 { --a: 180deg; --r: 100px; width: 6px; height: 6px; margin: -3px 0 0 -3px; background: #f0a3c4; animation-duration: 20s; animation-delay: -7s; }
+        .lg-dot.d6 { --a: 300deg; --r: 100px; width: 6px; height: 6px; margin: -3px 0 0 -3px; background: #a78bfa; animation-duration: 20s; animation-delay: -14s; }
+
+        @@keyframes lgDotDepth {
+            0%   { transform: rotate(var(--a)) translateY(calc(var(--r) * -1)) scale(1); }
+            25%  { transform: rotate(calc(var(--a) + 90deg))  translateY(calc(var(--r) * -1)) scale(1.4); }
+            50%  { transform: rotate(calc(var(--a) + 180deg)) translateY(calc(var(--r) * -1)) scale(1); }
+            75%  { transform: rotate(calc(var(--a) + 270deg)) translateY(calc(var(--r) * -1)) scale(.7); }
+            100% { transform: rotate(calc(var(--a) + 360deg)) translateY(calc(var(--r) * -1)) scale(1); }
+        }
+
+        .lg-card {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .09);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, .16);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 18px 40px -16px rgba(0, 0, 0, .5);
+            color: #fff;
+            z-index: 5;
+            min-width: 130px;
+        }
+        .lg-card-1 { top: 8%; left: -2%; animation: lgFloatCard1 7s ease-in-out infinite; }
+        .lg-card-2 { bottom: 8%; right: -2%; animation: lgFloatCard2 8.5s ease-in-out infinite; }
+
+        @@keyframes lgFloatCard1 {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50%      { transform: translateY(-8px) rotate(-2deg); }
+        }
+        @@keyframes lgFloatCard2 {
+            0%, 100% { transform: translateY(0) rotate(2deg); }
+            50%      { transform: translateY(8px) rotate(2deg); }
+        }
+
+        .lg-card-icon {
+            width: 30px; height: 30px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            flex: none;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25);
+        }
+        .lg-card-icon.violet { background: linear-gradient(140deg, #8b6ff0, #6d4aff); color: #fff; }
+        .lg-card-icon.gold {
+            background: linear-gradient(140deg, #FFD93D, #D18B00);
+            color: #5a3d00;
+            box-shadow: inset 0 1px 0 rgba(255, 250, 200, .6), 0 4px 10px -4px rgba(244, 180, 0, .6);
+        }
+
+        .lg-card b {
+            display: block;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: -.02em;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+        .lg-card small {
+            display: block;
+            font-size: 9.5px;
+            color: rgba(255, 255, 255, .6);
+            margin-top: 3px;
+            letter-spacing: .02em;
+        }
+
+        .lg-trusts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            flex: none;
+        }
+        .lg-trust {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: .32rem .7rem;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            font-size: .68rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .85);
+            white-space: nowrap;
+        }
+        .lg-trust i { font-size: .78rem; color: #c4aee0; }
+
+        /* ══════════════════════════════════════════════
+           RIGHT · FORM PANEL
+           ══════════════════════════════════════════════ */
+        .lg-form-panel {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            padding: 1.5rem 1.5rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+            isolation: isolate;
+            min-height: 0;
+            background:
+                radial-gradient(ellipse 50% 45% at 15% 20%, rgba(186, 160, 225, .85), transparent 65%),
+                radial-gradient(ellipse 45% 45% at 90% 30%, rgba(240, 180, 210, .7), transparent 65%),
+                radial-gradient(ellipse 55% 50% at 50% 95%, rgba(168, 232, 200, .55), transparent 70%),
+                linear-gradient(180deg, #f4ebff 0%, #efe2f8 100%);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(107, 58, 146, .22) transparent;
+        }
+        .lg-form-panel::-webkit-scrollbar { width: 8px; }
+        .lg-form-panel::-webkit-scrollbar-track { background: transparent; }
+        .lg-form-panel::-webkit-scrollbar-thumb {
+            background: rgba(107, 58, 146, .22);
+            border-radius: 99px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        .lg-form-panel::-webkit-scrollbar-thumb:hover {
+            background: rgba(107, 58, 146, .4);
+            background-clip: content-box;
+        }
+
+        .lg-form-panel::before,
+        .lg-form-panel::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: .8;
+        }
+        .lg-form-panel::before {
+            width: 380px; height: 380px; top: -12%; left: -8%;
+            background: radial-gradient(circle, rgba(155, 111, 216, .85), transparent 70%);
+            animation: lgOrbA 18s ease-in-out infinite;
+        }
+        .lg-form-panel::after {
+            width: 340px; height: 340px; bottom: -10%; right: -6%;
+            background: radial-gradient(circle, rgba(212, 121, 159, .7), transparent 70%);
+            animation: lgOrbB 22s ease-in-out infinite;
+        }
+
+        @@keyframes lgOrbA {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%      { transform: translate(50px, -40px) scale(1.15); }
+        }
+        @@keyframes lgOrbB {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50%      { transform: translate(-40px, 40px) scale(1.12); }
+        }
+
+        /* ══════════ GLASS CARD ══════════ */
+        .lg-card-wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            min-width: 0;
+            margin: auto;
+            padding: 1.6rem 1.75rem 1.4rem;
+            border-radius: 26px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.62) 0%,
+                rgba(255, 255, 255, 0.4) 45%,
+                rgba(250, 240, 255, 0.5) 100%
+            );
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+
+            border: 1px solid rgba(255, 255, 255, 0.9);
+
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+                inset -2px -3px 10px rgba(107, 58, 146, 0.08),
+                0 24px 55px -18px rgba(107, 58, 146, 0.35),
+                0 60px 100px -40px rgba(76, 45, 120, 0.28);
+
+            transform-style: preserve-3d;
+            flex-shrink: 0;
+        }
+
+        .lg-card-wrap::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #8b6ff0 0%, #d4799f 50%, #6ecfa8 100%);
+            z-index: 2;
+            border-radius: inherit;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .lg-card-wrap::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 65%; height: 50%;
+            background: radial-gradient(
+                ellipse at top left,
+                rgba(255, 255, 255, 0.8) 0%,
+                rgba(255, 255, 255, 0.15) 40%,
+                transparent 70%
+            );
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .lg-card-wrap > * { position: relative; z-index: 1; }
+
+        .lg-hello {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px 3px 8px;
+            border-radius: 99px;
+            background: rgba(123, 92, 231, 0.08);
+            border: 1px solid rgba(123, 92, 231, 0.18);
+            color: #4b2568;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .01em;
+            margin-bottom: .7rem;
+        }
+
+        .lg-hello-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #4ba77f;
+            box-shadow: 0 0 0 0 rgba(75, 167, 127, .5);
+            animation: lgHelloPulse 2.4s ease-out infinite;
+            flex: none;
+        }
+
+        @@keyframes lgHelloPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(75, 167, 127, .55); }
+            70%  { box-shadow: 0 0 0 7px rgba(75, 167, 127, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(75, 167, 127, 0); }
+        }
+
+        .lg-head { margin-bottom: .95rem; }
+        .lg-head h2 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 1.55rem;
+            font-weight: 700;
+            letter-spacing: -.035em;
+            color: #1a0b2e;
+            margin: 0 0 .2rem;
+            line-height: 1.05;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        .lg-head h2 em {
+            font-style: italic;
+            font-weight: 500;
+            background: linear-gradient(115deg, #7b5ce7 0%, #a486e0 40%, #d4799f 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+        .lg-head p {
+            font-size: .8rem;
+            color: #5a4a6b;
+            margin: 0;
+            line-height: 1.4;
+        }
+        .lg-head-accent {
+            display: block;
+            width: 28px;
+            height: 3px;
+            border-radius: 99px;
+            background: linear-gradient(90deg, #8b6ff0, #d4799f);
+            margin: .45rem 0 0;
+            opacity: .9;
+        }
+
+        .lg-field {
+            margin-bottom: .6rem;
+            min-width: 0;
+        }
+        .lg-field label {
+            display: block;
+            font-size: .64rem;
+            font-weight: 700;
+            color: #3d2f48;
+            margin-bottom: .25rem;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        .lg-input {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.75);
+            border-radius: 11px;
+            transition: all .25s cubic-bezier(.22, 1, .36, 1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 -1px 3px rgba(107, 58, 146, 0.05);
+            min-height: 40px;
+            min-width: 0;
+        }
+        .lg-input:hover {
+            border-color: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.72);
+        }
+        .lg-input:focus-within {
+            border-color: transparent;
+            background: #fff;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                0 0 0 1.5px rgba(109, 74, 255, 0.65),
+                0 0 0 5px rgba(109, 74, 255, 0.13);
+        }
+        .lg-input i.ico {
+            width: 2.3rem;
+            display: grid;
+            place-items: center;
+            color: #a89fb0;
+            font-size: .9rem;
+            transition: color .2s ease;
+            flex: none;
+        }
+        .lg-input:focus-within i.ico { color: #6d4aff; }
+        .lg-input input {
+            flex: 1;
+            border: 0;
+            background: transparent;
+            padding: .5rem .55rem .5rem 0;
+            font-size: .82rem;
+            color: #1a0b2e;
+            outline: none;
+            font-family: inherit;
+            font-weight: 500;
+            min-width: 0;
+            width: 100%;
+        }
+        .lg-input input::placeholder { color: #a89fb0; font-weight: 400; }
+
+        .lg-toggle {
+            width: 2.3rem;
+            height: 40px;
+            border: 0;
+            background: transparent;
+            color: #a89fb0;
+            font-size: .9rem;
+            cursor: pointer;
+            transition: color .2s ease;
+            flex: none;
+            display: grid;
+            place-items: center;
+        }
+        .lg-toggle:hover { color: #6d4aff; }
+
+        /* ══════════ CUSTOM SELECT ══════════ */
+        .lg-select {
+            position: relative;
+            min-width: 0;
+            width: 100%;
+        }
+        .lg-select-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0;
+            min-height: 40px;
+            min-width: 0;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.75);
+            border-radius: 11px;
+            cursor: pointer;
+            transition: all .25s cubic-bezier(.22, 1, .36, 1);
+            font-family: inherit;
+            font-size: .82rem;
+            color: #1a0b2e;
+            font-weight: 500;
+            text-align: left;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 -1px 3px rgba(107, 58, 146, 0.05);
+            user-select: none;
+        }
+        .lg-select-btn:hover {
+            border-color: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.72);
+        }
+        .lg-select.open .lg-select-btn,
+        .lg-select-btn:focus-visible {
+            outline: none;
+            border-color: transparent;
+            background: #fff;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                0 0 0 1.5px rgba(109, 74, 255, 0.65),
+                0 0 0 5px rgba(109, 74, 255, 0.13);
+        }
+        .lg-select-btn i.ico {
+            width: 2.3rem;
+            display: grid;
+            place-items: center;
+            color: #a89fb0;
+            font-size: .9rem;
+            flex: none;
+            transition: color .2s ease;
+        }
+        .lg-select.open .lg-select-btn i.ico,
+        .lg-select-btn:focus-visible i.ico { color: #6d4aff; }
+        .lg-select-value {
+            flex: 1;
+            padding: .5rem 0;
+            color: #1a0b2e !important;
+            background: transparent !important;
+            border: 0 !important;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            line-height: 1.2;
+            -webkit-text-fill-color: #1a0b2e !important;
+        }
+        .lg-select-value.placeholder {
+            color: #a89fb0 !important;
+            font-weight: 400;
+            -webkit-text-fill-color: #a89fb0 !important;
+        }
+        .lg-select-arrow {
+            width: 2.3rem;
+            display: grid;
+            place-items: center;
+            color: #a89fb0;
+            font-size: 1.05rem;
+            flex: none;
+            transition: transform .28s cubic-bezier(.22, 1, .36, 1), color .2s ease;
+        }
+        .lg-select.open .lg-select-arrow {
+            transform: rotate(180deg);
+            color: #6d4aff;
+        }
+
+        .lg-select-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0; right: 0;
+            z-index: 50;
+            list-style: none;
+            margin: 0;
+            padding: 6px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                0 24px 50px -12px rgba(76, 45, 120, 0.3),
+                0 8px 20px -8px rgba(76, 45, 120, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px);
+            transition: opacity .22s ease, transform .22s cubic-bezier(.22, 1, .36, 1), visibility .22s;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .lg-select.open .lg-select-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .lg-select-menu li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 11px;
+            border-radius: 9px;
+            font-size: .82rem;
+            font-weight: 500;
+            color: #1a0b2e;
+            cursor: pointer;
+            transition: background .18s ease, color .18s ease;
+            user-select: none;
+        }
+        .lg-select-menu li:hover {
+            background: linear-gradient(135deg, rgba(139, 111, 240, 0.12), rgba(212, 121, 159, 0.08));
+            color: #4b2568;
+        }
+        .lg-select-menu li.selected {
+            background: linear-gradient(135deg, #8b6ff0, #6d4aff);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 6px 16px -6px rgba(109, 74, 255, 0.55);
+        }
+        .lg-select-menu li.selected::after {
+            content: "\eb7b";
+            font-family: 'remixicon';
+            font-size: 14px;
+            margin-left: 8px;
+        }
+        .lg-select-menu::-webkit-scrollbar { width: 6px; }
+        .lg-select-menu::-webkit-scrollbar-track { background: transparent; }
+        .lg-select-menu::-webkit-scrollbar-thumb {
+            background: rgba(107, 58, 146, 0.2);
+            border-radius: 99px;
+        }
+
+        /* ══════════ FIXED: minmax(0, 1fr) prevents overflow ══════════ */
+        .lg-row-2 {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 9px;
+            margin-bottom: .6rem;
+        }
+        .lg-row-2 .lg-field {
+            margin-bottom: 0;
+            min-width: 0;
+        }
+
+        .lg-check {
+            display: flex;
+            align-items: flex-start;
+            gap: .45rem;
+            font-size: .72rem;
+            color: #3d2f48;
+            margin: .15rem 0 .75rem;
+            cursor: pointer;
+            line-height: 1.4;
+            user-select: none;
+            position: relative;
+        }
+        .lg-check input {
+            position: absolute;
+            opacity: 0;
+            width: 0; height: 0;
+            pointer-events: none;
+        }
+        .lg-check-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.75);
+            border: 1.5px solid rgba(22, 11, 33, 0.15);
+            display: grid;
+            place-items: center;
+            flex: none;
+            transition: all .22s cubic-bezier(.22, 1, .36, 1);
+            margin-top: 1px;
+            position: relative;
+        }
+        .lg-check:hover .lg-check-box { border-color: rgba(109, 74, 255, 0.5); }
+        .lg-check input:checked + .lg-check-box {
+            background: linear-gradient(135deg, #8b6ff0, #6d4aff);
+            border-color: transparent;
+            box-shadow: 0 4px 10px -4px rgba(109, 74, 255, 0.6);
+        }
+        .lg-check input:checked + .lg-check-box::after {
+            content: "";
+            width: 4px;
+            height: 7px;
+            border: 2px solid #fff;
+            border-top: 0;
+            border-left: 0;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+        .lg-check a { color: #6d4aff; font-weight: 700; text-decoration: none; }
+        .lg-check a:hover { color: #4b2568; }
+
+        .lg-cta {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 11px;
+            border-radius: 12px;
+            background: linear-gradient(115deg, #8b6ff0 0%, #6d4aff 55%, #5a3ce0 100%);
+            background-size: 180% 100%;
+            background-position: 0% 50%;
+            border: 1px solid rgba(109, 74, 255, .9);
+            color: #fff;
+            font-size: .86rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .35s cubic-bezier(.22, 1, .36, 1);
+            box-shadow:
+                0 2px 4px rgba(109, 74, 255, .2),
+                0 14px 30px -12px rgba(109, 74, 255, .6),
+                inset 0 1px 0 rgba(255, 255, 255, .25);
+            font-family: inherit;
+            letter-spacing: -.005em;
+            overflow: hidden;
+        }
+        .lg-cta::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -120%;
+            width: 60%; height: 100%;
+            background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.35) 50%, transparent 80%);
+            transform: skewX(-22deg);
+            transition: left .9s cubic-bezier(.22, 1, .36, 1);
+            pointer-events: none;
+        }
+        .lg-cta:hover {
+            background-position: 100% 50%;
+            transform: translateY(-2px);
+            box-shadow:
+                0 2px 4px rgba(109, 74, 255, .3),
+                0 20px 42px -14px rgba(109, 74, 255, .85),
+                inset 0 1px 0 rgba(255, 255, 255, .35);
+        }
+        .lg-cta:hover::after { left: 130%; }
+        .lg-cta:active { transform: translateY(0); }
+        .lg-cta i {
+            font-size: 1rem;
+            transition: transform .28s cubic-bezier(.22, 1, .36, 1);
+            position: relative;
+            z-index: 1;
+        }
+        .lg-cta:hover i { transform: translateX(4px); }
+
+        .lg-trust-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin: .55rem 0 0;
+            font-size: .68rem;
+            color: #7a6d7f;
+            font-weight: 500;
+        }
+        .lg-trust-note i {
+            font-size: .8rem;
+            color: #4ba77f;
+        }
+
+        .lg-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: .8rem 0 .6rem;
+            color: #a89fb0;
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .lg-divider::before,
+        .lg-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(22, 11, 33, 0.12), transparent);
+        }
+
+        .lg-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1.5px solid rgba(255, 255, 255, 0.85);
+            color: #241232;
+            font-size: .82rem;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: -.005em;
+            transition: all .25s cubic-bezier(.22, 1, .36, 1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        .lg-secondary:hover {
+            background: #fff;
+            color: #6d4aff;
+            border-color: rgba(109, 74, 255, 0.35);
+            transform: translateY(-1px);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                0 10px 22px -12px rgba(109, 74, 255, 0.4);
+        }
+        .lg-secondary i {
+            font-size: 1rem;
+            transition: transform .25s cubic-bezier(.22, 1, .36, 1);
+        }
+        .lg-secondary:hover i { transform: translateX(3px); }
+
+        /* ══════════════════════════════════════════════
+           SINGLE-COLUMN MODE (≤ 820px)
+           ══════════════════════════════════════════════ */
+        @@media (max-width: 820px) {
+            .lg-page {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                min-height: 100dvh;
+                background: linear-gradient(180deg, #f4ebff 0%, #efe2f8 60%, #e9dceb 100%);
+            }
+            .lg-mobile-bar {
+                display: flex;
+                grid-row: 1;
+                padding: 14px 20px 8px;
+                background: transparent;
+            }
+            .lg-art { display: none !important; }
+            .lg-form-panel {
+                grid-row: 2;
+                min-height: 0;
+                height: 100%;
+                padding: 10px 20px 16px;
+                overflow-y: auto;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                background:
+                    radial-gradient(ellipse 70% 55% at 15% 5%, rgba(186, 160, 225, .6), transparent 65%),
+                    radial-gradient(ellipse 60% 50% at 90% 25%, rgba(240, 180, 210, .5), transparent 65%),
+                    linear-gradient(180deg, #f4ebff 0%, #efe2f8 100%);
+            }
+            .lg-form-panel::-webkit-scrollbar { display: none; }
+            .lg-form-panel::before,
+            .lg-form-panel::after { display: none !important; }
+            .lg-card-wrap { max-width: 480px; }
+        }
+
+        /* ══════════════════════════════════════════════
+           STACK THE TWO-COLUMN ROW ON SMALL PHONES
+           ══════════════════════════════════════════════ */
+        @@media (max-width: 480px) {
+            .lg-row-2 {
+                grid-template-columns: 1fr;
+                gap: 0;
+                margin-bottom: 0;
+            }
+            .lg-row-2 .lg-field {
+                margin-bottom: .6rem;
+            }
+            .lg-row-2 .lg-field:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        /* Very short viewports */
+        @@media (max-height: 560px) and (min-width: 821px) {
+            .lg-scene { max-width: 240px; }
+            .lg-title { font-size: 1.8rem; }
+            .lg-trusts { display: none; }
+        }
+        @@media (max-height: 480px) {
+            .lg-scene { display: none; }
+            .lg-art-body { justify-content: flex-start; }
+            .lg-trusts { display: none; }
+        }
+
+        @@media (max-height: 520px) and (orientation: landscape) and (max-width: 900px) {
+            .lg-page {
+                grid-template-rows: auto 1fr;
+                height: 100dvh;
+                overflow: hidden;
+            }
+            .lg-art { display: none !important; }
+            .lg-mobile-bar { display: flex; grid-row: 1; padding: 6px 14px; }
+            .lg-form-panel {
+                grid-row: 2;
+                align-items: flex-start;
+                padding: 4px 16px 10px;
+                overflow-y: auto;
+                scrollbar-width: none;
+            }
+            .lg-form-panel::-webkit-scrollbar { display: none; }
+            .lg-card-wrap { max-width: 520px; }
+        }
+
+        @@media (max-width: 400px) {
+            .lg-card-wrap { border-radius: 18px; padding: 1.35rem 1.15rem 1.2rem; }
+            .lg-head h2 { font-size: 1.15rem; }
+        }
+        @@media (max-width: 320px) {
+            .lg-form-panel { padding-left: 8px; padding-right: 8px; }
+            .lg-head h2 { font-size: 1rem; }
+        }
+
+        @@media (prefers-reduced-motion: reduce) {
+            .lg-art::before,
+            .lg-art::after,
+            .lg-ripple,
+            .lg-ring,
+            .lg-ticks,
+            .lg-glow,
+            .lg-coin-3d,
+            .lg-coin-shine,
+            .lg-coin-face::after,
+            .lg-spark,
+            .lg-dot,
+            .lg-card,
+            .lg-hello-dot,
+            .lg-form-panel::before,
+            .lg-form-panel::after {
+                animation: none !important;
+                transition: none !important;
+            }
+            .lg-arc-fill { stroke-dashoffset: 92; }
+        }
+    </style>
+}
+
+<div class="lg-page">
+
+    <!-- ══════════ MOBILE-ONLY TOP BAR ══════════ -->
+    <div class="lg-mobile-bar">
+        <a asp-controller="Home" asp-action="Index" class="lg-back-btn" aria-label="Back to home">
+            <i class="ri-arrow-left-line"></i>
+            Back
+        </a>
+
+        <a asp-controller="Home" asp-action="Index" class="lg-mobile-brand" aria-label="CashCampus home">
+            <svg viewBox="0 0 44 44" fill="none" aria-hidden="true">
+                <defs>
+                    <linearGradient id="lgMobBg" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                        <stop offset="0" stop-color="#6b3a92"/>
+                        <stop offset="1" stop-color="#241232"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="22" cy="22" r="21" fill="url(#lgMobBg)"/>
+                <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5"
+                      stroke="#FFD93D" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                <path d="M31 12c0 2.2-1.3 3.5-3.5 3.5 2.2 0 3.5 1.3 3.5 3.5 0-2.2 1.3-3.5 3.5-3.5-2.2 0-3.5-1.3-3.5-3.5z" fill="#FFD93D"/>
+            </svg>
+            <span><b>Cash</b><span>Campus</span></span>
+        </a>
+    </div>
+
+    <!-- ══════════ LEFT · Art panel ══════════ -->
+    <aside class="lg-art">
+        <div class="lg-art-inner">
+
+            <a asp-controller="Home" asp-action="Index" class="lg-brand">
+                <svg viewBox="0 0 44 44" fill="none" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="lgBg" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#6b3a92"/>
+                            <stop offset="1" stop-color="#241232"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="22" cy="22" r="21" fill="url(#lgBg)"/>
+                    <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5"
+                          stroke="#FFD93D" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                    <path d="M31 12c0 2.2-1.3 3.5-3.5 3.5 2.2 0 3.5 1.3 3.5 3.5 0-2.2 1.3-3.5 3.5-3.5-2.2 0-3.5-1.3-3.5-3.5z" fill="#FFD93D"/>
+                </svg>
+                <span class="name-wrap"><b>Cash</b><span class="coin">Campus</span></span>
+            </a>
+
+            <div class="lg-art-body">
+                <span class="lg-eyebrow">
+                    <i class="ri-sparkling-2-fill"></i> A fresh start
+                </span>
+
+                <h1 class="lg-title">
+                    Build a money habit<br>
+                    that <em>actually fits.</em>
+                </h1>
+
+                <div class="lg-scene" aria-hidden="true">
+
+                    <span class="lg-ripple lg-ripple-1"></span>
+                    <span class="lg-ripple lg-ripple-2"></span>
+                    <span class="lg-ripple lg-ripple-3"></span>
+
+                    <span class="lg-ring lg-ring-1"></span>
+                    <span class="lg-ring lg-ring-2"></span>
+                    <span class="lg-ring lg-ring-3"></span>
+
+                    <span class="lg-ticks"></span>
+                    <span class="lg-glow"></span>
+
+                    <svg class="lg-arc" viewBox="0 0 100 100" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="lgArcGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#c4aee0"/>
+                                <stop offset="0.5" stop-color="#a486e0"/>
+                                <stop offset="1" stop-color="#d4799f"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(168, 140, 230, .14)" stroke-width=".8"/>
+                        <circle cx="50" cy="50" r="46" fill="none" stroke="url(#lgArcGrad)" stroke-width="1.4"
+                                stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289" class="lg-arc-fill"/>
+                    </svg>
+
+                    <div class="lg-coin">
+                        <div class="lg-coin-3d">
+                            <span class="lg-coin-edge e4"></span>
+                            <span class="lg-coin-edge e3"></span>
+                            <span class="lg-coin-edge e2"></span>
+                            <span class="lg-coin-edge e1"></span>
+
+                            <span class="lg-coin-face">
+                                <span class="lg-coin-rim"></span>
+                                <span class="lg-coin-symbol">₹</span>
+                                <span class="lg-coin-shine"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <span class="lg-spark s1"></span>
+                    <span class="lg-spark s2"></span>
+                    <span class="lg-spark s3"></span>
+                    <span class="lg-spark s4"></span>
+                    <span class="lg-spark s5"></span>
+                    <span class="lg-spark s6"></span>
+
+                    <div class="lg-orbit">
+                        <span class="lg-dot d1"></span>
+                        <span class="lg-dot d2"></span>
+                        <span class="lg-dot d3"></span>
+                        <span class="lg-dot d4"></span>
+                        <span class="lg-dot d5"></span>
+                        <span class="lg-dot d6"></span>
+                    </div>
+
+                    <div class="lg-card lg-card-1">
+                        <span class="lg-card-icon violet"><i class="ri-wallet-3-line"></i></span>
+                        <div>
+                            <b>Rs. 0 to start</b>
+                            <small>Your first balance</small>
+                        </div>
+                    </div>
+
+                    <div class="lg-card lg-card-2">
+                        <span class="lg-card-icon gold"><i class="ri-gift-line"></i></span>
+                        <div>
+                            <b>Free forever</b>
+                            <small>No card</small>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="lg-trusts">
+                <span class="lg-trust"><i class="ri-shield-check-line"></i> No bank link</span>
+                <span class="lg-trust"><i class="ri-lock-2-line"></i> Private by default</span>
+                <span class="lg-trust"><i class="ri-gift-line"></i> Free forever</span>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- ══════════ RIGHT · Glass form ══════════ -->
+    <main class="lg-form-panel">
+        <div class="lg-card-wrap">
+
+            <span class="lg-hello">
+                <span class="lg-hello-dot"></span>
+                Free forever · no card
+            </span>
+
+            <div class="lg-head">
+                <h2>Let's get<br>you <em>started.</em></h2>
+                <p>Set up your student money space in under a minute.</p>
+                <span class="lg-head-accent"></span>
+            </div>
+
+            <div id="errorAlert" style="display:none; margin-bottom:16px; padding:12px 16px; border-radius:12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); color:#b91c1c; font-size:13px; font-weight:600;"></div>
+            <form id="registerForm" onsubmit="return handleRegister(event);" method="post" action="#">
+                
+
+                <div class="lg-field">
+                    <label for="name">Full name</label>
+                    <div class="lg-input">
+                        <i class="ri-user-3-line ico"></i>
+                        <input type="text" id="name" name="name"
+                               placeholder="Aimal Khan" autocomplete="name" />
+                    </div>
+                </div>
+
+                <div class="lg-field">
+                    <label for="email">Email</label>
+                    <div class="lg-input">
+                        <i class="ri-mail-line ico"></i>
+                        <input type="email" id="email" name="email"
+                               placeholder="you@@university.edu" autocomplete="email" />
+                    </div>
+                </div>
+
+                <div class="lg-row-2">
+                    <div class="lg-field">
+                        <label>Academic year</label>
+                        <div class="lg-select" data-select>
+                            <input type="hidden" name="year" value="" />
+                            <div class="lg-select-btn" role="button" tabindex="0">
+                                <i class="ri-graduation-cap-line ico"></i>
+                                <span class="lg-select-value placeholder">Select year</span>
+                                <i class="ri-arrow-down-s-line lg-select-arrow"></i>
+                            </div>
+                            <ul class="lg-select-menu" role="listbox">
+                                <li data-value="1st Year" role="option">1st Year</li>
+                                <li data-value="2nd Year" role="option">2nd Year</li>
+                                <li data-value="3rd Year" role="option">3rd Year</li>
+                                <li data-value="4th Year" role="option">4th Year</li>
+                                <li data-value="Postgrad" role="option">Postgraduate</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lg-field">
+                        <label for="allowance">Monthly allowance</label>
+                        <div class="lg-input">
+                            <i class="ri-wallet-3-line ico"></i>
+                            <input type="number" id="allowance" name="allowance"
+                                   placeholder="Rs. 350" min="0" step="50" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg-field">
+                    <label for="password">Password</label>
+                    <div class="lg-input">
+                        <i class="ri-lock-2-line ico"></i>
+                        <input type="password" id="password" name="password"
+                               placeholder="At least 8 characters"
+                               autocomplete="new-password" />
+                        <button type="button" class="lg-toggle" id="pwToggle" aria-label="Show password">
+                            <i class="ri-eye-line"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <label class="lg-check">
+                    <input type="checkbox" name="agree" />
+                    <span class="lg-check-box"></span>
+                    <span>
+                        I agree to the
+                        <a href="/Home/Terms" target="_blank" rel="noopener">Terms</a>
+                        and
+                        <a href="/Home/Privacy" target="_blank" rel="noopener">Privacy Policy</a>.
+                    </span>
+                </label>
+
+                <button type="submit" class="lg-cta">
+                    <span>Create my space</span>
+                    <i class="ri-arrow-right-line"></i>
+                </button>
+
+                <p class="lg-trust-note">
+                    <i class="ri-shield-check-line"></i>
+                    Your data stays encrypted &amp; private
+                </p>
+            </form>
+
+            <div class="lg-divider">Already have an account?</div>
+
+            <a asp-controller="Account" asp-action="Login" class="lg-secondary">
+                Sign in <i class="ri-arrow-right-line"></i>
+            </a>
+
+        </div>
+    </main>
+
+</div>
+
+@section Scripts {
+    <style>
+        .lg-field-error {
+            display: none;
+            margin-top: 6px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.22);
+            color: #b91c1c;
+            font-size: 12.5px;
+            font-weight: 600;
+            line-height: 1.35;
+            animation: lgErrIn .22s ease;
+        }
+        .lg-field-error.show { display: block; }
+        .lg-input.invalid,
+        .lg-select.invalid .lg-select-btn {
+            border-color: rgba(239, 68, 68, 0.55) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
+        }
+        .lg-input.invalid i.ico,
+        .lg-select.invalid .lg-select-btn i.ico { color: #ef4444 !important; }
+        @@keyframes lgErrIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        #errorAlert {
+            display: none;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.28);
+            color: #b91c1c;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        #errorAlert.show { display: block; }
+    </style>
+    <script>
+        function showFieldError(targetId, message) {
+            var el = document.getElementById(targetId);
+            var field = null;
+            if (el) {
+                var wrap = el.closest('.lg-input');
+                if (wrap) wrap.classList.add('invalid');
+                field = el.closest('.lg-field');
+            }
+            // for select use data-select container
+            if (targetId === 'year') {
+                var sel = document.querySelector('[data-select]');
+                if (sel) {
+                    sel.classList.add('invalid');
+                    field = sel.closest('.lg-field');
+                }
+            }
+            if (!field) return;
+            var err = document.getElementById(targetId + 'Error');
+            if (!err) {
+                err = document.createElement('div');
+                err.id = targetId + 'Error';
+                err.className = 'lg-field-error';
+                field.appendChild(err);
+            }
+            err.textContent = message;
+            err.classList.add('show');
+        }
+
+        function clearFieldError(targetId) {
+            var el = document.getElementById(targetId);
+            if (el) {
+                var wrap = el.closest('.lg-input');
+                if (wrap) wrap.classList.remove('invalid');
+            }
+            if (targetId === 'year') {
+                var sel = document.querySelector('[data-select]');
+                if (sel) sel.classList.remove('invalid');
+            }
+            var err = document.getElementById(targetId + 'Error');
+            if (err) { err.classList.remove('show'); err.textContent = ''; }
+        }
+
+        function clearAllRegisterErrors() {
+            ['name', 'email', 'password', 'year', 'allowance'].forEach(clearFieldError);
+            var box = document.getElementById('errorAlert');
+            if (box) { box.classList.remove('show'); box.style.display = 'none'; }
+        }
+
+        function isValidName(name) {
+            // letters and spaces only (unicode letters allowed)
+            return /^[\p{L}\s]+$/u.test(name) && name.trim().length >= 2;
+        }
+
+        function validateRegister() {
+            clearAllRegisterErrors();
+            var ok = true;
+            var fullName = (document.getElementById('name')?.value || '').trim();
+            var email = (document.getElementById('email')?.value || '').trim();
+            var password = document.getElementById('password')?.value || '';
+            var yearInput = document.querySelector('input[name="year"]');
+            var year = yearInput ? (yearInput.value || '').trim() : '';
+            var allowanceEl = document.getElementById('allowance');
+            var allowance = allowanceEl ? allowanceEl.value : '';
+
+            if (!fullName) {
+                showFieldError('name', 'Full name is required.');
+                ok = false;
+            } else if (!isValidName(fullName)) {
+                showFieldError('name', 'Name can only contain letters and spaces (no numbers or symbols).');
+                ok = false;
+            }
+
+            if (!email) {
+                showFieldError('email', 'Email is required.');
+                ok = false;
+            } else if (!/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(email)) {
+                showFieldError('email', 'Please enter a valid email address.');
+                ok = false;
+            }
+
+            if (!year) {
+                showFieldError('year', 'Please select your academic year.');
+                ok = false;
+            }
+
+            if (allowance !== '' && (isNaN(Number(allowance)) || Number(allowance) < 0)) {
+                showFieldError('allowance', 'Allowance must be a valid positive number.');
+                ok = false;
+            }
+
+            if (!password) {
+                showFieldError('password', 'Password is required.');
+                ok = false;
+            } else if (password.length < 6) {
+                showFieldError('password', 'Password must be at least 6 characters.');
+                ok = false;
+            }
+
+            return ok;
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            if (!validateRegister()) return false;
+
+            var fullName = document.getElementById('name').value.trim();
+            var email = document.getElementById('email').value.trim();
+            var yearInput = document.querySelector('input[name="year"]');
+            var academicYear = yearInput ? (yearInput.value || '1st Year') : '1st Year';
+            var allowance = parseFloat(document.getElementById('allowance')?.value) || 1000;
+            var password = document.getElementById('password').value;
+            var btn = document.querySelector('.lg-cta') || document.querySelector('button[type="submit"]');
+            var alertBox = document.getElementById('errorAlert');
+            if (!alertBox) {
+                alertBox = document.createElement('div');
+                alertBox.id = 'errorAlert';
+                var form = document.getElementById('registerForm');
+                if (form) form.parentNode.insertBefore(alertBox, form);
+            }
+
+            var originalHtml = btn ? btn.innerHTML : '';
+            if (btn) { btn.innerHTML = '<span>Creating Account...</span>'; btn.disabled = true; }
+            alertBox.classList.remove('show');
+            alertBox.style.display = 'none';
+
+            try {
+                var res = await fetch('/Auth/Register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fullName: fullName,
+                        email: email,
+                        password: password,
+                        academicYear: academicYear,
+                        monthlyAllowanceBaseline: allowance,
+                        monthlySavingsGoal: 200
+                    })
+                });
+                var raw = await res.text();
+                var data = {};
+                try { data = JSON.parse(raw); } catch (_) {}
+
+                if (res.ok && data.success) {
+                    // Always send new users to login (do not auto-enter dashboard)
+                    var target = data.redirectUrl || '/Account/Login';
+                    if (data.message) {
+                        try { sessionStorage.setItem('cc_flash', data.message); } catch (_) {}
+                    }
+                    window.location.href = target.indexOf('Login') >= 0 ? target : '/Account/Login';
+                    return false;
+                } else {
+                    alertBox.textContent = data.message || ('Registration failed (HTTP ' + res.status + ')');
+                    alertBox.classList.add('show');
+                    alertBox.style.display = 'block';
+                    if (btn) { btn.innerHTML = originalHtml; btn.disabled = false; }
+                }
+            } catch (err) {
+                alertBox.textContent = 'Network or server error during registration.';
+                alertBox.classList.add('show');
+                alertBox.style.display = 'block';
+                if (btn) { btn.innerHTML = originalHtml; btn.disabled = false; }
+            }
+            return false;
+        }
+
+        // Custom dropdown
+        function initSelects() {
+            document.querySelectorAll('[data-select]').forEach(function (root) {
+                var btn = root.querySelector('.lg-select-btn');
+                var menu = root.querySelector('.lg-select-menu');
+                var valueEl = root.querySelector('.lg-select-value');
+                var hidden = root.querySelector('input[type="hidden"]');
+                if (!btn || !menu) return;
+
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // close others
+                    document.querySelectorAll('[data-select].open').forEach(function (other) {
+                        if (other !== root) other.classList.remove('open');
+                    });
+                    root.classList.toggle('open');
+                });
+
+                btn.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        btn.click();
+                    }
+                });
+
+                menu.querySelectorAll('li[data-value]').forEach(function (li) {
+                    li.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var val = li.getAttribute('data-value') || '';
+                        if (hidden) hidden.value = val;
+                        if (valueEl) {
+                            valueEl.textContent = li.textContent.trim();
+                            valueEl.classList.remove('placeholder');
+                        }
+                        menu.querySelectorAll('li').forEach(function (x) { x.classList.remove('selected'); });
+                        li.classList.add('selected');
+                        root.classList.remove('open');
+                        clearFieldError('year');
+                    });
+                });
+            });
+
+            document.addEventListener('click', function () {
+                document.querySelectorAll('[data-select].open').forEach(function (s) {
+                    s.classList.remove('open');
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            initSelects();
+
+            // live clear errors
+            ['name', 'email', 'password', 'allowance'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) el.addEventListener('input', function () { clearFieldError(id); });
+            });
+
+            // block numbers/special chars while typing in name
+            var nameEl = document.getElementById('name');
+            if (nameEl) {
+                nameEl.addEventListener('keypress', function (e) {
+                    var ch = e.key;
+                    if (ch.length === 1 && !/[\p{L}\s]/u.test(ch)) {
+                        e.preventDefault();
+                    }
+                });
+                nameEl.addEventListener('paste', function (e) {
+                    e.preventDefault();
+                    var text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                    text = text.replace(/[^\p{L}\s]/gu, '').replace(/\s+/g, ' ');
+                    var start = nameEl.selectionStart;
+                    var end = nameEl.selectionEnd;
+                    var val = nameEl.value;
+                    nameEl.value = val.slice(0, start) + text + val.slice(end);
+                    clearFieldError('name');
+                });
+            }
+
+            var toggle = document.getElementById('pwToggle');
+            var input = document.getElementById('password');
+            if (toggle && input) {
+                toggle.addEventListener('click', function () {
+                    var isPw = input.type === 'password';
+                    input.type = isPw ? 'text' : 'password';
+                    var icon = toggle.querySelector('i');
+                    if (icon) icon.className = isPw ? 'ri-eye-off-line' : 'ri-eye-line';
+                });
+            }
+        });
+    </script>
+}

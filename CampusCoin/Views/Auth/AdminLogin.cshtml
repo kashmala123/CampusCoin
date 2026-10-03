@@ -1,0 +1,113 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCoin - Administrator Login</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { brand: { 50:'#f6effc', 100:'#ede4f6', 400: '#a486e0', 500: '#8b58b8', 600: '#6b3a92' } } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body.dark-mesh {
+            background-color: #100a1a;
+            background-image:
+                radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.28) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(14, 165, 233, 0.28) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+        .ios-glass {
+            backdrop-filter: blur(32px) saturate(240%);
+            background: rgba(18, 24, 38, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="dark dark-mesh min-h-screen text-slate-100 flex items-center justify-center p-4">
+    <div class="max-w-md w-full ios-glass rounded-3xl p-8 shadow-2xl relative">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center text-white text-2xl font-black shadow-lg">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight">Administrator Portal</h1>
+                <p class="text-xs text-slate-400">Direct-access login &mdash; CampusCoin staff only</p>
+            </div>
+        </div>
+
+        <div id="errorAlert" class="hidden mb-4 p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold"></div>
+
+        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Admin Email</label>
+                <input type="email" id="adminEmail" required placeholder="admin@campuscoin.com"
+                       class="w-full px-4 py-2.5 rounded-2xl ios-glass border border-slate-700 text-sm font-semibold text-white">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Password</label>
+                <input type="password" id="adminPassword" required placeholder="••••••••"
+                       class="w-full px-4 py-2.5 rounded-2xl ios-glass border border-slate-700 text-sm font-semibold text-white">
+            </div>
+            <button type="submit" id="adminSubmitBtn"
+                    class="w-full py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all">
+                Sign In as Administrator
+            </button>
+        </form>
+
+        <div class="mt-6 text-center text-xs font-semibold">
+            <a href="/Auth/Login" class="text-sky-400 hover:underline"><i class="fa-solid fa-arrow-left me-1"></i> Not an admin? Student login</a>
+        </div>
+    </div>
+
+    <script>
+        async function handleAdminLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const btn = document.getElementById('adminSubmitBtn');
+            const alertBox = document.getElementById('errorAlert');
+
+            btn.innerText = 'Signing In...';
+            btn.disabled = true;
+            alertBox.classList.add('hidden');
+
+            try {
+                // portal=admin tells the server to reject any non-Admin account.
+                const res = await fetch('/Auth/Login?portal=admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, rememberMe: true })
+                });
+
+                const raw = await res.text();
+                let data = {};
+                try { data = JSON.parse(raw); } catch (_) { }
+
+                if (res.ok && data.success) {
+                    window.location.href = data.redirectUrl || '/Admin';
+                } else {
+                    alertBox.innerText = data.message || ('Admin login failed (HTTP ' + res.status + ').');
+                    alertBox.classList.remove('hidden');
+                    btn.innerText = 'Sign In as Administrator';
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                alertBox.innerText = 'Network or server error during sign in.';
+                alertBox.classList.remove('hidden');
+                btn.innerText = 'Sign In as Administrator';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spending Alerts — CashCampus Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="stylesheet" href="/css/admin-theme.css" />
+    <link rel="stylesheet" href="/css/cc-animations.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        body { margin:0; font-family:system-ui,sans-serif; }
+        body.light-mesh { background: linear-gradient(160deg,#fbf6f0 0%,#f3eef9 45%,#ede4f6 100%); color:#1a0b2e; min-height:100vh; }
+        .sidebar { position:fixed; top:20px; left:20px; bottom:20px; width:260px; z-index:100; border-radius:30px; padding:18px; display:flex; flex-direction:column; }
+        .sidebar .nav { flex:1; overflow-y:auto; }
+        .sidebar .nav-section { font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; opacity:.45; padding:14px 12px 6px; }
+        .sidebar .nav-link { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:14px; font-size:13px; font-weight:600; color:inherit; text-decoration:none; margin-bottom:2px; }
+        .sidebar .nav-link:hover { background:rgba(139,88,184,.08); }
+        .sidebar .nav-link.active { color:#6b3a92!important; background:linear-gradient(135deg,rgba(237,228,246,.95),rgba(196,174,224,.35))!important; }
+        .brand { display:flex; align-items:center; gap:12px; padding:4px 6px 18px; }
+        .brand-name { font-size:15px; font-weight:800; }
+        .brand-sub { font-size:10px; font-weight:700; letter-spacing:.06em; opacity:.5; text-transform:uppercase; }
+        .main { margin-left:300px; padding:24px 28px 80px; }
+        .card { border-radius:22px; padding:18px 20px; margin-bottom:16px; }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        th, td { padding:12px 10px; text-align:left; border-bottom:1px solid rgba(139,88,184,.1); }
+        th { font-size:11px; text-transform:uppercase; opacity:.55; font-weight:800; }
+        .badge { display:inline-block; padding:3px 8px; border-radius:99px; font-size:11px; font-weight:800; }
+        .over { background:#fee2e2; color:#e11d48; }
+        .warning { background:#fef3c7; color:#d97706; }
+        .btn { border:none; border-radius:10px; padding:7px 12px; font-weight:700; font-size:12px; cursor:pointer; margin:2px; }
+        .btn-p { background:linear-gradient(135deg,#8b58b8,#6b3a92); color:#fff; }
+        .btn-g { background:rgba(139,88,184,.12); color:#1a0b2e; }
+        .btn-d { background:#fee2e2; color:#e11d48; }
+        input[type=number] { padding:8px 10px; border-radius:10px; border:1px solid rgba(139,88,184,.25); width:100px; }
+        @@media(max-width:900px){ .sidebar{display:none;} .main{margin-left:0;} }
+    </style>
+</head>
+<body class="light-mesh">
+<aside id="sidebar" class="sidebar ios-glass">
+    <div class="brand">
+        <div class="brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 44 44" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="ccBG" x1="0" y1="0" x2="44" y2="44"><stop offset="0" stop-color="#6b3a92"/><stop offset="1" stop-color="#241232"/></linearGradient>
+                </defs>
+                <circle cx="22" cy="22" r="21" fill="url(#ccBG)"/>
+                <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5" stroke="#22c55e" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+            </svg>
+        </div>
+        <div>
+            <div class="brand-name"><b>Cash</b><span style="color:#8b58b8">Campus</span></div>
+            <div class="brand-sub">ADMIN CONSOLE</div>
+        </div>
+    </div>
+    <nav class="nav">
+        <div class="nav-section">Overview</div>
+        <a href="/Admin/Index" class="nav-link"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a>
+        <a href="/Admin/Students" class="nav-link"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a>
+        <a href="/Admin/Transactions" class="nav-link"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Transactions</span></a>
+        <a href="/Admin/VoucherManagement" class="nav-link"><i class="fa-solid fa-receipt"></i><span>Voucher Management</span></a>
+        <div class="nav-section">Financial Management</div>
+        <a href="/Admin/Categories" class="nav-link"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
+        <a href="/Admin/Budgets" class="nav-link"><i class="fa-solid fa-wallet"></i><span>Budgets</span></a>
+        <a href="/Admin/EventManager" class="nav-link"><i class="fa-solid fa-calendar-days"></i><span>Event Manager</span></a>
+        <a href="/Admin/SavingGoals" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>Saving Goals</span></a>
+        <a href="/Admin/SpendingAlerts" class="nav-link active"><i class="fa-solid fa-triangle-exclamation"></i><span>Spending Alerts</span></a>
+        <a href="/Admin/Comparison" class="nav-link"><i class="fa-solid fa-chart-column"></i><span>Comparison</span></a>
+        <div class="nav-section">System</div>
+        <a href="/Admin/Notifications" class="nav-link"><i class="fa-solid fa-bell"></i><span>Notifications</span></a>
+        <a href="/Admin/Reports" class="nav-link"><i class="fa-solid fa-chart-pie"></i><span>Reports & Analytics</span></a>
+        <a href="/Admin/HomepageCms" class="nav-link"><i class="fa-solid fa-pager"></i><span>Homepage CMS</span></a>
+        <a href="/Admin/Settings" class="nav-link"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+    </nav>
+    <a href="/Auth/Logout" class="sidebar-logout-btn" style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin:8px 4px;border-radius:12px;font-size:13px;font-weight:700;color:#e11d48;text-decoration:none;background:rgba(225,29,72,.08);">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+</aside>
+
+<main class="main">
+    <header class="ios-glass card">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.5;color:#6b3a92;">Risk monitoring</div>
+        <h1 style="font-size:1.5rem;font-weight:900;margin:4px 0;">Spending Alerts</h1>
+        <p style="margin:0;opacity:.6;font-size:13px;">Students at 80%+ of a category budget this month</p>
+        <p id="meta" style="margin-top:8px;font-size:12px;font-weight:700;opacity:.5;"></p>
+    </header>
+
+    <div class="ios-glass card" style="overflow-x:auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Category</th>
+                    <th>Spent / Limit</th>
+                    <th>%</th>
+                    <th>Status</th>
+                    <th>Adjust limit</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"><tr><td colspan="7">Loading…</td></tr></tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+async function loadAlerts() {
+    const tb = document.getElementById('tbody');
+    tb.innerHTML = '<tr><td colspan="7">Loading…</td></tr>';
+    try {
+        const res = await fetch('/api/admin/spending-alerts', { credentials: 'same-origin' });
+        const data = await res.json();
+        const alerts = data.alerts || [];
+        document.getElementById('meta').textContent = (data.month || '') + ' · ' + alerts.length + ' alert(s)';
+        if (!alerts.length) {
+            tb.innerHTML = '<tr><td colspan="7">No students at 80%+ budget right now.</td></tr>';
+            return;
+        }
+        alerts.sort((a,b) => (b.severity==='over')-(a.severity==='over') || b.percent-a.percent);
+        tb.innerHTML = alerts.map(a => `
+            <tr>
+                <td><b>${a.studentName}</b><br><span style="font-size:11px;opacity:.55">${a.studentEmail||''}</span></td>
+                <td>${a.category}</td>
+                <td>Rs. ${Number(a.spent).toFixed(2)} / Rs. ${Number(a.limit).toFixed(2)}</td>
+                <td><b>${a.percent}%</b></td>
+                <td><span class="badge ${a.severity}">${a.severity}</span></td>
+                <td>
+                    <input type="number" id="lim-${a.budgetId}" value="${a.limit}" min="1" step="1" />
+                    <button class="btn btn-g" onclick="updateLimit(${a.budgetId})">Save</button>
+                </td>
+                <td>
+                    <button class="btn btn-p" onclick="notifyStudent(${a.userId}, \`${(a.message||'').replace(/`/g,"'")}\`)">Notify</button>
+                    <button class="btn btn-d" onclick="removeBudget(${a.budgetId})">Remove budget</button>
+                </td>
+            </tr>`).join('');
+    } catch (e) {
+        tb.innerHTML = '<tr><td colspan="7">Failed to load alerts.</td></tr>';
+    }
+}
+async function notifyStudent(userId, message) {
+    const res = await fetch('/api/admin/spending-alerts/notify', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ userId, message })
+    });
+    const data = await res.json().catch(() => ({}));
+    alert(data.message || (res.ok ? 'Notified' : 'Failed'));
+}
+async function updateLimit(budgetId) {
+    const val = parseFloat(document.getElementById('lim-' + budgetId).value);
+    const res = await fetch('/api/admin/spending-alerts/budget/' + budgetId, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ limitAmount: val })
+    });
+    const data = await res.json().catch(() => ({}));
+    alert(data.message || (res.ok ? 'Updated' : 'Failed'));
+    if (res.ok) loadAlerts();
+}
+async function removeBudget(budgetId) {
+    if (!confirm('Remove this budget limit?')) return;
+    const res = await fetch('/api/admin/spending-alerts/budget/' + budgetId, { method: 'DELETE', credentials: 'same-origin' });
+    const data = await res.json().catch(() => ({}));
+    alert(data.message || (res.ok ? 'Removed' : 'Failed'));
+    if (res.ok) loadAlerts();
+}
+loadAlerts();
+</script>
+</body>
+</html>

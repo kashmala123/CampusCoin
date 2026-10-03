@@ -1,0 +1,25 @@
+﻿/* ============================================================
+   CAMPUS COIN — APP SHELL (logged-in area)
+   Scoped under .cc-app — fills in fully when Dashboard is built
+   ============================================================ */
+.cc-app {
+    --paper: #faf6f0;
+    --ink: #160b21;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans',system-ui,sans-serif;
+    min-height: 100vh;
+}
+
+    .cc-app * {
+        box-sizing: border-box
+    }
+
+    .cc-app h1, .cc-app h2, .cc-app h3, .cc-app p {
+        margin: 0
+    }
+
+    .cc-app a {
+        color: inherit;
+        text-decoration: none
+    }

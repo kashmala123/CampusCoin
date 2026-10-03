@@ -1,0 +1,1118 @@
+﻿@{
+    ViewData["Title"] = "Event Manager";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <link rel="stylesheet" href="/css/admin-theme.css" />
+    <link rel="stylesheet" href="/css/cc-animations.css" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Manager — CampusCoin Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' };</script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            transition: background-color .4s ease,border-color .4s ease,box-shadow .4s ease,color .3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans',system-ui,sans-serif;
+            background-color: #fbf6f0;
+            background-image: radial-gradient(at 0% 0%,rgba(237,228,246,.9) 0px,transparent 50%),radial-gradient(at 100% 0%,rgba(196,174,224,.85) 0px,transparent 50%),radial-gradient(at 100% 100%,rgba(255,225,230,.85) 0px,transparent 50%),radial-gradient(at 0% 100%,rgba(246,239,252,.9) 0px,transparent 50%);
+            background-attachment: fixed;
+        }
+
+            body.dark-mesh {
+                background-color: #100a1a;
+                background-image: radial-gradient(at 10% 10%,rgba(139,111,240,.28) 0px,transparent 50%),radial-gradient(at 90% 10%,rgba(155,111,216,.22) 0px,transparent 50%),radial-gradient(at 90% 90%,rgba(109,74,255,.28) 0px,transparent 50%),radial-gradient(at 10% 90%,rgba(212,121,159,.22) 0px,transparent 50%);
+                background-attachment: fixed;
+            }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+            animation: floatOrb 18s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(155,111,216,.5);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 480px;
+            height: 480px;
+            background: rgba(139,111,240,.45);
+            top: 30%;
+            right: -120px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: rgba(212,121,159,.4);
+            bottom: -100px;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @@keyframes floatOrb {
+            0% {
+                transform: translate(0,0) scale(1);
+            }
+
+            50% {
+                transform: translate(40px,60px) scale(1.08);
+            }
+
+            100% {
+                transform: translate(-30px,30px) scale(.95);
+            }
+        }
+
+        .ios-glass {
+            backdrop-filter: blur(32px) saturate(240%);
+            -webkit-backdrop-filter: blur(32px) saturate(240%);
+            position: relative;
+        }
+
+        .light .ios-glass {
+            background: rgba(255,255,255,.72);
+            border: 1.5px solid rgba(255,255,255,.95);
+            box-shadow: 0 20px 40px -12px rgba(109,74,255,.12);
+            color: #1a0b2e;
+        }
+
+        .dark .ios-glass {
+            background: rgba(28,18,42,.6);
+            border: 1px solid rgba(255,255,255,.15);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,.45);
+            color: #f8fafc;
+        }
+
+        .ios-glass-interactive {
+            transition: transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s ease;
+        }
+
+            .ios-glass-interactive:hover {
+                transform: translateY(-4px);
+            }
+
+        .sidebar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            bottom: 20px;
+            width: 260px;
+            z-index: 100;
+            border-radius: 30px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 6px 22px;
+        }
+
+        .brand-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            background: linear-gradient(135deg,#8b6ff0,#6d4aff,#4b2568);
+            box-shadow: 0 12px 25px rgba(109,74,255,.32);
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        .brand-sub {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .16em;
+            opacity: .45;
+            margin-top: 3px;
+        }
+
+        .nav-section {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .15em;
+            font-weight: 800;
+            opacity: .4;
+            padding: 14px 10px 7px;
+        }
+
+        .nav {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            margin: 4px 0;
+            border-radius: 15px;
+            text-decoration: none;
+            color: inherit;
+            font-size: 12px;
+            font-weight: 650;
+            transition: all .25s ease;
+        }
+
+            .nav-link i {
+                width: 20px;
+                text-align: center;
+                opacity: .55;
+            }
+
+            .nav-link:hover {
+                background: rgba(255,255,255,.30);
+                transform: translateX(3px);
+            }
+
+        .dark .nav-link:hover {
+            background: rgba(255,255,255,.06);
+        }
+
+        .nav-link.active {
+            color: #6d4aff;
+            background: linear-gradient(135deg,rgba(139,111,240,.18),rgba(109,74,255,.14));
+            box-shadow: inset 0 0 0 1px rgba(139,111,240,.15);
+        }
+
+        .dark .nav-link.active {
+            color: #c4aee0;
+            background: rgba(139,111,240,.1);
+        }
+
+        .admin-mini {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 11px;
+            border-radius: 18px;
+            background: rgba(255,255,255,.30);
+            border: 1px solid rgba(255,255,255,.35);
+        }
+
+        .dark .admin-mini {
+            background: rgba(255,255,255,.04);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            background: linear-gradient(135deg,#8b6ff0,#6d4aff);
+        }
+
+        .main {
+            margin-left: 300px;
+            padding: 20px 25px 40px 0;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 70px;
+            border-radius: 25px;
+            padding: 10px 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 20px;
+            z-index: 80;
+        }
+
+        .search {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+            .search i {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                opacity: .4;
+                font-size: 12px;
+            }
+
+            .search input {
+                width: 100%;
+                border: none;
+                outline: none;
+                padding: 11px 15px 11px 42px;
+                border-radius: 16px;
+                background: rgba(255,255,255,.38);
+                color: inherit;
+                font-size: 12px;
+                border: 1px solid rgba(255,255,255,.50);
+            }
+
+        .dark .search input {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-left: auto;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(255,255,255,.36);
+            color: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dark .action-btn {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 4px 9px 4px 4px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            background: linear-gradient(135deg,#8b6ff0,#6d4aff);
+        }
+
+        .page-header {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 28px 3px 20px;
+        }
+
+        .eyebrow {
+            color: #6d4aff;
+            font-size: 9px;
+            font-weight: 850;
+            text-transform: uppercase;
+            letter-spacing: .18em;
+            margin-bottom: 8px;
+        }
+
+        .page-title {
+            font-size: clamp(28px,3vw,40px);
+            font-weight: 900;
+            letter-spacing: -1.8px;
+            line-height: 1;
+        }
+
+        .page-description {
+            font-size: 12px;
+            opacity: .48;
+            margin-top: 8px;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 15px;
+        }
+
+        .kpi {
+            min-height: 155px;
+            padding: 19px;
+            border-radius: 25px;
+        }
+
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139,111,240,.13);
+            color: #6d4aff;
+            margin-bottom: 13px;
+        }
+
+        .kpi-label {
+            font-size: 10px;
+            font-weight: 700;
+            opacity: .48;
+        }
+
+        .kpi-value {
+            font-size: 25px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-top: 3px;
+        }
+
+        .kpi-change {
+            font-size: 9px;
+            font-weight: 750;
+            margin-top: 5px;
+        }
+
+        .input-field, .select, .textarea-field {
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(255,255,255,.38);
+            color: inherit;
+            border-radius: 12px;
+            padding: 9px 12px;
+            outline: none;
+            font-size: 11px;
+            width: 100%;
+        }
+
+        .dark .input-field, .dark .select, .dark .textarea-field {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .input-field:focus, .select:focus, .textarea-field:focus {
+            border-color: #8b6ff0;
+            box-shadow: 0 0 0 3px rgba(139,111,240,.15);
+        }
+
+        .panel {
+            padding: 20px;
+            border-radius: 27px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 850;
+        }
+
+        .panel-sub {
+            font-size: 9px;
+            opacity: .45;
+            margin-top: 3px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 17px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 10px 8px;
+            text-align: left;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            opacity: .5;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 8px;
+            border-top: 1px solid rgba(148,163,184,.12);
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .badge {
+            padding: 5px 9px;
+            border-radius: 99px;
+            font-size: 9px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge-danger {
+            background: rgba(225,29,72,.12);
+            color: #e11d48;
+        }
+
+        .badge-warning {
+            background: rgba(245,158,11,.12);
+            color: #d97706;
+        }
+
+        .badge-success {
+            background: rgba(16,185,129,.12);
+            color: #059669;
+        }
+
+        .glass-btn {
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(255,255,255,.38);
+            color: inherit;
+            border-radius: 13px;
+            padding: 9px 12px;
+            font-size: 10px;
+            font-weight: 750;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: inherit;
+        }
+
+        .dark .glass-btn {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .glass-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,.65);
+        }
+
+        .primary-btn {
+            color: white;
+            border: none;
+            background: linear-gradient(135deg,#8b6ff0,#6d4aff,#4b2568);
+            box-shadow: 0 10px 22px rgba(109,74,255,.25);
+        }
+
+        .mobile-btn {
+            display: none;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,.25);
+            backdrop-filter: blur(5px);
+            z-index: 90;
+        }
+
+            .mobile-overlay.show {
+                display: block;
+            }
+
+        @@media(max-width:1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+
+        @@media(max-width:950px) {
+            .sidebar {
+                transform: translateX(-120%);
+            }
+
+                .sidebar.open {
+                    transform: translateX(0);
+                }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .mobile-btn {
+                display: flex;
+            }
+        }
+
+        #toastContainer {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .toast {
+            min-width: 270px;
+            padding: 13px;
+            border-radius: 17px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn .3s ease;
+        }
+
+        @@keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/css/cc-header-widgets.css" asp-append-version="true" />
+
+<style>
+.dropdown-wrap{position:relative;}
+.dropdown{display:none;}
+.dropdown.show{display:block!important;}
+.dropdown-item:hover{background:rgba(107,58,146,.1);}
+</style>
+</head>
+
+<body class="light min-h-screen text-slate-900 dark:text-slate-100 font-sans">
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div id="mobileOverlay" class="mobile-overlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar ios-glass">
+                <div class="brand cc-brand-block">
+            <div class="brand-logo cc-brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 44 44" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="ccCoinBG_ad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#6b3a92"/><stop offset="1" stop-color="#241232"/>
+                        </linearGradient>
+                        <linearGradient id="ccCoinAccent_ad" x1="10" y1="10" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#d4ff3d"/><stop offset="1" stop-color="#10b981"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="22" cy="22" r="21" fill="url(#ccCoinBG_ad)"/>
+                    <circle cx="22" cy="22" r="16.5" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1" stroke-dasharray="1.5 3"/>
+                    <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5" stroke="url(#ccCoinAccent_ad)" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                    <path d="M31 12c0 2.2-1.3 3.5-3.5 3.5 2.2 0 3.5 1.3 3.5 3.5 0-2.2 1.3-3.5 3.5-3.5-2.2 0-3.5-1.3-3.5-3.5z" fill="#d4ff3d"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-name cc-brand-title"><b>Cash</b><span>Campus</span></div>
+                <div class="brand-sub">ADMIN CONSOLE</div>
+            </div>
+        </div>
+
+                <nav class="nav">
+            <div class="nav-section">Overview</div>
+            <a href="/Admin/Index" class="nav-link"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a>
+            <a href="/Admin/Students" class="nav-link"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a>
+            <a href="/Admin/Transactions" class="nav-link"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Transactions</span></a>
+            <a href="/Admin/VoucherManagement" class="nav-link"><i class="fa-solid fa-receipt"></i><span>Voucher Management</span></a>
+            <div class="nav-section">Financial Management</div>
+            <a href="/Admin/Categories" class="nav-link"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
+            <a href="/Admin/Budgets" class="nav-link"><i class="fa-solid fa-wallet"></i><span>Budgets</span></a>
+            <a href="/Admin/EventManager" class="nav-link active"><i class="fa-solid fa-calendar-days"></i><span>Event Manager</span></a>
+            <a href="/Admin/SavingGoals" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>Saving Goals</span></a>
+            <div class="nav-section">System</div>
+            <a href="/Admin/Notifications" class="nav-link"><i class="fa-solid fa-bell"></i><span>Notifications</span></a>
+            <a href="/Admin/Reports" class="nav-link"><i class="fa-solid fa-chart-pie"></i><span>Reports & Analytics</span></a>
+            <a href="/Admin/HomepageCms" class="nav-link"><i class="fa-solid fa-pager"></i><span>Homepage CMS</span></a>
+            <a href="/Admin/Settings" class="nav-link"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+        </nav>
+
+        <div class="admin-mini">
+            <div class="admin-avatar">AD</div>
+            <div class="flex-1 min-w-0">
+                <div class="text-[11px] font-bold">Admin</div>
+                <div class="text-[9px] opacity-45">Event Manager</div>
+            </div>
+        </div>
+        <a href="/Auth/Logout" style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-top:8px;border-radius:12px;font-size:13px;font-weight:700;color:#e11d48;text-decoration:none;">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </aside>
+
+    <main class="main">
+        <header class="topbar ios-glass">
+            <button class="action-btn mobile-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="globalSearch" type="text" placeholder="Search events..." autocomplete="off">
+            </div>
+            <div class="top-actions">
+                <button class="action-btn" onclick="toggleTheme()"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+                <div class="dropdown-wrap" style="position:relative;">
+                    <div class="profile" onclick="toggleDropdown('profileDropdown')" style="cursor:pointer;">
+                        <div class="profile-avatar">AD</div>
+                        <div class="text-[10px] font-bold">Admin</div>
+                        <i class="fa-solid fa-chevron-down text-[8px] opacity-40"></i>
+                    </div>
+                    <div id="profileDropdown" class="dropdown" style="display:none !important;position:absolute;right:0;top:calc(100% + 10px);min-width:200px;z-index:99999;padding:8px;border-radius:16px;background:#fff;border:1px solid rgba(22,11,33,.1);box-shadow:0 18px 40px rgba(22,11,33,.14);">
+                        <a href="/Admin/Settings" class="dropdown-item" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:inherit;"><i class="fa-regular fa-user"></i> My Profile</a>
+                        <a href="/Admin/Settings" class="dropdown-item" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:inherit;"><i class="fa-solid fa-gear"></i> Settings</a>
+                        <button type="button" class="dropdown-item" onclick="logoutAdmin()" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;width:100%;border:0;background:transparent;cursor:pointer;color:#e11d48;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="page-header">
+            <div>
+                <div class="eyebrow">Admin / Events & Workshops</div>
+                <h1 class="page-title">Event Manager</h1>
+                <p class="page-description">Create campus events, track registrations, verify student passes.</p>
+            </div>
+        </section>
+
+        <!-- KPI CARDS -->
+        <section class="kpi-grid">
+            <div class="kpi ios-glass ios-glass-interactive">
+                <div class="kpi-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                <div class="kpi-label">Total Events</div>
+                <div class="kpi-value text-violet-600 dark:text-violet-400" id="cardTotalEvents">0</div>
+            </div>
+            <div class="kpi ios-glass ios-glass-interactive">
+                <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+                <div class="kpi-label">Total Registrations</div>
+                <div class="kpi-value text-emerald-500" id="cardTotalRegistrations">0</div>
+            </div>
+            <div class="kpi ios-glass ios-glass-interactive">
+                <div class="kpi-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                <div class="kpi-label">Ticket Revenue</div>
+                <div class="kpi-value text-amber-500" id="cardTicketRevenue">Rs. 0</div>
+            </div>
+            <div class="kpi ios-glass ios-glass-interactive">
+                <div class="kpi-icon"><i class="fa-solid fa-chair"></i></div>
+                <div class="kpi-label">Seat Utilization</div>
+                <div class="kpi-value text-purple-600" id="cardSeatUtilization">0%</div>
+            </div>
+        </section>
+
+        <!-- EVENT CREATOR FORM -->
+        <section class="mt-5">
+            <div class="panel ios-glass">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <div class="panel-title"><i class="fa-solid fa-plus-circle text-violet-500 mr-2"></i>Create New Event</div>
+                        <div class="panel-sub">Publish event to student portal instantly</div>
+                    </div>
+                    <button class="glass-btn text-xs" onclick="resetEventForm()"><i class="fa-solid fa-rotate-left mr-1"></i>Clear</button>
+                </div>
+
+                <form id="eventForm" onsubmit="handleEventSubmit(event)" class="space-y-4">
+                    <input type="hidden" id="editingEventId" value="">
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="text-[10px] font-bold opacity-60 block mb-1">Event Title *</label>
+                            <input type="text" id="eventTitle" required class="input-field" placeholder="e.g. AI Hackathon 2026">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold opacity-60 block mb-1">Category *</label>
+                            <select id="eventCategory" class="select" required>
+                                <option value="Workshop">Workshop</option>
+                                <option value="Tech">Tech</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Cultural">Cultural</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="text-[10px] font-bold opacity-60 block mb-1">Date & Time *</label>
+                            <input type="datetime-local" id="eventDate" required class="input-field">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold opacity-60 block mb-1">Venue *</label>
+                            <input type="text" id="eventVenue" required class="input-field" placeholder="Main Auditorium">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold opacity-60 block mb-1">Seats *</label>
+                            <input type="number" id="eventSeats" min="5" max="2000" value="100" required class="input-field">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold opacity-60 block mb-1">Fee Rs. *</label>
+                            <input type="number" id="eventPrice" min="0" value="0" required class="input-field">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-bold opacity-60 block mb-1">Description *</label>
+                        <textarea id="eventDescription" rows="2" required class="textarea-field"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-bold opacity-60 block mb-1">Banner Image URL (optional)</label>
+                        <input type="text" id="eventFlyer" class="input-field" placeholder="https://images.unsplash.com/... (URL only, not base64)">
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-2">
+                        <button type="button" onclick="resetEventForm()" class="glass-btn">Cancel</button>
+                        <button type="submit" class="glass-btn primary-btn px-6">
+                            <i class="fa-solid fa-paper-plane mr-1"></i> <span id="eventSubmitBtnText">Publish Event</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- EVENT TABLE -->
+        <section class="mt-5">
+            <div class="panel ios-glass">
+                <div class="panel-title">All Events</div>
+                <div class="panel-sub">Manage events and view attendees</div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Date & Venue</th>
+                                <th>Fee</th>
+                                <th>Seats</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventTableBody">
+                            <tr><td colspan="7" class="text-center py-8">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        let eventData = [];
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            initializeTheme();
+            await loadEvents();
+            initializeSearch();
+        });
+
+        async function loadEvents() {
+            try {
+                const res = await fetch('/api/admin/events', { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                eventData = Array.isArray(data) ? data : (Array.isArray(data.items) ? data.items : []);
+                renderTable();
+                recalculateKPIs();
+            } catch (err) {
+                console.error('Load failed', err);
+                eventData = [];
+                const body = document.getElementById("eventTableBody");
+                if (body) body.innerHTML =
+                    '<tr><td colspan="7" class="text-center py-8 text-rose-500">Failed to load events</td></tr>';
+            }
+        }
+
+        function recalculateKPIs() {
+            let totalReg = 0, totalRevenue = 0, totalCapacity = 0;
+
+            eventData.forEach(e => {
+                totalReg += e.registeredCount || 0;
+                totalRevenue += (e.registeredCount || 0) * e.fee;
+                totalCapacity += e.seatsTotal;
+            });
+
+            const utilization = totalCapacity > 0 ? Math.round((totalReg / totalCapacity) * 100) : 0;
+
+            const setTC = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            setTC("cardTotalEvents", eventData.length);
+            setTC("cardTotalRegistrations", totalReg);
+            setTC("cardTicketRevenue", "Rs. " + totalRevenue.toLocaleString());
+            setTC("cardSeatUtilization", utilization + "%");
+        }
+
+        function renderTable(searchTerm = "") {
+            const tbody = document.getElementById("eventTableBody");
+            const term = (searchTerm || document.getElementById("globalSearch").value || "").toLowerCase().trim();
+
+            const filtered = eventData.filter(evt =>
+                String(evt.title || '').toLowerCase().includes(term) ||
+                String(evt.eventCode || '').toLowerCase().includes(term) ||
+                String(evt.venue || '').toLowerCase().includes(term)
+            );
+
+            tbody.innerHTML = "";
+
+            if (!filtered.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 opacity-40">No events found</td></tr>';
+                return;
+            }
+
+            filtered.forEach(evt => {
+                const fillPct = evt.seatsTotal > 0 ? Math.min(100, Math.round((evt.registeredCount / evt.seatsTotal) * 100)) : 0;
+                let statusBadge = "";
+                if (evt.status === "Upcoming") statusBadge = '<span class="badge badge-success"><i class="fa-solid fa-circle-play"></i> Upcoming</span>';
+                else if (evt.status === "Housefull") statusBadge = '<span class="badge badge-danger"><i class="fa-solid fa-fire"></i> Housefull</span>';
+                else statusBadge = '<span class="badge badge-warning"><i class="fa-solid fa-circle-check"></i> Completed</span>';
+
+                const priceLabel = evt.fee > 0 ? `<span class="font-bold text-amber-600">Rs. ${evt.fee}</span>` : '<span class="badge badge-success">FREE</span>';
+                const formattedDate = new Date(evt.eventDate).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="font-bold text-xs">${evt.eventCode}</td>
+                    <td>
+                        <div class="font-bold max-w-xs truncate" title="${evt.title}">${evt.title}</div>
+                        <div class="text-[9px] text-violet-500 font-semibold mt-0.5"><i class="fa-solid fa-tag mr-1"></i>${evt.category}</div>
+                    </td>
+                    <td>
+                        <div class="font-medium text-xs">${formattedDate}</div>
+                        <div class="text-[9px] opacity-50"><i class="fa-solid fa-location-dot mr-1"></i>${evt.venue}</div>
+                    </td>
+                    <td>${priceLabel}</td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <div class="w-16 bg-black/10 dark:bg-white/10 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-violet-600 h-full" style="width: ${fillPct}%"></div>
+                            </div>
+                            <span class="font-bold text-[10px]">${evt.registeredCount} / ${evt.seatsTotal}</span>
+                        </div>
+                    </td>
+                    <td>${statusBadge}</td>
+                    <td class="flex items-center gap-1">
+                        <button class="glass-btn py-1 px-2 text-[9px]" onclick="editEvent(${evt.id})" title="Edit">
+                            <i class="fa-solid fa-pen-to-square text-amber-500"></i>
+                        </button>
+                        <button class="glass-btn py-1 px-2 text-[9px]" onclick="deleteEvent(${evt.id})" title="Delete">
+                            <i class="fa-solid fa-trash text-rose-500"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function initializeSearch() {
+            document.getElementById("globalSearch").addEventListener("input", function () {
+                renderTable(this.value);
+            });
+        }
+
+        async function handleEventSubmit(e) {
+            e.preventDefault();
+            const editingId = document.getElementById("editingEventId").value;
+
+            let image = document.getElementById("eventFlyer").value.trim();
+            // Banner must be a normal http(s) URL — base64 data: images break the database column
+            if (image && (image.startsWith("data:") || image.length > 1000)) {
+                showToast("Banner must be a short image URL (https://...), not a pasted file/base64. Using default banner.");
+                image = "";
+                document.getElementById("eventFlyer").value = "";
+            }
+
+            const dateVal = document.getElementById("eventDate").value;
+            const payload = {
+                title: document.getElementById("eventTitle").value.trim(),
+                category: document.getElementById("eventCategory").value,
+                eventDate: dateVal ? new Date(dateVal).toISOString() : null,
+                time: dateVal ? dateVal.split("T")[1] || "" : "",
+                venue: document.getElementById("eventVenue").value.trim(),
+                seatsTotal: parseInt(document.getElementById("eventSeats").value) || 100,
+                fee: parseFloat(document.getElementById("eventPrice").value) || 0,
+                description: document.getElementById("eventDescription").value.trim(),
+                image: image,
+                autoApprove: true,
+                walletIntegration: true
+            };
+
+            if (!payload.title || !payload.venue || !payload.description || !dateVal) {
+                showToast("Please fill title, date, venue, and description");
+                return;
+            }
+
+            const url = editingId ? `/api/admin/events/${editingId}` : '/api/admin/events';
+            const method = editingId ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json().catch(() => ({}));
+
+                if (res.ok && data.success) {
+                    showToast(editingId ? 'Event updated!' : 'Event published!');
+                    resetEventForm();
+                    await loadEvents();
+                } else {
+                    showToast(data.message || ('Failed (HTTP ' + res.status + ')'));
+                }
+            } catch (err) {
+                showToast('Error: ' + (err.message || 'network'));
+            }
+        }
+
+        function editEvent(id) {
+            const item = eventData.find(e => e.id === id);
+            if (!item) return;
+
+            document.getElementById("editingEventId").value = item.id;
+            document.getElementById("eventTitle").value = item.title;
+            document.getElementById("eventCategory").value = item.category;
+            document.getElementById("eventDate").value = item.eventDate;
+            document.getElementById("eventVenue").value = item.venue;
+            document.getElementById("eventSeats").value = item.seatsTotal;
+            document.getElementById("eventPrice").value = item.fee;
+            document.getElementById("eventDescription").value = item.description;
+            document.getElementById("eventFlyer").value = item.image || "";
+            document.getElementById("eventSubmitBtnText").textContent = "Update Event";
+
+            window.scrollTo({ top: 250, behavior: "smooth" });
+        }
+
+        async function deleteEvent(id) {
+            if (!confirm('Delete this event?')) return;
+            try {
+                const res = await fetch(`/api/admin/events/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Event deleted!');
+                    await loadEvents();
+                }
+            } catch (err) {
+                showToast('Delete failed');
+            }
+        }
+
+        function resetEventForm() {
+            document.getElementById("eventForm").reset();
+            document.getElementById("editingEventId").value = "";
+            document.getElementById("eventSubmitBtnText").textContent = "Publish Event";
+        }
+
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("mobileOverlay").classList.toggle("show");
+        }
+        function closeSidebar() {
+            document.getElementById("sidebar").classList.remove("open");
+            document.getElementById("mobileOverlay").classList.remove("show");
+        }
+
+        function initializeTheme() {
+            const saved = localStorage.getItem("campuscoin-theme");
+            if (saved === "dark") {
+                document.documentElement.classList.replace("light", "dark");
+                document.body.classList.replace("light", "dark-mesh");
+            }
+            updateThemeIcon();
+        }
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains("dark");
+            if (isDark) {
+                document.documentElement.classList.replace("dark", "light");
+                document.body.classList.replace("dark-mesh", "light");
+                localStorage.setItem("campuscoin-theme", "light");
+            } else {
+                document.documentElement.classList.replace("light", "dark");
+                document.body.classList.replace("light", "dark-mesh");
+                localStorage.setItem("campuscoin-theme", "dark");
+            }
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            const icon = document.getElementById("themeIcon");
+            const isDark = document.documentElement.classList.contains("dark");
+            icon.className = isDark ? "fa-solid fa-sun text-amber-300" : "fa-solid fa-moon";
+        }
+
+        function showToast(msg) {
+            const c = document.getElementById("toastContainer");
+            const t = document.createElement("div");
+            t.className = "toast ios-glass font-bold text-xs";
+            t.innerHTML = `<i class="fa-solid fa-circle-info text-violet-500"></i> ${msg}`;
+            c.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
+        }
+    </script>
+
+<script>
+function toggleDropdown(id){
+  const t=document.getElementById(id);
+  if(!t) return;
+  document.querySelectorAll('.dropdown').forEach(d=>{ if(d.id!==id) d.classList.remove('show'); });
+  t.classList.toggle('show');
+  // support inline display style
+  if(t.classList.contains('show')) t.style.display='block';
+  else t.style.display='none';
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.dropdown-wrap')){
+    document.querySelectorAll('.dropdown').forEach(d=>{ d.classList.remove('show'); d.style.display='none'; });
+  }
+});
+function logoutAdmin(){ window.location.href='/Auth/Logout'; }
+</script>
+</body>
+</html>

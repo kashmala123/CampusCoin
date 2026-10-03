@@ -1,0 +1,728 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Settings - CashCampus Admin";
+}
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <link rel="stylesheet" href="/css/cc-header-widgets.css" />
+
+    <link rel="stylesheet" href="/css/admin-theme.css" />
+    <link rel="stylesheet" href="/css/cc-animations.css" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: {
+            colors: { brand: { 50:'#f6effc', 100:'#ede4f6', 400:'#a486e0', 500:'#8b58b8', 600:'#6b3a92' } },
+            fontFamily: { sans: ['Plus Jakarta Sans','-apple-system','BlinkMacSystemFont','Inter','Segoe UI','Roboto','sans-serif'] }
+        }}}
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, color 0.3s ease;
+        }
+
+        body.light-mesh {
+            background-color: #fbf6f0;
+            background-image: radial-gradient(at 0% 0%, rgba(237, 228, 246, 0.9) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(196, 174, 224, 0.85) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(255, 225, 230, 0.85) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(246, 239, 252, 0.9) 0px, transparent 50%), radial-gradient(at 50% 50%, rgba(212, 243, 228, 0.4) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        body.dark-mesh {
+            background-color: #100a1a;
+            background-image: radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.28) 0px, transparent 50%), radial-gradient(at 90% 10%, rgba(168, 85, 247, 0.22) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(107, 58, 146, 0.28) 0px, transparent 50%), radial-gradient(at 10% 90%, rgba(236, 72, 153, 0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+            animation: floatOrb 18s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(192, 132, 252, 0.4);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 480px;
+            height: 480px;
+            background: rgba(139, 88, 184, 0.45);
+            top: 30%;
+            right: -120px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: rgba(251, 113, 133, 0.35);
+            bottom: -100px;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @@keyframes floatOrb {
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+
+            50% {
+                transform: translate(40px, 60px) scale(1.08);
+            }
+
+            100% {
+                transform: translate(-30px, 30px) scale(0.95);
+            }
+        }
+
+        .ios-glass {
+            backdrop-filter: blur(32px) saturate(240%);
+            -webkit-backdrop-filter: blur(32px) saturate(240%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light .ios-glass {
+            background: rgba(255,255,255,.72);
+            border: 1.5px solid rgba(255,255,255,.95);
+            box-shadow: 0 20px 40px -12px rgba(107,58,146,.12), 0 4px 16px -2px rgba(0,0,0,.04);
+            color: #0f172a;
+        }
+
+        .dark .ios-glass {
+            background: rgba(18,24,38,.58);
+            border: 1px solid rgba(255,255,255,.15);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,.45);
+            color: #f8fafc;
+        }
+
+        .ios-glass-interactive:hover {
+            transform: translateY(-4px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(150,150,150,.3);
+            border-radius: 999px;
+        }
+
+        #sidebar {
+            transition: transform .35s cubic-bezier(.16,1,.3,1);
+        }
+
+        .sidebar-link {
+            transition: all .2s ease-in-out;
+        }
+
+            .sidebar-link.active {
+                background: linear-gradient(135deg, rgba(139,88,184,.22), rgba(99,102,241,.18));
+                color: #6b3a92;
+                box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 10px 20px -5px rgba(2,132,199,.15);
+            }
+
+        .dark .sidebar-link.active {
+            color: #c4aee0;
+            background: linear-gradient(135deg, rgba(139,88,184,.16), rgba(99,102,241,.16));
+        }
+
+        .glass-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,.38);
+            border: 1px solid rgba(255,255,255,.55);
+            outline: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: inherit;
+        }
+
+        .dark .glass-input {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .glass-input:focus {
+            box-shadow: 0 0 0 4px rgba(139,88,184,.15);
+        }
+
+        .form-label {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .glass-btn {
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(255,255,255,.38);
+            color: inherit;
+            border-radius: 14px;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 750;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dark .glass-btn {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .glass-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,.65);
+        }
+
+        .primary-btn {
+            color: white;
+            border: none;
+            background: linear-gradient(135deg, #a486e0, #8b58b8, #6366f1);
+            box-shadow: 0 10px 22px rgba(107,58,146,.25);
+        }
+
+        .tab-btn {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 800;
+            text-align: left;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+            .tab-btn:hover {
+                background: rgba(255,255,255,.3);
+            }
+
+        .dark .tab-btn:hover {
+            background: rgba(255,255,255,.05);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #a486e0, #6366f1);
+            color: white;
+            box-shadow: 0 10px 22px rgba(107,58,146,.25);
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #8b58b8, #6366f1);
+            box-shadow: 0 12px 30px rgba(107,58,146,.35);
+        }
+
+        @@media (max-width: 1023px) {
+            #sidebar {
+                transform: translateX(-110%);
+            }
+
+                #sidebar.open {
+                    transform: translateX(0);
+                }
+        }
+
+        @@media (min-width: 1024px) {
+            #sidebar {
+                transform: translateX(0) !important;
+            }
+        }
+
+        #toast {
+            transform: translateY(120px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all .3s ease;
+        }
+
+            #toast.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+    
+/* Unified admin chrome */
+.sidebar {
+  position: fixed !important;
+  top: 20px !important; left: 20px !important; bottom: 20px !important;
+  width: 260px !important;
+  z-index: 100 !important;
+  border-radius: 30px !important;
+  padding: 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.sidebar .nav { flex: 1; overflow-y: auto; padding: 4px 0; }
+.sidebar .nav-section {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; opacity: 0.45; padding: 14px 12px 6px;
+}
+.sidebar .nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 14px;
+  font-size: 13px; font-weight: 600; color: inherit;
+  text-decoration: none; margin-bottom: 2px;
+}
+.sidebar .nav-link i { width: 18px; text-align: center; opacity: 0.7; }
+.sidebar .nav-link:hover { background: rgba(139,88,184,0.08); }
+.sidebar .nav-link.active {
+  color: #6b3a92 !important;
+  background: linear-gradient(135deg, rgba(237,228,246,0.95), rgba(196,174,224,0.35)) !important;
+}
+.brand { display: flex; align-items: center; gap: 12px; padding: 4px 6px 18px; }
+.brand-name { font-size: 15px; font-weight: 800; }
+.brand-sub { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; opacity: 0.5; text-transform: uppercase; }
+.admin-mini {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px; border-radius: 16px;
+  background: rgba(139,88,184,0.08); margin-top: 8px;
+}
+.admin-avatar {
+  width: 36px; height: 36px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 11px; font-weight: 800;
+  background: linear-gradient(135deg, #8b58b8, #6b3a92);
+}
+.main, .main-content, #mainContent {
+  margin-left: 300px !important;
+}
+/* Dropdowns above everything */
+.dropdown, .cc-shared-dd, .cc-notif-popover, .notifications-popover, #profileDropdown {
+  z-index: 10080 !important;
+}
+.topbar, header.topbar, .top-actions { overflow: visible !important; z-index: 90; position: relative; }
+
+        </style>
+</head>
+
+<body class="light-mesh min-h-screen text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-500">
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div id="sidebarOverlay" onclick="closeSidebar()" class="hidden fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-40"></div>
+
+    <aside id="sidebar" class="sidebar ios-glass">
+        <div class="brand cc-brand-block">
+            <div class="brand-logo cc-brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 44 44" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="ccCoinBG_ad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#6b3a92"/><stop offset="1" stop-color="#241232"/>
+                        </linearGradient>
+                        <linearGradient id="ccCoinAccent_ad" x1="10" y1="10" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#22c55e"/><stop offset="1" stop-color="#10b981"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="22" cy="22" r="21" fill="url(#ccCoinBG_ad)"/>
+                    <circle cx="22" cy="22" r="16.5" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1" stroke-dasharray="1.5 3"/>
+                    <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5" stroke="url(#ccCoinAccent_ad)" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-name cc-brand-title"><b>Cash</b><span>Campus</span></div>
+                <div class="brand-sub">ADMIN CONSOLE</div>
+            </div>
+        </div>
+        <nav class="nav">
+            <div class="nav-section">Overview</div>
+            <a href="/Admin/Index" class="nav-link"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a>
+            <a href="/Admin/Students" class="nav-link"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a>
+            <a href="/Admin/Transactions" class="nav-link"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Transactions</span></a>
+            <a href="/Admin/VoucherManagement" class="nav-link"><i class="fa-solid fa-receipt"></i><span>Voucher Management</span></a>
+            <div class="nav-section">Financial Management</div>
+            <a href="/Admin/Categories" class="nav-link"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
+            <a href="/Admin/Budgets" class="nav-link"><i class="fa-solid fa-wallet"></i><span>Budgets</span></a>
+            <a href="/Admin/EventManager" class="nav-link"><i class="fa-solid fa-calendar-days"></i><span>Event Manager</span></a>
+            <a href="/Admin/SavingGoals" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>Saving Goals</span></a>
+            <div class="nav-section">System</div>
+            <a href="/Admin/Notifications" class="nav-link"><i class="fa-solid fa-bell"></i><span>Notifications</span></a>
+            <a href="/Admin/Reports" class="nav-link"><i class="fa-solid fa-chart-pie"></i><span>Reports & Analytics</span></a>
+            <a href="/Admin/HomepageCms" class="nav-link"><i class="fa-solid fa-pager"></i><span>Homepage CMS</span></a>
+            <a href="/Admin/Settings" class="nav-link active"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+        </nav>
+        <div class="admin-mini">
+            <div class="admin-avatar">AD</div>
+            <div class="flex-1 min-w-0">
+                <div class="text-[11px] font-bold">Admin</div>
+                <div class="text-[9px] opacity-45">System Administrator</div>
+            </div>
+        </div>
+        <a href="/Auth/Logout" class="sidebar-logout-btn" style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin:8px 4px 8px;border-radius:12px;font-size:13px;font-weight:700;color:#e11d48;text-decoration:none;background:rgba(225,29,72,0.08);">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </aside>
+
+    <main class="lg:ml-80 px-4 sm:px-6 lg:px-8 py-6">
+
+        <header class="ios-glass rounded-3xl p-3.5 mb-6 flex flex-col md:flex-row items-center justify-between gap-3 shadow-xl" style="overflow:visible;position:relative;z-index:50;">
+            <div class="flex items-center gap-3 w-full">
+                <button onclick="openSidebar()" class="lg:hidden w-11 h-11 rounded-2xl ios-glass flex items-center justify-center"><i class="fa-solid fa-bars"></i></button>
+                <div>
+                    <p class="text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-wider">Administration</p>
+                    <h2 class="text-xl sm:text-2xl font-black tracking-tight">Settings</h2>
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Manage your admin account and preferences</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 shrink-0 relative" style="overflow:visible;">
+                <button type="button" onclick="toggleTheme()" class="w-11 h-11 rounded-2xl ios-glass flex items-center justify-center text-slate-700 dark:text-amber-300">
+                    <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+                </button>
+                <div class="dropdown-wrap relative" style="position:relative;overflow:visible;">
+                    <button type="button" onclick="toggleDropdown('profileDropdown')" class="inline-flex items-center gap-2 px-3 py-2 rounded-2xl ios-glass text-sm font-bold">
+                        <span class="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black text-white" style="background:linear-gradient(135deg,#a486e0,#6366f1);">AD</span>
+                        <span class="hidden sm:inline">Admin</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] opacity-50"></i>
+                    </button>
+                    <div id="profileDropdown" class="dropdown" style="display:none !important;position:absolute;right:0;top:calc(100% + 10px);min-width:200px;z-index:99999;padding:8px;border-radius:16px;background:#fff;border:1px solid rgba(22,11,33,.1);box-shadow:0 18px 40px rgba(22,11,33,.14);">
+                        <a href="/Admin/Settings" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:#e2e8f0;"><i class="fa-regular fa-user"></i> My Profile</a>
+                        <a href="/Admin/Settings" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:#e2e8f0;"><i class="fa-solid fa-gear"></i> Settings</a>
+                        <button type="button" onclick="logoutAdmin()" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;width:100%;border:0;background:transparent;cursor:pointer;color:#fb7185;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+            <div class="ios-glass rounded-3xl p-3 h-fit space-y-2">
+                <button onclick="switchTab('profile')" id="tabBtn-profile" class="tab-btn active">
+                    <i class="fa-solid fa-user-shield w-4"></i><span>Admin Profile</span>
+                </button>
+                <button onclick="switchTab('security')" id="tabBtn-security" class="tab-btn">
+                    <i class="fa-solid fa-shield-halved w-4"></i><span>Security</span>
+                </button>
+                <button onclick="switchTab('appearance')" id="tabBtn-appearance" class="tab-btn">
+                    <i class="fa-solid fa-palette w-4"></i><span>Appearance</span>
+                </button>
+                <button onclick="switchTab('about')" id="tabBtn-about" class="tab-btn">
+                    <i class="fa-solid fa-circle-info w-4"></i><span>About</span>
+                </button>
+            </div>
+
+            <div class="lg:col-span-3 space-y-6">
+
+                <div id="panel-profile" class="setting-panel ios-glass rounded-3xl p-6">
+                    <h3 class="text-lg font-black mb-1">Admin Profile</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Update your administrator account details</p>
+
+                    <div class="flex items-center gap-4 mb-6 pb-6 border-b border-slate-500/15">
+                        <div class="avatar-circle" id="profileAvatar">AK</div>
+                        <div>
+                            <p class="font-black text-base" id="profileNameDisplay">Loading...</p>
+                            <p class="text-xs text-slate-500" id="profileEmailDisplay">—</p>
+                            <p class="text-[10px] font-bold text-purple-700 dark:text-purple-400 mt-1">
+                                <i class="fa-solid fa-shield-halved"></i> Administrator
+                            </p>
+                        </div>
+                    </div>
+
+                    <form onsubmit="saveProfile(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label">Full Name</label>
+                                <input id="pFullName" required type="text" class="glass-input">
+                            </div>
+                            <div>
+                                <label class="form-label">Email</label>
+                                <input id="pEmail" required type="email" class="glass-input">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">Role</label>
+                            <input id="pRole" type="text" class="glass-input opacity-60" readonly>
+                        </div>
+                        <div class="flex justify-end pt-3">
+                            <button type="submit" class="glass-btn primary-btn">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="panel-security" class="setting-panel ios-glass rounded-3xl p-6 hidden">
+                    <h3 class="text-lg font-black mb-1">Security</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Update your admin password</p>
+
+                    <form onsubmit="changePassword(event)" class="space-y-4 max-w-md">
+                        <div>
+                            <label class="form-label">New Password</label>
+                            <input id="pNewPassword" required minlength="6" type="password" class="glass-input" placeholder="At least 6 characters">
+                        </div>
+                        <div>
+                            <label class="form-label">Confirm Password</label>
+                            <input id="pConfirmPassword" required minlength="6" type="password" class="glass-input" placeholder="Repeat password">
+                        </div>
+                        <div class="flex justify-end pt-3">
+                            <button type="submit" class="glass-btn primary-btn">
+                                <i class="fa-solid fa-key"></i> Update Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="panel-appearance" class="setting-panel ios-glass rounded-3xl p-6 hidden">
+                    <h3 class="text-lg font-black mb-1">Appearance</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Customize how CashCampus looks</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="setTheme('light')" class="p-5 rounded-2xl border-2 border-sky-500 bg-white/60 dark:bg-white/5 text-left">
+                            <i class="fa-solid fa-sun text-3xl text-amber-500 mb-3"></i>
+                            <p class="font-black text-sm">Light Mode</p>
+                            <p class="text-[10px] text-slate-500 mt-1">Bright and clean interface</p>
+                        </button>
+                        <button onclick="setTheme('dark')" class="p-5 rounded-2xl border-2 border-transparent bg-slate-800/70 text-white text-left">
+                            <i class="fa-solid fa-moon text-3xl text-purple-400 mb-3"></i>
+                            <p class="font-black text-sm">Dark Mesh Mode</p>
+                            <p class="text-[10px] text-slate-400 mt-1">Easier on the eyes</p>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="panel-about" class="setting-panel ios-glass rounded-3xl p-6 hidden">
+                    <h3 class="text-lg font-black mb-1">About CampusCoin Admin</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Application information</p>
+
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between py-2 border-b border-slate-500/10">
+                            <span class="text-slate-500">App Name</span>
+                            <span class="font-black">CampusCoin</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-500/10">
+                            <span class="text-slate-500">Version</span>
+                            <span class="font-black">1.0.0</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-slate-500/10">
+                            <span class="text-slate-500">Role</span>
+                            <span class="font-black">Administrator Console</span>
+                        </div>
+                        <div class="flex justify-between py-2">
+                            <span class="text-slate-500">Status</span>
+                            <span class="font-black text-emerald-600 dark:text-emerald-400">
+                                <i class="fa-solid fa-circle text-[8px]"></i> Online
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="fixed bottom-6 right-6 z-[200] ios-glass rounded-2xl px-5 py-4 shadow-2xl flex items-center gap-3">
+        <div id="toastIcon" class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
+        <div>
+            <p id="toastTitle" class="text-xs font-black">Done</p>
+            <p id="toastText" class="text-[10px] font-medium text-slate-500 dark:text-slate-400"></p>
+        </div>
+    </div>
+
+    <script>
+        const API = "/api/admin/settings";
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            initTheme();
+            await loadProfile();
+        });
+
+        async function loadProfile() {
+            try {
+                const r = await fetch(`${API}/profile`, { credentials: "same-origin" });
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                const p = await r.json();
+
+                document.getElementById("pFullName").value = p.fullName || "";
+                document.getElementById("pEmail").value = p.email || "";
+                document.getElementById("pRole").value = p.role || "Administrator";
+                document.getElementById("profileNameDisplay").innerText = p.fullName || "Admin";
+                document.getElementById("profileEmailDisplay").innerText = p.email || "";
+
+                const initials = (p.fullName || "AK").split(" ").map(x => x[0]).join("").substring(0, 2).toUpperCase();
+                document.getElementById("profileAvatar").innerText = initials;
+            } catch (e) { showToast("Load failed", e.message, "danger"); }
+        }
+
+        async function saveProfile(e) {
+            e.preventDefault();
+            const payload = {
+                fullName: document.getElementById("pFullName").value.trim(),
+                email: document.getElementById("pEmail").value.trim()
+            };
+            try {
+                const r = await fetch(`${API}/profile`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "same-origin",
+                    body: JSON.stringify(payload)
+                });
+                const d = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(d.message || `HTTP ${r.status}`);
+                await loadProfile();
+                showToast("Profile updated", "Changes saved successfully.");
+            } catch (err) { showToast("Save failed", err.message, "danger"); }
+        }
+
+        async function changePassword(e) {
+            e.preventDefault();
+            const payload = {
+                newPassword: document.getElementById("pNewPassword").value,
+                confirmPassword: document.getElementById("pConfirmPassword").value
+            };
+            try {
+                const r = await fetch(`${API}/password`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "same-origin",
+                    body: JSON.stringify(payload)
+                });
+                const d = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(d.message || `HTTP ${r.status}`);
+                document.getElementById("pNewPassword").value = "";
+                document.getElementById("pConfirmPassword").value = "";
+                showToast("Password updated", "Use new password on next login.");
+            } catch (err) { showToast("Update failed", err.message, "danger"); }
+        }
+
+        function switchTab(tab) {
+            ['profile', 'security', 'appearance', 'about'].forEach(t => {
+                const btn = document.getElementById(`tabBtn-${t}`);
+                const panel = document.getElementById(`panel-${t}`);
+                if (t === tab) {
+                    btn.classList.add("active");
+                    panel.classList.remove("hidden");
+                } else {
+                    btn.classList.remove("active");
+                    panel.classList.add("hidden");
+                }
+            });
+        }
+
+        function setTheme(mode) {
+            const html = document.documentElement;
+            if (mode === "dark") {
+                html.classList.remove("light"); html.classList.add("dark");
+                document.body.classList.remove("light-mesh"); document.body.classList.add("dark-mesh");
+                document.getElementById("themeIcon").className = "fa-solid fa-sun text-lg text-amber-300";
+                localStorage.setItem("campuscoin-theme", "dark");
+            } else {
+                html.classList.remove("dark"); html.classList.add("light");
+                document.body.classList.remove("dark-mesh"); document.body.classList.add("light-mesh");
+                document.getElementById("themeIcon").className = "fa-solid fa-moon text-lg";
+                localStorage.setItem("campuscoin-theme", "light");
+            }
+            showToast("Theme updated", `${mode} mode enabled.`);
+        }
+
+        function initTheme() {
+            if (localStorage.getItem("campuscoin-theme") === "dark") {
+                document.documentElement.classList.add("dark");
+                document.body.classList.add("dark-mesh");
+                document.getElementById("themeIcon").className = "fa-solid fa-sun text-amber-300";
+            } else {
+                document.body.classList.add("light-mesh");
+            }
+        }
+
+        function toggleTheme() {
+            const dark = document.documentElement.classList.contains("dark");
+            setTheme(dark ? "light" : "dark");
+        }
+
+        function openSidebar() { document.getElementById("sidebar").classList.add("open"); document.getElementById("sidebarOverlay").classList.add("show"); }
+        function closeSidebar() { document.getElementById("sidebar").classList.remove("open"); document.getElementById("sidebarOverlay").classList.remove("show"); }
+
+        function showToast(title, text, type = "success") {
+            const t = document.getElementById("toast");
+            const icon = document.getElementById("toastIcon");
+            document.getElementById("toastTitle").innerText = title;
+            document.getElementById("toastText").innerText = text || "";
+            if (type === "danger") {
+                icon.className = "w-9 h-9 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center";
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                icon.className = "w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center";
+                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            }
+            t.classList.add("show");
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
+        }
+
+        document.addEventListener("keydown", e => { if (e.key === "Escape") closeSidebar(); });
+    </script>
+
+
+<script>
+(function(){
+  if (typeof window.toggleDropdown !== 'function') {
+    window.toggleDropdown = function(id){
+      const t = document.getElementById(id);
+      if (!t) return;
+      document.querySelectorAll('.dropdown').forEach(d => {
+        if (d.id !== id) { d.classList.remove('show'); d.style.setProperty('display','none','important'); d.classList.remove('show'); }
+      });
+      const open = !t.classList.contains('show');
+      t.classList.toggle('show', open);
+      t.style.setProperty('display', open ? 'block' : 'none', 'important'); if(open){t.classList.add('show');} else {t.classList.remove('show');}
+    };
+    document.addEventListener('click', function(e){
+      if (!e.target.closest('.dropdown-wrap')) {
+        document.querySelectorAll('.dropdown').forEach(d => { d.classList.remove('show'); d.style.setProperty('display','none','important'); d.classList.remove('show'); });
+      }
+    });
+  }
+  if (typeof window.logoutAdmin !== 'function') {
+    window.logoutAdmin = function(){ window.location.href = '/Auth/Logout'; };
+  }
+  if (typeof window.quickAction !== 'function') {
+    window.quickAction = function(action){
+      document.querySelectorAll('.dropdown').forEach(d => { d.classList.remove('show'); d.style.setProperty('display','none','important'); d.classList.remove('show'); });
+      const routes = {
+        'Add Student': '/Admin/Students',
+        'View Transactions': '/Admin/Transactions',
+        'Send Notification': '/Admin/Notifications',
+        'Generate Report': '/Admin/Reports'
+      };
+      if (routes[action]) window.location.href = routes[action];
+    };
+  }
+})();
+</script>
+
+</body>
+</html>

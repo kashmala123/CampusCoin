@@ -1,0 +1,164 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCoin - Smart Student Financial Companion</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50:'#f6effc', 100:'#ede4f6', 400: '#a486e0', 500: '#8b58b8', 600: '#6b3a92' }
+                    },
+                    fontFamily: {
+                        sans: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, color 0.3s ease; }
+        body.light-mesh {
+            background-color: #fbf6f0;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(186, 230, 253, 0.85) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(221, 214, 254, 0.85) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(165, 243, 252, 0.8) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(252, 231, 243, 0.85) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+        body.dark-mesh {
+            background-color: #100a1a;
+            background-image:
+                radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.28) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(14, 165, 233, 0.28) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+        .ios-glass { backdrop-filter: blur(32px) saturate(240%); -webkit-backdrop-filter: blur(32px) saturate(240%); }
+        .light .ios-glass { background: rgba(255, 255, 255, 0.75); border: 1.5px solid rgba(255, 255, 255, 0.95); box-shadow: 0 20px 40px -12px rgba(14, 165, 233, 0.15); color: #0f172a; }
+        .dark .ios-glass { background: rgba(18, 24, 38, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); color: #f8fafc; }
+    </style>
+</head>
+<body class="light-mesh min-h-screen text-slate-900 dark:text-slate-100">
+
+    <!-- Top bar -->
+    <header class="flex items-center justify-between max-w-6xl mx-auto px-6 py-5">
+        <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-400 via-blue-500 to-indigo-500 flex items-center justify-center text-white font-black shadow-lg shadow-sky-500/30">
+                <i class="fa-solid fa-coins text-sm"></i>
+            </div>
+            <span class="text-lg font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-sky-400 dark:from-white dark:via-sky-200 dark:to-indigo-300 bg-clip-text text-transparent">CampusCoin</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl ios-glass flex items-center justify-center text-slate-700 dark:text-amber-300">
+                <i id="themeIcon" class="fa-solid fa-moon"></i>
+            </button>
+            <a href="/Auth/Login" class="px-4 py-2 rounded-xl text-xs font-bold ios-glass">Sign In</a>
+            <a href="/Auth/Register" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-500 text-white shadow-lg shadow-sky-500/30">Get Started</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <main class="max-w-6xl mx-auto px-6 pt-10 pb-20">
+        <section class="ios-glass rounded-3xl p-10 text-center max-w-3xl mx-auto shadow-2xl">
+            <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-sky-500/15 text-sky-600 dark:text-sky-300 mb-4">Smart Spending, Student Style</span>
+            <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-3">Your Money, Finally Makes Sense.</h1>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mb-6">
+                Track allowance, part-time income, and every rupee/dollar you spend on food, hostel, transport and subscriptions &mdash;
+                then get plain-language saving tips built from your own history. No bank linking required.
+            </p>
+            <div class="flex items-center justify-center gap-3">
+                <a href="/Auth/Register" class="px-6 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-500 text-white shadow-lg shadow-sky-500/30">Create Free Account</a>
+                <a href="/Auth/Login" class="px-6 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider ios-glass">I already have an account</a>
+            </div>
+        </section>
+
+        <!-- Feature highlights -->
+        <section class="grid md:grid-cols-3 gap-4 mt-8">
+            <div class="ios-glass rounded-2xl p-5">
+                <i class="fa-solid fa-chart-pie text-sky-500 text-xl mb-2"></i>
+                <h3 class="font-bold text-sm mb-1">Live Dashboard</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Balance, budgets and spending charts that update the moment you log a transaction.</p>
+            </div>
+            <div class="ios-glass rounded-2xl p-5">
+                <i class="fa-solid fa-piggy-bank text-emerald-500 text-xl mb-2"></i>
+                <h3 class="font-bold text-sm mb-1">Savings Goals</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Set a target, watch your progress bar fill, get an estimated completion date.</p>
+            </div>
+            <div class="ios-glass rounded-2xl p-5">
+                <i class="fa-solid fa-lightbulb text-amber-500 text-xl mb-2"></i>
+                <h3 class="font-bold text-sm mb-1">Smart Saving Tips</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Rule-based tips ranked by potential savings &mdash; generated from your own habits, not guesses.</p>
+            </div>
+        </section>
+
+        <!-- Sitemap (SRS 1.9 requirement) -->
+        <section class="ios-glass rounded-2xl p-6 mt-8">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4"><i class="fa-solid fa-sitemap me-2"></i>Site Map</h2>
+            <div class="grid sm:grid-cols-3 gap-6 text-xs">
+                <div>
+                    <p class="font-bold mb-2 text-slate-700 dark:text-slate-200">Account</p>
+                    <ul class="space-y-1.5 text-slate-500 dark:text-slate-400">
+                        <li><a href="/Auth/Login" class="hover:text-sky-500">Student Login</a></li>
+                        <li><a href="/Auth/Register" class="hover:text-sky-500">Register</a></li>
+                        <li><a href="/Auth/ForgotPassword" class="hover:text-sky-500">Forgot Password</a></li>
+                        <li><a href="/Auth/AdminLogin" class="hover:text-sky-500">Administrator Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-bold mb-2 text-slate-700 dark:text-slate-200">Student Dashboard</p>
+                    <ul class="space-y-1.5 text-slate-500 dark:text-slate-400">
+                        <li><a href="/Dashboard" class="hover:text-sky-500">Overview</a></li>
+                        <li><a href="/Dashboard/Transactions" class="hover:text-sky-500">Transactions</a></li>
+                        <li><a href="/Dashboard/Budgets" class="hover:text-sky-500">Budget Goals</a></li>
+                        <li><a href="/Dashboard/SavingGoals" class="hover:text-sky-500">Savings Goal</a></li>
+                        <li><a href="/Dashboard/Reports" class="hover:text-sky-500">Reports</a></li>
+                        <li><a href="/Dashboard/FinancialHealth" class="hover:text-sky-500">Financial Health</a></li>
+                        <li><a href="/Dashboard/Profile" class="hover:text-sky-500">Profile</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-bold mb-2 text-slate-700 dark:text-slate-200">Administration</p>
+                    <ul class="space-y-1.5 text-slate-500 dark:text-slate-400">
+                        <li><a href="/Admin" class="hover:text-sky-500">Admin Overview</a></li>
+                        <li><a href="/Admin/Students" class="hover:text-sky-500">Manage Students</a></li>
+                        <li><a href="/Admin/Categories" class="hover:text-sky-500">Manage Categories</a></li>
+                        <li><a href="/Admin/Reports" class="hover:text-sky-500">System Reports</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-4">Dashboard and Admin links require sign-in and will redirect you to Login if you aren't authenticated yet.</p>
+        </section>
+    </main>
+
+    <footer class="text-center text-[11px] text-slate-400 pb-8">
+        &copy; @DateTime.Now.Year CampusCoin &mdash; Smart Student Financial Companion
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            if (isDark) {
+                html.classList.remove('dark'); html.classList.add('light');
+                document.body.classList.remove('dark-mesh'); document.body.classList.add('light-mesh');
+                document.getElementById('themeIcon').className = 'fa-solid fa-moon';
+            } else {
+                html.classList.remove('light'); html.classList.add('dark');
+                document.body.classList.remove('light-mesh'); document.body.classList.add('dark-mesh');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun text-amber-300';
+            }
+        }
+    </script>
+</body>
+</html>

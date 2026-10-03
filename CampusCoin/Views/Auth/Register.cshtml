@@ -1,0 +1,209 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCoin - Student Registration</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50:'#f6effc',
+                            100:'#ede4f6',
+                            400: '#a486e0',
+                            500: '#8b58b8',
+                            600: '#6b3a92',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, color 0.3s ease; }
+        body.light-mesh {
+            background-color: #fbf6f0;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(186, 230, 253, 0.85) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(221, 214, 254, 0.85) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(165, 243, 252, 0.8) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(252, 231, 243, 0.85) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(254, 240, 138, 0.5) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+        body.dark-mesh {
+            background-color: #100a1a;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.28) 0px, transparent 50%),
+                radial-gradient(at 90% 10%, rgba(168, 85, 247, 0.22) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(14, 165, 233, 0.28) 0px, transparent 50%),
+                radial-gradient(at 10% 90%, rgba(236, 72, 153, 0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); z-index: -1; pointer-events: none; }
+        .orb-1 { width: 450px; height: 450px; background: rgba(192, 132, 252, 0.4); top: -100px; left: -100px; }
+        .orb-2 { width: 480px; height: 480px; background: rgba(56, 189, 248, 0.45); top: 30%; right: -120px; }
+        .ios-glass { backdrop-filter: blur(32px) saturate(240%); -webkit-backdrop-filter: blur(32px) saturate(240%); }
+        .light .ios-glass {
+            background: rgba(255, 255, 255, 0.75);
+            border: 1.5px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 20px 40px -12px rgba(14, 165, 233, 0.15);
+            color: #0f172a;
+        }
+        .dark .ios-glass {
+            background: rgba(18, 24, 38, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="light-mesh min-h-screen text-slate-900 dark:text-slate-100 flex items-center justify-center p-4">
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="max-w-lg w-full ios-glass rounded-3xl p-8 shadow-2xl relative my-6">
+        <button onclick="toggleTheme()" class="absolute top-6 right-6 w-9 h-9 rounded-2xl ios-glass flex items-center justify-center text-slate-700 dark:text-amber-300">
+            <i id="themeIcon" class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- Brand Header -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-400 via-blue-500 to-indigo-500 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-sky-500/30">
+                <i class="fa-solid fa-coins"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-500 to-sky-400 dark:from-white dark:via-sky-200 dark:to-indigo-300 bg-clip-text text-transparent">
+                    Create Account
+                </h1>
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Join CampusCoin Student Financial Hub</p>
+            </div>
+        </div>
+
+        <div id="errorAlert" class="hidden mb-4 p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold"></div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Full Name</label>
+                <input type="text" id="regFullName" required placeholder="e.g. Jordan Lee" class="w-full px-4 py-2.5 rounded-2xl ios-glass border border-slate-300/80 dark:border-slate-700 text-sm font-semibold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-400">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Campus / Personal Email</label>
+                <input type="email" id="regEmail" required placeholder="jordan@campus.edu" class="w-full px-4 py-2.5 rounded-2xl ios-glass border border-slate-300/80 dark:border-slate-700 text-sm font-semibold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-400">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Academic Year</label>
+                    <select id="regYear" class="w-full px-3 py-2.5 rounded-2xl ios-glass border border-slate-300/80 dark:border-slate-700 text-sm font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400">
+                        <option value="1st Year">1st Year / Freshman</option>
+                        <option value="2nd Year">2nd Year / Sophomore</option>
+                        <option value="3rd Year">3rd Year / Junior</option>
+                        <option value="4th Year">4th Year / Senior</option>
+                        <option value="Postgraduate">Graduate / Master's</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Password</label>
+                    <input type="password" id="regPassword" required minlength="6" placeholder="At least 6 chars" class="w-full px-4 py-2.5 rounded-2xl ios-glass border border-slate-300/80 dark:border-slate-700 text-sm font-semibold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-400">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Monthly Allowance (Rs.)</label>
+                    <input type="number" id="regAllowance" value="1000" placeholder="1000" class="w-full px-4 py-2.5 rounded-2xl ios-glass border border-slate-300/80 dark:border-slate-700 text-sm font-semibold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Savings Goal (Rs.)</label>
+                    <input type="number" id="regSavingsGoal" value="200" placeholder="200" class="w-full px-4 py-2.5 rounded-2xl ios-glass border border-slate-300/80 dark:border-slate-700 text-sm font-semibold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-400">
+                </div>
+            </div>
+
+            <button type="submit" id="regBtn" class="w-full mt-2 py-3 rounded-2xl bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-sky-500/30 active:scale-95 transition-all">
+                Create Free Account
+            </button>
+        </form>
+
+        <div class="mt-6 text-center text-xs text-slate-500 dark:text-slate-400 font-semibold">
+            Already registered? 
+            <a href="/Auth/Login" class="text-sky-600 dark:text-sky-400 font-bold hover:underline">Sign In here</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            if (isDark) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                document.body.classList.remove('dark-mesh');
+                document.body.classList.add('light-mesh');
+                document.getElementById('themeIcon').className = 'fa-solid fa-moon';
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                document.body.classList.remove('light-mesh');
+                document.body.classList.add('dark-mesh');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun text-amber-300';
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('regFullName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const academicYear = document.getElementById('regYear').value;
+            const password = document.getElementById('regPassword').value;
+            const monthlyAllowanceBaseline = parseFloat(document.getElementById('regAllowance').value) || 1000;
+            const monthlySavingsGoal = parseFloat(document.getElementById('regSavingsGoal').value) || 200;
+
+            const btn = document.getElementById('regBtn');
+            const alertBox = document.getElementById('errorAlert');
+
+            btn.innerText = 'Creating Account...';
+            btn.disabled = true;
+            alertBox.classList.add('hidden');
+
+            try {
+                const res = await fetch('/Auth/Register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName, email, academicYear, password, monthlyAllowanceBaseline, monthlySavingsGoal })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    window.location.href = data.redirectUrl || '/';
+                } else {
+                    alertBox.innerText = data.message || 'Registration failed.';
+                    alertBox.classList.remove('hidden');
+                    btn.innerText = 'Create Free Account';
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                alertBox.innerText = 'Error creating account.';
+                alertBox.classList.remove('hidden');
+                btn.innerText = 'Create Free Account';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

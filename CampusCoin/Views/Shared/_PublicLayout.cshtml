@@ -1,0 +1,750 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var pageTitle = ViewData["Title"] as string ?? "CashCampus";
+
+    var isAppShell = currentController is "Dashboard" or "Transactions"
+                     or "Budgets" or "Reports" or "Insights"
+                     or "Categories" or "Profile" or "Admin";
+
+    var isAuthPage = currentController == "Account" || currentController == "Auth";
+}
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@pageTitle — CashCampus</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="stylesheet" href="/css/cc-animations.css" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+    <meta name="description" content="CashCampus — a calm, student-first money companion." />
+
+    <!-- ═══════════════════════════════════════════════════════════
+         THEME BOOTSTRAP — runs BEFORE any content is parsed.
+         ═══════════════════════════════════════════════════════════ -->
+    <script>
+        (function () {
+            var STORAGE_KEY = 'campuscoin-theme';
+            var saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) {
+                saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            var html = document.documentElement;
+            if (saved === 'dark') {
+                html.classList.remove('light');
+                html.classList.add('dark');
+            } else {
+                html.classList.remove('dark');
+                html.classList.add('light');
+            }
+            window.__ccTheme = saved;
+        })();
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- ── Global styles (order matters: base → overrides) ── -->
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+
+    @if (isAppShell)
+    {
+        <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
+    }
+
+    <link rel="stylesheet" href="~/css/contact.css" asp-append-version="true" />
+    <!-- Dark mode overrides — works for both public and app shells -->
+    <link rel="stylesheet" href="~/css/theme-dark.css" asp-append-version="true" />
+    <!-- Responsive overrides — MUST be last so it wins every conflict -->
+    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
+    <!-- Navbar overrides — responsive + themed CTA -->
+    <link rel="stylesheet" href="~/css/navbar.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+    @await RenderSectionAsync("Head", required: false)
+
+<style id="cc-a11y">
+  html { font-size: 16px; }
+  html.cc-font-sm { font-size: 14px; }
+  html.cc-font-lg { font-size: 18px; }
+  html.cc-font-xl { font-size: 20px; }
+</style>
+<script>
+(function(){
+  const KEY='cc-font-size';
+  function apply(size){
+    document.documentElement.classList.remove('cc-font-sm','cc-font-lg','cc-font-xl');
+    if(size==='sm') document.documentElement.classList.add('cc-font-sm');
+    else if(size==='lg') document.documentElement.classList.add('cc-font-lg');
+    else if(size==='xl') document.documentElement.classList.add('cc-font-xl');
+    localStorage.setItem(KEY, size||'md');
+  }
+  apply(localStorage.getItem(KEY)||'md');
+  window.ccSetFont = apply;
+})();
+</script>
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BODY THEME SYNC — runs before any visible content.
+         ═══════════════════════════════════════════════════════════ -->
+    <script>
+        (function () {
+            if (window.__ccTheme === 'dark') {
+                document.body.classList.add('dark-mesh');
+            } else {
+                document.body.classList.add('light-mesh');
+            }
+        })();
+    </script>
+
+    <!-- ══════════ LOGO SPRITE ══════════ -->
+    <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+        <symbol id="cc-logo" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="ccCoinBG" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#6b3a92" />
+                    <stop offset="1" stop-color="#241232" />
+                </linearGradient>
+                <linearGradient id="ccCoinAccent" x1="10" y1="10" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#d4ff3d" />
+                    <stop offset="1" stop-color="#10b981" />
+                </linearGradient>
+                <radialGradient id="ccCoinShine" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                                gradientTransform="translate(14 12) rotate(45) scale(22)">
+                    <stop offset="0" stop-color="#fff" stop-opacity=".45" />
+                    <stop offset="1" stop-color="#fff" stop-opacity="0" />
+                </radialGradient>
+            </defs>
+            <circle cx="22" cy="22" r="21" fill="url(#ccCoinBG)" />
+            <circle cx="22" cy="22" r="21" fill="url(#ccCoinShine)" />
+            <circle cx="22" cy="22" r="16.5" fill="none" stroke="rgba(255,255,255,.2)"
+                    stroke-width="1" stroke-dasharray="1.5 3" />
+            <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5"
+                  stroke="url(#ccCoinAccent)" stroke-width="2.6" stroke-linecap="round" fill="none" />
+            <path d="M31 12c0 2.2-1.3 3.5-3.5 3.5 2.2 0 3.5 1.3 3.5 3.5 0-2.2 1.3-3.5 3.5-3.5-2.2 0-3.5-1.3-3.5-3.5z"
+                  fill="#d4ff3d" />
+        </symbol>
+    </svg>
+
+    @if (isAppShell)
+    {
+        <!-- ══════════ APP SHELL ══════════ -->
+        <div class="cc-app">
+
+            <aside class="sidebar">
+                <a class="brand" asp-controller="Dashboard" asp-action="Index">
+                    <span class="brand-mark"><svg><use href="#cc-logo" /></svg></span>
+                    <span class="brand-name"><b>cash</b><span>campus</span></span>
+                </a>
+
+                <div class="side-label">Your space</div>
+                <nav class="side-nav">
+                    <a class="side-link @(currentController == "Dashboard" ? "active" : "")"
+                       asp-controller="Dashboard" asp-action="Index">
+                        <i class="ri-layout-grid-line"></i> Overview
+                    </a>
+                    <a class="side-link @(currentController == "Transactions" ? "active" : "")"
+                       asp-controller="Transactions" asp-action="Index">
+                        <i class="ri-exchange-dollar-line"></i> Transactions
+                    </a>
+                    <a class="side-link @(currentController == "Budgets" ? "active" : "")"
+                       asp-controller="Budgets" asp-action="Index">
+                        <i class="ri-pie-chart-line"></i> Budgets
+                    </a>
+                    <a class="side-link @(currentController == "Reports" ? "active" : "")"
+                       asp-controller="Reports" asp-action="Index">
+                        <i class="ri-bar-chart-2-line"></i> Reports
+                    </a>
+                    <a class="side-link @(currentController == "Insights" ? "active" : "")"
+                       asp-controller="Insights" asp-action="Index">
+                        <i class="ri-sparkling-2-line"></i> AI Insights
+                    </a>
+                    <a class="side-link @(currentController == "Categories" ? "active" : "")"
+                       asp-controller="Categories" asp-action="Index">
+                        <i class="ri-price-tag-3-line"></i> Categories
+                    </a>
+                </nav>
+
+                <div class="side-label">Account</div>
+                <nav class="side-nav">
+                    <a class="side-link @(currentController == "Profile" && currentAction == "Index" ? "active" : "")"
+                       asp-controller="Profile" asp-action="Index">
+                        <i class="ri-user-3-line"></i> Profile
+                    </a>
+                    <a class="side-link @(currentController == "Profile" && currentAction == "Settings" ? "active" : "")"
+                       asp-controller="Profile" asp-action="Settings">
+                        <i class="ri-settings-4-line"></i> Settings
+                    </a>
+                </nav>
+
+                <div class="side-bottom">
+                    <div class="side-tip">
+                        <span class="tip-icon"><i class="ri-sparkling-2-fill"></i></span>
+                        <div>
+                            <b>Little wins count.</b>
+                            <small>You're 68% toward your savings goal.</small>
+                        </div>
+                    </div>
+                    <a class="profile-chip" asp-controller="Profile" asp-action="Index">
+                        <span class="avatar">AK</span>
+                        <span class="profile-meta"><b>Aimal Khan</b><small>Student account</small></span>
+                        <i class="ri-more-2-fill"></i>
+                    </a>
+                </div>
+            </aside>
+
+            <main class="main">
+                <header class="topbar">
+                    <button class="icon-btn menu-btn" data-sidebar-toggle aria-label="Menu">
+                        <i class="ri-menu-4-line"></i>
+                    </button>
+
+                    <div class="crumbs">
+                        <span>CashCampus</span>
+                        <i class="ri-arrow-right-s-line"></i>
+                        <b>@pageTitle</b>
+                    </div>
+
+                    <div class="top-actions">
+                        <button class="icon-btn theme-toggle-btn" data-theme-toggle aria-label="Toggle theme">
+                            <i class="ri-sun-line" data-theme-icon="light"></i>
+                            <i class="ri-moon-line" data-theme-icon="dark"></i>
+                        </button>
+                        <button class="icon-btn notif-btn" aria-label="Notifications">
+                            <i class="ri-notification-3-line"></i>
+                            <span></span>
+                        </button>
+                        <a class="avatar" asp-controller="Profile" asp-action="Index">AK</a>
+                    </div>
+                </header>
+
+                <div class="page">
+                    @RenderBody()
+                </div>
+            </main>
+
+        </div>
+    }
+    else if (isAuthPage)
+    {
+        <!-- ══════════ AUTH SHELL — no navbar, no footer ══════════ -->
+        @RenderBody()
+    }
+    else
+    {
+        <!-- ══════════ PUBLIC SHELL ══════════ -->
+        <div class="cc-landing">
+
+            <!-- ────────── STICKY NAVBAR ────────── -->
+            <header class="nav" id="ccNav">
+                <span class="nav-progress" id="ccNavProgress"></span>
+                <div class="nav-inner">
+
+                    <a class="brand" asp-controller="Home" asp-action="Index">
+                        <span class="brand-mark"><svg><use href="#cc-logo" /></svg></span>
+                        <span class="brand-name"><b>Cash</b><span>Campus</span></span>
+                    </a>
+
+                    <nav class="nav-links" id="ccNavLinks">
+                        <a asp-controller="Home" asp-action="Index"
+                           data-nav-section="home"
+                           class="@(currentController == "Home" && currentAction == "Index" ? "active" : "")">
+                            Home
+                        </a>
+                        <a href="/#features" data-nav-section="features">Features</a>
+                        <a href="/#ai" data-nav-section="ai">AI Insights</a>
+                        <a href="/#about" data-nav-section="about">About</a>
+                        <a href="/#contact" data-nav-section="contact">Contact</a>
+                    </nav>
+
+                    <div class="nav-actions">
+                        <button class="nav-theme-toggle" data-theme-toggle aria-label="Toggle theme">
+                            <i class="ri-sun-line" data-theme-icon="light"></i>
+                            <i class="ri-moon-line" data-theme-icon="dark"></i>
+                        </button>
+
+                        <a class="nav-link-plain" asp-controller="Account" asp-action="Login">
+                            Sign in
+                        </a>
+
+                        <a class="btn btn-primary btn-sm nav-cta"
+                           asp-controller="Account" asp-action="Register">
+                            <span class="nav-cta-label">Get started</span>
+                            <i class="ri-arrow-right-line nav-cta-icon"></i>
+                        </a>
+
+                        <button class="nav-toggle" data-nav-open aria-label="Open menu">
+                            <i class="ri-menu-3-line"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </header>
+
+            <!-- ────────── MOBILE DRAWER ────────── -->
+            <div class="nav-drawer" id="ccDrawer">
+                <div class="nav-drawer-bg" data-nav-close></div>
+                <div class="nav-drawer-panel">
+
+                    <div class="nav-drawer-head">
+                        <a class="brand" asp-controller="Home" asp-action="Index">
+                            <span class="brand-mark"><svg><use href="#cc-logo" /></svg></span>
+                            <span class="brand-name"><b>Cash</b><span>Campus</span></span>
+                        </a>
+                        <button class="nav-drawer-close" data-nav-close aria-label="Close">
+                            <i class="ri-close-line"></i>
+                        </button>
+                    </div>
+
+                    <button class="nav-theme-toggle nav-theme-toggle-wide" data-theme-toggle aria-label="Toggle theme">
+                        <i class="ri-sun-line" data-theme-icon="light"></i>
+                        <span class="theme-label-light">Light mode</span>
+                        <i class="ri-moon-line" data-theme-icon="dark"></i>
+                        <span class="theme-label-dark">Dark mode</span>
+                    </button>
+
+                    <a class="nav-drawer-link" asp-controller="Home" asp-action="Index"
+                       data-nav-section="home" data-nav-close>
+                        <i class="ri-home-4-line"></i> Home
+                    </a>
+                    <a class="nav-drawer-link" href="/#features"
+                       data-nav-section="features" data-nav-close>
+                        <i class="ri-layout-grid-line"></i> Features
+                    </a>
+                    <a class="nav-drawer-link" href="/#ai"
+                       data-nav-section="ai" data-nav-close>
+                        <i class="ri-sparkling-2-line"></i> AI Insights
+                    </a>
+                    <a class="nav-drawer-link" href="/#about"
+                       data-nav-section="about" data-nav-close>
+                        <i class="ri-information-line"></i> About
+                    </a>
+                    <a class="nav-drawer-link" href="/#contact"
+                       data-nav-section="contact" data-nav-close>
+                        <i class="ri-mail-line"></i> Contact
+                    </a>
+
+                    <div class="nav-drawer-foot">
+                        <a class="btn btn-ghost" asp-controller="Account" asp-action="Login">
+                            <i class="ri-login-box-line"></i> Sign in
+                        </a>
+
+                        <a class="btn btn-primary nav-cta"
+                           asp-controller="Account" asp-action="Register">
+                            <span class="nav-cta-label">Get started</span>
+                            <i class="ri-arrow-right-line nav-cta-icon"></i>
+                        </a>
+
+                        <!-- ══ Close menu button ══ -->
+                        <button type="button" class="btn-close-drawer" data-nav-close aria-label="Close menu">
+                            <i class="ri-arrow-left-line"></i> Close menu
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ────────── PAGE CONTENT ────────── -->
+            @RenderBody()
+
+            <!-- ────────── FOOTER ────────── -->
+            <footer class="footer">
+
+                <!-- Newsletter band -->
+                <div class="footer-news">
+                    <div class="footer-news-inner">
+                        <div class="footer-news-text">
+                            <span class="footer-news-pill">
+                                <i class="ri-mail-send-line"></i> Monthly digest
+                            </span>
+                            <h3>Small money tips, <em>once a month.</em></h3>
+                            <p>Real habits from real students. No spam, no lectures — just one short email a month.</p>
+                        </div>
+
+                        <form class="footer-news-form" id="newsletterForm" novalidate>
+                            <div class="nl-row">
+                                <i class="ri-mail-line"></i>
+                                <input type="text" inputmode="email" id="nl-email" name="email" placeholder="you@@university.edu" aria-label="Email" autocomplete="email" spellcheck="false">
+                                <button type="submit" id="nl-submit">Subscribe <i class="ri-arrow-right-line"></i></button>
+                            </div>
+                            <div class="nl-field-error" id="nl-emailError" role="alert"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Main footer -->
+                <div class="footer-wrap">
+
+                    <div class="footer-top">
+
+                        <div class="footer-brand">
+                            <a class="brand" asp-controller="Home" asp-action="Index">
+                                <span class="brand-mark"><svg><use href="#cc-logo" /></svg></span>
+                                <span class="brand-name"><b>Cash</b><span>Campus</span></span>
+                            </a>
+
+                            <p>Smart spending, student style. A calm, no-bank-required way to track income, notice patterns, and save more — one small choice at a time.</p>
+
+                            <div class="footer-badges">
+                                <span><i class="ri-shield-check-line"></i> No bank link</span>
+                                <span><i class="ri-graduation-cap-line"></i> Student-first</span>
+                                <span><i class="ri-lock-line"></i> Private by default</span>
+                            </div>
+
+                            <div class="footer-trust-row" aria-label="CashCampus promises">
+                                <span class="footer-trust-pill"><i class="ri-shield-check-line"></i> No bank link</span>
+                                <span class="footer-trust-pill"><i class="ri-lock-line"></i> Private by default</span>
+                                <span class="footer-trust-pill"><i class="ri-graduation-cap-line"></i> Student-first</span>
+                            </div>
+                        </div>
+
+                        <div class="footer-cols">
+                            <div class="footer-col">
+                                <h5>Product</h5>
+                                <ul>
+                                    <li><a href="/#features">Features</a></li>
+                                    <li><a href="/#ai">AI insights</a></li>
+                                    <li><a href="/#categories">Categories</a></li>
+                                    <li><a href="/#sitemap">Sitemap</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="footer-col">
+                                <h5>Account</h5>
+                                <ul>
+                                    <li><a asp-controller="Account" asp-action="Login">Sign in</a></li>
+                                    <li><a asp-controller="Account" asp-action="Register">Create account</a></li>
+                                    <li><a href="/Home/Privacy">Privacy</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="footer-col">
+                                <h5>Company</h5>
+                                <ul>
+                                    <li><a href="/#how">How it works</a></li>
+                                    <li><a href="/#about">About us</a></li>
+                                    <li><a href="/#contact">Contact</a></li>
+                                    <li><a href="/#sitemap">Sitemap</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Bottom bar -->
+                    <div class="footer-bottom">
+                        <span>© 2026 <b>CashCampus</b> · Made with intention.</span>
+                        <div class="footer-legal">
+                            <a href="/Home/Terms">Terms</a>
+                            <span>·</span>
+                            <a href="/Home/Privacy">Privacy</a>
+                            <span>·</span>
+                           <a href="/Home/Cookies">Cookies</a>
+                        </div>
+                    </div>
+
+                </div>
+            </footer>
+
+            <!-- Back to top -->
+            <button class="back-to-top" id="ccBackTop" aria-label="Back to top">
+                <i class="ri-arrow-up-line"></i>
+            </button>
+
+        </div>
+    }
+
+    <div class="toast" data-toast>
+        <i class="ri-check-line"></i><span>Changes saved</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="~/javascript/site.js" asp-append-version="true"></script>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         GLOBAL THEME TOGGLE
+         ═══════════════════════════════════════════════════════════ -->
+    <script>
+        (function () {
+            var STORAGE_KEY = 'campuscoin-theme';
+            var html = document.documentElement;
+            var body = document.body;
+
+            function applyTheme(theme, persist) {
+                var isDark = theme === 'dark';
+
+                html.classList.toggle('dark', isDark);
+                html.classList.toggle('light', !isDark);
+
+                body.classList.toggle('dark-mesh', isDark);
+                body.classList.toggle('light-mesh', !isDark);
+
+                if (persist) {
+                    localStorage.setItem(STORAGE_KEY, theme);
+                }
+
+                /* Re-theme any Chart.js instances on the page */
+                if (window.Chart && Chart.instances) {
+                    var textColor = isDark ? 'rgba(226,232,240,.65)' : 'rgba(26,11,46,.55)';
+                    var gridColor = isDark ? 'rgba(255,255,255,.06)' : 'rgba(26,11,46,.07)';
+                    Object.values(Chart.instances).forEach(function (c) {
+                        if (!c || !c.options) return;
+                        if (c.options.plugins && c.options.plugins.legend && c.options.plugins.legend.labels) {
+                            c.options.plugins.legend.labels.color = textColor;
+                        }
+                        if (c.options.scales) {
+                            ['x', 'y'].forEach(function (axis) {
+                                var a = c.options.scales[axis];
+                                if (!a) return;
+                                if (a.ticks) a.ticks.color = textColor;
+                                if (a.grid)  a.grid.color  = gridColor;
+                            });
+                        }
+                        try { c.update(); } catch (_) { /* noop */ }
+                    });
+                }
+            }
+
+            function syncToggleIcons() {
+                document.querySelectorAll('[data-theme-toggle]').forEach(function (btn) {
+                    var isDark = html.classList.contains('dark');
+                    btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+                });
+            }
+
+            document.addEventListener('click', function (e) {
+                var btn = e.target.closest('[data-theme-toggle]');
+                if (!btn) return;
+
+                var next = html.classList.contains('dark') ? 'light' : 'dark';
+                applyTheme(next, true);
+                syncToggleIcons();
+            });
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', syncToggleIcons);
+            } else {
+                syncToggleIcons();
+            }
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+                if (localStorage.getItem(STORAGE_KEY)) return;
+                applyTheme(e.matches ? 'dark' : 'light', false);
+                syncToggleIcons();
+            });
+        })();
+    </script>
+
+    @if (!isAppShell && !isAuthPage)
+    {
+        <script>
+            (function () {
+                const nav = document.getElementById('ccNav');
+                const progress = document.getElementById('ccNavProgress');
+                const backTop = document.getElementById('ccBackTop');
+
+                // ─── Nav scroll spy ───
+                const sectionLinks = document.querySelectorAll('[data-nav-section]');
+                const sectionIds = ['features', 'ai', 'about', 'contact'];
+                const sectionEls = {};
+
+                sectionIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) sectionEls[id] = el;
+                });
+
+                const setActiveSection = (id) => {
+                    sectionLinks.forEach(l => {
+                        l.classList.toggle('active', l.dataset.navSection === id);
+                    });
+                };
+
+                const updateActiveSection = () => {
+                    if (window.scrollY < 220) {
+                        setActiveSection('home');
+                        return;
+                    }
+
+                    const y = window.scrollY + 140;
+                    let current = 'home';
+
+                    sectionIds.forEach(id => {
+                        const el = sectionEls[id];
+                        if (el && el.offsetTop <= y) current = id;
+                    });
+
+                    setActiveSection(current);
+                };
+
+                // ─── Unified scroll handler ───
+                const onScroll = () => {
+                    if (nav) nav.classList.toggle('scrolled', window.scrollY > 10);
+
+                    if (progress) {
+                        const max = document.documentElement.scrollHeight - window.innerHeight;
+                        const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+                        progress.style.width = pct + '%';
+                    }
+
+                    if (backTop) backTop.classList.toggle('show', window.scrollY > 600);
+
+                    updateActiveSection();
+                };
+                onScroll();
+                window.addEventListener('scroll', onScroll, { passive: true });
+                window.addEventListener('resize', onScroll, { passive: true });
+
+                // ─── Back to top ───
+                backTop?.addEventListener('click', () =>
+                    window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+                // ─── Section link click → smooth scroll + immediate active ───
+                sectionLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        const id = link.dataset.navSection;
+
+                        if (id === 'home') {
+                            if (window.location.pathname === '/' || window.location.pathname === '') {
+                                e.preventDefault();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                setActiveSection('home');
+                                history.replaceState(null, '', '/');
+                            }
+                            return;
+                        }
+
+                        const target = sectionEls[id];
+                        if (!target) return;
+
+                        e.preventDefault();
+
+                        const navH = nav ? nav.offsetHeight : 70;
+                        const top = target.getBoundingClientRect().top + window.scrollY - navH - 12;
+
+                        window.scrollTo({ top, behavior: 'smooth' });
+                        setActiveSection(id);
+                        history.replaceState(null, '', '#' + id);
+                    });
+                });
+
+                // ═══════════════════════════════════════════════════════
+                // MOBILE DRAWER
+                // ═══════════════════════════════════════════════════════
+                const drawer = document.getElementById('ccDrawer');
+
+                const openDrawer = () => {
+                    drawer?.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                };
+
+                const closeDrawer = () => {
+                    drawer?.classList.remove('open');
+                    document.body.style.overflow = '';
+                };
+
+                document.querySelectorAll('[data-nav-open]').forEach(b =>
+                    b.addEventListener('click', openDrawer));
+                document.querySelectorAll('[data-nav-close]').forEach(b =>
+                    b.addEventListener('click', closeDrawer));
+
+                document.addEventListener('keydown', e => {
+                    if (e.key === 'Escape') closeDrawer();
+                });
+
+                /* Auto-close the drawer when leaving mobile width */
+                const DESKTOP_BP = 1025;
+                let wasMobile = window.innerWidth < DESKTOP_BP;
+
+                window.addEventListener('resize', () => {
+                    const isMobile = window.innerWidth < DESKTOP_BP;
+                    if (wasMobile && !isMobile) closeDrawer();
+                    wasMobile = isMobile;
+                }, { passive: true });
+
+                // ─── Newsletter: JS validation + real subscribe ───
+                (function () {
+                    const form = document.getElementById('newsletterForm');
+                    if (!form) return;
+                    const emailInput = document.getElementById('nl-email');
+                    const err = document.getElementById('nl-emailError');
+                    const btn = document.getElementById('nl-submit');
+                    const AT = String.fromCharCode(64);
+                    const emailRe = new RegExp('^[^\\s' + AT + ']+' + AT + '[^\\s' + AT + ']+\\.[^\\s' + AT + ']+$');
+
+                    function showErr(msg) {
+                        if (emailInput) emailInput.classList.add('invalid');
+                        form.classList.add('invalid');
+                        if (err) { err.textContent = msg; err.classList.add('show'); }
+                    }
+                    function clearErr() {
+                        if (emailInput) emailInput.classList.remove('invalid');
+                        form.classList.remove('invalid');
+                        if (err) { err.textContent = ''; err.classList.remove('show'); }
+                    }
+                    if (emailInput) emailInput.addEventListener('input', clearErr);
+
+                    form.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        clearErr();
+                        let email = (emailInput && emailInput.value || '').trim();
+                        // Ignore accidental whitespace / placeholder-looking empty
+                        if (!email || email.toLowerCase() === 'you@university.edu') {
+                            showErr('Please type your email address.');
+                            if (emailInput) emailInput.focus();
+                            return;
+                        }
+                        if (!emailRe.test(email)) {
+                            showErr('Enter a valid email like name@university.edu');
+                            if (emailInput) emailInput.focus();
+                            return;
+                        }
+
+                        const original = btn ? btn.innerHTML : '';
+                        if (btn) { btn.disabled = true; btn.innerHTML = 'Subscribing…'; }
+                        try {
+                            const res = await fetch('/Home/Newsletter', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                                body: JSON.stringify({ email })
+                            });
+                            const raw = await res.text();
+                            let data = {};
+                            try { data = JSON.parse(raw); } catch (_) {}
+                            if (res.ok && data.success) {
+                                form.reset();
+                                window.dispatchEvent(new CustomEvent('cc:toast', { detail: data.message || 'Subscribed — check your inbox ✨' }));
+                            } else {
+                                showErr(data.message || 'Could not subscribe. Please try again.');
+                            }
+                        } catch (err) {
+                            showErr('Network error. Please try again.');
+                        } finally {
+                            if (btn) { btn.disabled = false; btn.innerHTML = original; }
+                        }
+                    });
+                })();
+
+                // ─── Toast bridge (used by newsletter form) ───
+                window.addEventListener('cc:toast', (e) => {
+                    const t = document.querySelector('[data-toast]');
+                    if (!t) return;
+                    t.querySelector('span').textContent = e.detail || 'Changes saved';
+                    t.classList.add('show');
+                    clearTimeout(window.__ccToastT);
+                    window.__ccToastT = setTimeout(() => t.classList.remove('show'), 2600);
+                });
+            })();
+        </script>
+    }
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

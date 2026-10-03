@@ -1,0 +1,222 @@
+@{
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+    ViewData["Title"] = "Terms of Service";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/legal.css" asp-append-version="true" />
+}
+
+<div class="legal-page">
+    <span class="legal-orb legal-orb-1" aria-hidden="true"></span>
+    <span class="legal-orb legal-orb-2" aria-hidden="true"></span>
+    <span class="legal-orb legal-orb-3" aria-hidden="true"></span>
+
+    <div class="legal-shell">
+
+        <!-- ══════════ HERO ══════════ -->
+        <div class="legal-hero">
+            <a asp-controller="Home" asp-action="Index" class="legal-back">
+                <i class="ri-arrow-left-line"></i> Back to home
+            </a>
+
+            <div>
+                <span class="legal-eyebrow">
+                    <i class="ri-file-text-line"></i> Terms
+                </span>
+            </div>
+
+            <h1>Terms of <em>Service.</em></h1>
+            <p>The plain-English rules of using CashCampus — no wall of legalese.</p>
+
+            <div class="legal-meta">
+                <span class="legal-meta-chip">
+                    <i class="ri-calendar-line"></i>
+                    Last updated <b>January 2026</b>
+                </span>
+                <span class="legal-meta-chip mint">
+                    <i class="ri-shield-check-line"></i>
+                    <b>7 sections</b> · short read
+                </span>
+            </div>
+        </div>
+
+        <!-- ══════════ TOC + CONTENT ══════════ -->
+        <div class="legal-body-grid">
+
+            <aside class="legal-toc">
+                <div class="legal-toc-label">
+                    <i class="ri-list-check-2"></i> On this page
+                </div>
+                <ol class="legal-toc-list">
+                    <li><a class="legal-toc-link" href="#what-cc-is">What CampusCoin is</a></li>
+                    <li><a class="legal-toc-link" href="#your-account">Your account</a></li>
+                    <li><a class="legal-toc-link" href="#acceptable-use">Acceptable use</a></li>
+                    <li><a class="legal-toc-link" href="#no-advice">No financial advice</a></li>
+                    <li><a class="legal-toc-link" href="#availability">Service availability</a></li>
+                    <li><a class="legal-toc-link" href="#changes">Changes to these terms</a></li>
+                    <li><a class="legal-toc-link" href="#contact">Contact</a></li>
+                </ol>
+            </aside>
+
+            <article class="legal-reader">
+
+                <section class="legal-section" id="what-cc-is">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">01</span>
+                        <div class="legal-section-title">
+                            <h2>What CampusCoin is</h2>
+                            <small>A tracking tool, not a bank</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>CampusCoin is a personal finance tracking tool for students. It is <b>not</b> a bank, not a financial institution, and not a licensed financial advisor.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="your-account">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">02</span>
+                        <div class="legal-section-title">
+                            <h2>Your account</h2>
+                            <small>Yours to keep, or delete</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>You are responsible for keeping your password safe. You must be 13 or older to use CampusCoin. You may delete your account at any time from <b>Profile → Settings</b>.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="acceptable-use">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">03</span>
+                        <div class="legal-section-title">
+                            <h2>Acceptable use</h2>
+                            <small>Play fair</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>Use CampusCoin only for personal, non-commercial tracking. Don't attempt to break, scrape, or abuse the service.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="no-advice">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">04</span>
+                        <div class="legal-section-title">
+                            <h2>No financial advice</h2>
+                            <small>Just friendly patterns</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>Insights and suggestions shown in the app are informational only. They are <b>not</b> financial advice. Always use your own judgement before making money decisions.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="availability">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">05</span>
+                        <div class="legal-section-title">
+                            <h2>Service availability</h2>
+                            <small>We try our best</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>We aim to keep CampusCoin running smoothly, but we don't guarantee 100% uptime. We may pause the service briefly for maintenance or improvements.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="changes">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">06</span>
+                        <div class="legal-section-title">
+                            <h2>Changes to these terms</h2>
+                            <small>Heads-up, never sneaky</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>We may update these terms occasionally. When we do, we'll flag the change inside the app so you can review it before continuing.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="contact">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">07</span>
+                        <div class="legal-section-title">
+                            <h2>Contact</h2>
+                            <small>Ask us anything</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>Questions about the terms? We'll happily explain any section in plain language.</p>
+                        <div class="legal-callout">
+                            <span class="legal-callout-icon"><i class="ri-mail-send-line"></i></span>
+                            <div class="legal-callout-text">
+                                <b>hello@campuscoin.app</b>
+                                <small>Reply within 24 hours — usually faster.</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </article>
+
+        </div>
+
+        <!-- ══════════ FOOT ══════════ -->
+        <div class="legal-foot">
+            <p>
+                Curious how we handle your data?
+                <a asp-controller="Home" asp-action="Privacy">Read our Privacy Policy →</a>
+            </p>
+            <span class="legal-foot-credit">
+                © 2026 CashCampus · Made with <i class="ri-heart-fill"></i> intention
+            </span>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const links = document.querySelectorAll('.legal-toc-link');
+            const sections = document.querySelectorAll('.legal-section');
+            if (!links.length || !sections.length) return;
+
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const id = link.getAttribute('href').slice(1);
+                    const target = document.getElementById(id);
+                    if (!target) return;
+                    e.preventDefault();
+
+                    const y = target.getBoundingClientRect().top + window.scrollY - 100;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                    history.replaceState(null, '', '#' + id);
+
+                    links.forEach(l => l.classList.toggle('active', l === link));
+                });
+            });
+
+            const setActive = (id) => {
+                links.forEach(l => {
+                    l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+                });
+            };
+
+            const updateActive = () => {
+                const scrollY = window.scrollY + 140;
+                let current = sections[0]?.id;
+                sections.forEach(sec => {
+                    if (sec.offsetTop <= scrollY) current = sec.id;
+                });
+                if (current) setActive(current);
+            };
+
+            window.addEventListener('scroll', updateActive, { passive: true });
+            window.addEventListener('resize', updateActive, { passive: true });
+            updateActive();
+        })();
+    </script>
+}

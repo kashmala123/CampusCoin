@@ -1,0 +1,278 @@
+﻿/* ══════════════════════════════════════════════════════════════
+   CAMPUS COIN — UNIFIED GLASS CARDS
+   Load AFTER campus-coin.css
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Tokens ───────────────────────────────────────────────── */
+.cc-landing {
+    --g-bg-1: rgba(255, 255, 255, 0.55);
+    --g-bg-2: rgba(255, 255, 255, 0.32);
+    --g-bg-3: rgba(250, 240, 255, 0.42);
+    --g-border: rgba(255, 255, 255, 0.75);
+    --g-border-hov: rgba(255, 255, 255, 0.98);
+    --g-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+    --g-top: inset 0 1px 0 rgba(255, 255, 255, 1);
+    --g-depth: inset -2px -3px 12px rgba(107, 58, 146, 0.09);
+    --g-sh-mid: 0 14px 34px -12px rgba(107, 58, 146, 0.22);
+    --g-sh-deep: 0 40px 70px -30px rgba(76, 45, 120, 0.18);
+    --g-blur: blur(28px) saturate(180%);
+    --g-radius: 26px;
+}
+
+    /* ── Base glass (applied to every card) ──────────────────── */
+    .cc-landing .bento-card,
+    .cc-landing .cat-panel,
+    .cc-landing .cat-custom,
+    .cc-landing .how-step-marker,
+    .cc-landing .how-step-body,
+    .cc-landing .how-summary,
+    .cc-landing .test-summary,
+    .cc-landing .test,
+    .cc-landing .about-story-block,
+    .cc-landing .about-stat,
+    .cc-landing .about-value,
+    .cc-landing .sitemap-col,
+    .cc-landing .sitemap-note,
+    .cc-landing .contact-method,
+    .cc-landing .contact-form-wrap,
+    .cc-landing .ai-feature,
+    .cc-landing .ai-chat {
+        position: relative;
+        isolation: isolate;
+        background: linear-gradient(135deg, var(--g-bg-1) 0%, var(--g-bg-2) 45%, var(--g-bg-3) 100%);
+        -webkit-backdrop-filter: var(--g-blur);
+        backdrop-filter: var(--g-blur);
+        border: 1px solid var(--g-border);
+        border-radius: var(--g-radius);
+        box-shadow: var(--g-top), var(--g-rim), var(--g-depth), var(--g-sh-mid), var(--g-sh-deep);
+        transition: transform .5s cubic-bezier(.22, 1, .36, 1), box-shadow .5s cubic-bezier(.22, 1, .36, 1), border-color .35s ease;
+        overflow: hidden;
+    }
+
+        /* Specular highlight (top-left shine — the "glass catching light") */
+        .cc-landing .bento-card::before,
+        .cc-landing .cat-panel::before,
+        .cc-landing .cat-custom::before,
+        .cc-landing .how-step-body::before,
+        .cc-landing .how-summary::before,
+        .cc-landing .test-summary::before,
+        .cc-landing .test::before,
+        .cc-landing .about-story-block::before,
+        .cc-landing .about-stat::before,
+        .cc-landing .about-value::before,
+        .cc-landing .sitemap-col::before,
+        .cc-landing .sitemap-note::before,
+        .cc-landing .contact-method::before,
+        .cc-landing .contact-form-wrap::before,
+        .cc-landing .ai-feature::before,
+        .cc-landing .ai-chat::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 65%;
+            height: 65%;
+            background: radial-gradient( ellipse at top left, rgba(255, 255, 255, 0.70) 0%, rgba(255, 255, 255, 0.14) 35%, transparent 70%);
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Depth tint (bottom-right) */
+        .cc-landing .bento-card::after,
+        .cc-landing .cat-panel::after,
+        .cc-landing .cat-custom::after,
+        .cc-landing .how-step-body::after,
+        .cc-landing .test::after,
+        .cc-landing .about-story-block::after,
+        .cc-landing .about-value::after,
+        .cc-landing .sitemap-col::after,
+        .cc-landing .contact-method::after,
+        .cc-landing .contact-form-wrap::after,
+        .cc-landing .ai-feature::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(135deg, transparent 55%, rgba(107, 58, 146, 0.06) 100%);
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Content sits above glass layers */
+        .cc-landing .bento-card > *,
+        .cc-landing .cat-panel > *,
+        .cc-landing .cat-custom > *,
+        .cc-landing .how-step-body > *,
+        .cc-landing .how-summary > *,
+        .cc-landing .test-summary > *,
+        .cc-landing .test > *,
+        .cc-landing .about-story-block > *,
+        .cc-landing .about-stat > *,
+        .cc-landing .about-value > *,
+        .cc-landing .sitemap-col > *,
+        .cc-landing .sitemap-note > *,
+        .cc-landing .contact-method > *,
+        .cc-landing .contact-form-wrap > *,
+        .cc-landing .ai-feature > *,
+        .cc-landing .ai-chat > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Hover: lift + brighter glass ─────────────────────────── */
+        .cc-landing .bento-card:hover,
+        .cc-landing .cat-panel:hover,
+        .cc-landing .cat-custom:hover,
+        .cc-landing .how-step-body:hover,
+        .cc-landing .test:hover,
+        .cc-landing .about-story-block:hover,
+        .cc-landing .about-stat:hover,
+        .cc-landing .about-value:hover,
+        .cc-landing .sitemap-col:hover,
+        .cc-landing .contact-method:hover,
+        .cc-landing .contact-form-wrap:hover,
+        .cc-landing .ai-feature:hover {
+            transform: translateY(-6px);
+            border-color: var(--g-border-hov);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(255, 255, 255, 0.35), inset -2px -3px 14px rgba(107, 58, 146, 0.10), 0 24px 50px -14px rgba(107, 58, 146, 0.32), 0 60px 100px -40px rgba(76, 45, 120, 0.26);
+        }
+
+        /* ── Per-panel subtle color tint (keeps glass but gives hue) ─ */
+        .cc-landing .cat-panel.income {
+            background: linear-gradient(135deg, rgba(238, 250, 243, 0.62) 0%, rgba(255, 255, 255, 0.34) 45%, rgba(240, 251, 244, 0.48) 100%);
+        }
+
+        .cc-landing .cat-panel.expense {
+            background: linear-gradient(135deg, rgba(255, 240, 244, 0.62) 0%, rgba(255, 255, 255, 0.34) 45%, rgba(252, 240, 245, 0.48) 100%);
+        }
+
+    .cc-landing .bento-1 {
+        background: linear-gradient(135deg, rgba(245, 238, 255, 0.62) 0%, rgba(255, 255, 255, 0.34) 45%, rgba(250, 240, 255, 0.48) 100%);
+    }
+
+    .cc-landing .bento-2 {
+        background: linear-gradient(135deg, rgba(240, 252, 246, 0.62) 0%, rgba(255, 255, 255, 0.34) 45%, rgba(240, 248, 244, 0.48) 100%);
+    }
+
+    .cc-landing .bento-3 {
+        background: linear-gradient(135deg, rgba(255, 242, 246, 0.62) 0%, rgba(255, 255, 255, 0.34) 45%, rgba(252, 240, 245, 0.48) 100%);
+    }
+
+    .cc-landing .bento-6 {
+        background: linear-gradient(135deg, rgba(240, 252, 245, 0.68) 0%, rgba(255, 255, 255, 0.34) 45%, rgba(238, 250, 243, 0.52) 100%);
+    }
+
+    /* ── Inner previews: glass-on-glass ───────────────────────── */
+    .cc-landing .bento-preview,
+    .cc-landing .how-preview,
+    .cc-landing .test-metric,
+    .cc-landing .hp-tip {
+        background: rgba(255, 255, 255, 0.42);
+        -webkit-backdrop-filter: blur(16px) saturate(160%);
+        backdrop-filter: blur(16px) saturate(160%);
+        border: 1px solid rgba(255, 255, 255, 0.70);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.90), inset 0 -1px 3px rgba(107, 58, 146, 0.06), 0 8px 20px -10px rgba(107, 58, 146, 0.18);
+    }
+
+    /* ── Small chips / badges stay glassy too ─────────────────── */
+    .cc-landing .card-icon-plum,
+    .cc-landing .card-icon-mint,
+    .cc-landing .card-icon-coral,
+    .cc-landing .time-chip,
+    .cc-landing .e-tag,
+    .cc-landing .cm-badge,
+    .cc-landing .test-tag,
+    .cc-landing .sitemap-col-count,
+    .cc-landing .av-tag,
+    .cc-landing .cf-pill {
+        background: rgba(255, 255, 255, 0.55);
+        -webkit-backdrop-filter: blur(10px) saturate(160%);
+        backdrop-filter: blur(10px) saturate(160%);
+        border: 1px solid rgba(255, 255, 255, 0.85);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 3px 8px -4px rgba(107, 58, 146, 0.14);
+    }
+
+    /* ── AI chat stays dark glass (already dark section) ──────── */
+    .cc-landing .ai-chat,
+    .cc-landing .ai-feature {
+        background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)) !important;
+        border-color: rgba(255, 255, 255, 0.10) !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(155, 111, 216, 0.12), 0 40px 80px -25px rgba(0, 0, 0, 0.55) !important;
+    }
+
+/* ── Fallback for browsers without backdrop-filter ───────── */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .cc-landing .bento-card,
+    .cc-landing .cat-panel,
+    .cc-landing .how-step-body,
+    .cc-landing .test,
+    .cc-landing .about-value,
+    .cc-landing .sitemap-col,
+    .cc-landing .contact-method,
+    .cc-landing .contact-form-wrap {
+        background: rgba(255, 255, 255, 0.88);
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DARK MODE — plum glass
+   ══════════════════════════════════════════════════════════════ */
+html.dark .cc-landing {
+    --g-bg-1: rgba(255, 255, 255, 0.06);
+    --g-bg-2: rgba(255, 255, 255, 0.025);
+    --g-bg-3: rgba(155, 111, 216, 0.06);
+    --g-border: rgba(255, 255, 255, 0.09);
+    --g-border-hov: rgba(255, 255, 255, 0.18);
+    --g-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    --g-top: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    --g-depth: inset -2px -3px 12px rgba(0, 0, 0, 0.20);
+    --g-sh-mid: 0 14px 34px -12px rgba(0, 0, 0, 0.50);
+    --g-sh-deep: 0 40px 70px -30px rgba(0, 0, 0, 0.40);
+}
+
+    html.dark .cc-landing .bento-card::before,
+    html.dark .cc-landing .cat-panel::before,
+    html.dark .cc-landing .how-step-body::before,
+    html.dark .cc-landing .test::before,
+    html.dark .cc-landing .about-value::before,
+    html.dark .cc-landing .sitemap-col::before,
+    html.dark .cc-landing .contact-method::before,
+    html.dark .cc-landing .contact-form-wrap::before {
+        background: radial-gradient( ellipse at top left, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.02) 35%, transparent 70%);
+    }
+
+    html.dark .cc-landing .bento-card:hover,
+    html.dark .cc-landing .cat-panel:hover,
+    html.dark .cc-landing .how-step-body:hover,
+    html.dark .cc-landing .test:hover,
+    html.dark .cc-landing .about-value:hover,
+    html.dark .cc-landing .sitemap-col:hover,
+    html.dark .cc-landing .contact-method:hover {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 24px 50px -14px rgba(155, 111, 216, 0.35), 0 60px 100px -40px rgba(0, 0, 0, 0.50);
+    }
+
+    html.dark .cc-landing .bento-preview,
+    html.dark .cc-landing .how-preview,
+    html.dark .cc-landing .test-metric,
+    html.dark .cc-landing .hp-tip {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .cc-landing .bento-card,
+    .cc-landing .cat-panel,
+    .cc-landing .how-step-body,
+    .cc-landing .test,
+    .cc-landing .about-value,
+    .cc-landing .sitemap-col,
+    .cc-landing .contact-method,
+    .cc-landing .contact-form-wrap {
+        transition: none !important;
+    }
+}

@@ -1,0 +1,805 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Saving Goals - CashCampus Admin";
+}
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <link rel="stylesheet" href="/css/cc-header-widgets.css" />
+
+    <link rel="stylesheet" href="/css/admin-theme.css" />
+    <link rel="stylesheet" href="/css/cc-animations.css" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: {
+            colors: { brand: { 50:'#f6effc', 100:'#ede4f6', 400:'#a486e0', 500:'#8b58b8', 600:'#6b3a92' } },
+            fontFamily: { sans: ['Plus Jakarta Sans','-apple-system','BlinkMacSystemFont','Inter','Segoe UI','Roboto','sans-serif'] }
+        }}}
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, color 0.3s ease;
+        }
+
+        body.light-mesh {
+            background-color: #fbf6f0;
+            background-image: radial-gradient(at 0% 0%, rgba(237, 228, 246, 0.9) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(196, 174, 224, 0.85) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(255, 225, 230, 0.85) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(246, 239, 252, 0.9) 0px, transparent 50%), radial-gradient(at 50% 50%, rgba(212, 243, 228, 0.4) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        body.dark-mesh {
+            background-color: #100a1a;
+            background-image: radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.28) 0px, transparent 50%), radial-gradient(at 90% 10%, rgba(168, 85, 247, 0.22) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(107, 58, 146, 0.28) 0px, transparent 50%), radial-gradient(at 10% 90%, rgba(236, 72, 153, 0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+            animation: floatOrb 18s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(192, 132, 252, 0.4);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 480px;
+            height: 480px;
+            background: rgba(139, 88, 184, 0.45);
+            top: 30%;
+            right: -120px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: rgba(251, 113, 133, 0.35);
+            bottom: -100px;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @@keyframes floatOrb {
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+
+            50% {
+                transform: translate(40px, 60px) scale(1.08);
+            }
+
+            100% {
+                transform: translate(-30px, 30px) scale(0.95);
+            }
+        }
+
+        .ios-glass {
+            backdrop-filter: blur(32px) saturate(240%);
+            -webkit-backdrop-filter: blur(32px) saturate(240%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light .ios-glass {
+            background: rgba(255,255,255,.72);
+            border: 1.5px solid rgba(255,255,255,.95);
+            box-shadow: 0 20px 40px -12px rgba(107,58,146,.12), 0 4px 16px -2px rgba(0,0,0,.04);
+            color: #0f172a;
+        }
+
+        .dark .ios-glass {
+            background: rgba(18,24,38,.58);
+            border: 1px solid rgba(255,255,255,.15);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,.45);
+            color: #f8fafc;
+        }
+
+        .ios-glass-interactive:hover {
+            transform: translateY(-4px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(150,150,150,.3);
+            border-radius: 999px;
+        }
+
+        #sidebar {
+            transition: transform .35s cubic-bezier(.16,1,.3,1);
+        }
+
+        .sidebar-link {
+            position: relative;
+            transition: all .2s ease-in-out;
+        }
+
+            .sidebar-link.active {
+                background: linear-gradient(135deg, rgba(139,88,184,.22), rgba(99,102,241,.18));
+                color: #6b3a92;
+                box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 10px 20px -5px rgba(2,132,199,.15);
+            }
+
+        .dark .sidebar-link.active {
+            color: #c4aee0;
+            background: linear-gradient(135deg, rgba(139,88,184,.16), rgba(99,102,241,.16));
+        }
+
+        .modal-bg {
+            background: rgba(15,23,42,.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        @@media (max-width: 1023px) {
+            #sidebar {
+                transform: translateX(-110%);
+            }
+
+                #sidebar.open {
+                    transform: translateX(0);
+                }
+
+            #sidebarOverlay.show {
+                display: block;
+            }
+        }
+
+        @@media (min-width: 1024px) {
+            #sidebar {
+                transform: translateX(0) !important;
+            }
+        }
+
+        #toast {
+            transform: translateY(120px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+            #toast.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+    
+/* Unified admin chrome */
+.sidebar {
+  position: fixed !important;
+  top: 20px !important; left: 20px !important; bottom: 20px !important;
+  width: 260px !important;
+  z-index: 100 !important;
+  border-radius: 30px !important;
+  padding: 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.sidebar .nav { flex: 1; overflow-y: auto; padding: 4px 0; }
+.sidebar .nav-section {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; opacity: 0.45; padding: 14px 12px 6px;
+}
+.sidebar .nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 14px;
+  font-size: 13px; font-weight: 600; color: inherit;
+  text-decoration: none; margin-bottom: 2px;
+}
+.sidebar .nav-link i { width: 18px; text-align: center; opacity: 0.7; }
+.sidebar .nav-link:hover { background: rgba(139,88,184,0.08); }
+.sidebar .nav-link.active {
+  color: #6b3a92 !important;
+  background: linear-gradient(135deg, rgba(237,228,246,0.95), rgba(196,174,224,0.35)) !important;
+}
+.brand { display: flex; align-items: center; gap: 12px; padding: 4px 6px 18px; }
+.brand-name { font-size: 15px; font-weight: 800; }
+.brand-sub { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; opacity: 0.5; text-transform: uppercase; }
+.admin-mini {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px; border-radius: 16px;
+  background: rgba(139,88,184,0.08); margin-top: 8px;
+}
+.admin-avatar {
+  width: 36px; height: 36px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 11px; font-weight: 800;
+  background: linear-gradient(135deg, #8b58b8, #6b3a92);
+}
+.main, .main-content, #mainContent {
+  margin-left: 300px !important;
+}
+/* Dropdowns above everything */
+.dropdown, .cc-shared-dd, .cc-notif-popover, .notifications-popover, #profileDropdown {
+  z-index: 10080 !important;
+}
+.topbar, header.topbar, .top-actions { overflow: visible !important; z-index: 90; position: relative; }
+
+        </style>
+</head>
+
+<body class="light-mesh min-h-screen text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-500">
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div id="sidebarOverlay" onclick="closeSidebar()" class="hidden fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-40"></div>
+
+    <!-- SIDEBAR (ADMIN) -->
+    <aside id="sidebar" class="sidebar ios-glass">
+        <div class="brand cc-brand-block">
+            <div class="brand-logo cc-brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 44 44" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="ccCoinBG_ad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#6b3a92"/><stop offset="1" stop-color="#241232"/>
+                        </linearGradient>
+                        <linearGradient id="ccCoinAccent_ad" x1="10" y1="10" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#22c55e"/><stop offset="1" stop-color="#10b981"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="22" cy="22" r="21" fill="url(#ccCoinBG_ad)"/>
+                    <circle cx="22" cy="22" r="16.5" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1" stroke-dasharray="1.5 3"/>
+                    <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5" stroke="url(#ccCoinAccent_ad)" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-name cc-brand-title"><b>Cash</b><span>Campus</span></div>
+                <div class="brand-sub">ADMIN CONSOLE</div>
+            </div>
+        </div>
+        <nav class="nav">
+            <div class="nav-section">Overview</div>
+            <a href="/Admin/Index" class="nav-link"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a>
+            <a href="/Admin/Students" class="nav-link"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a>
+            <a href="/Admin/Transactions" class="nav-link"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Transactions</span></a>
+            <a href="/Admin/VoucherManagement" class="nav-link"><i class="fa-solid fa-receipt"></i><span>Voucher Management</span></a>
+            <div class="nav-section">Financial Management</div>
+            <a href="/Admin/Categories" class="nav-link"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
+            <a href="/Admin/Budgets" class="nav-link"><i class="fa-solid fa-wallet"></i><span>Budgets</span></a>
+            <a href="/Admin/EventManager" class="nav-link"><i class="fa-solid fa-calendar-days"></i><span>Event Manager</span></a>
+            <a href="/Admin/SavingGoals" class="nav-link active"><i class="fa-solid fa-bullseye"></i><span>Saving Goals</span></a>
+            <div class="nav-section">System</div>
+            <a href="/Admin/Notifications" class="nav-link"><i class="fa-solid fa-bell"></i><span>Notifications</span></a>
+            <a href="/Admin/Reports" class="nav-link"><i class="fa-solid fa-chart-pie"></i><span>Reports & Analytics</span></a>
+            <a href="/Admin/HomepageCms" class="nav-link"><i class="fa-solid fa-pager"></i><span>Homepage CMS</span></a>
+            <a href="/Admin/Settings" class="nav-link"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+        </nav>
+        <div class="admin-mini">
+            <div class="admin-avatar">AD</div>
+            <div class="flex-1 min-w-0">
+                <div class="text-[11px] font-bold">Admin</div>
+                <div class="text-[9px] opacity-45">System Administrator</div>
+            </div>
+        </div>
+        <a href="/Auth/Logout" class="sidebar-logout-btn" style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin:8px 4px 8px;border-radius:12px;font-size:13px;font-weight:700;color:#e11d48;text-decoration:none;background:rgba(225,29,72,0.08);">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="lg:ml-80 px-4 sm:px-6 lg:px-8 py-6">
+
+        <header class="ios-glass rounded-3xl p-3.5 mb-6 flex flex-col md:flex-row items-center justify-between gap-3 shadow-xl" style="overflow:visible;position:relative;z-index:50;">
+            <div class="flex items-center gap-3 w-full">
+                <button onclick="openSidebar()" class="lg:hidden w-11 h-11 rounded-2xl ios-glass flex items-center justify-center">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div>
+                    <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Financial Management</p>
+                    <h2 class="text-xl sm:text-2xl font-black tracking-tight">All Student Saving Goals</h2>
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Create, track and manage student savings targets</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0 justify-end" style="position:relative;z-index:100;">
+                <button onclick="openGoalModal()" class="px-3.5 py-2 rounded-xl text-white font-bold text-xs shadow-md flex items-center gap-1.5 active:scale-95" style="background:linear-gradient(135deg,#8b58b8,#6b3a92);box-shadow:0 8px 20px rgba(107,58,146,.28);">
+                    <i class="fa-solid fa-plus text-xs"></i><span class="hidden sm:inline">Add Goal</span>
+                </button>
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl ios-glass flex items-center justify-center text-slate-700 dark:text-amber-300">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+                <div class="dropdown-wrap" style="position:relative;">
+                    <button type="button" class="action-btn" onclick="toggleDropdown('profileDropdown')" title="Account" style="display:inline-flex;align-items:center;gap:8px;padding:6px 10px;">
+                        <span style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#a486e0,#6366f1);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;">AD</span>
+                        <span class="hidden sm:inline" style="font-size:12px;font-weight:700;">Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size:9px;opacity:.5;"></i>
+                    </button>
+                    <div id="profileDropdown" class="dropdown" style="display:none !important;position:absolute;right:0;top:calc(100% + 10px);min-width:200px;z-index:99999;padding:8px;border-radius:16px;background:#fff;border:1px solid rgba(22,11,33,.1);box-shadow:0 18px 40px rgba(22,11,33,.14);">
+                        <a href="/Admin/Settings" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:#1a1420;"><i class="fa-regular fa-user"></i> My Profile</a>
+                        <a href="/Admin/Settings" class="dropdown-item" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:inherit;"><i class="fa-solid fa-gear"></i> Settings</a>
+                        <button type="button" onclick="logoutAdmin()" class="dropdown-item" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;width:100%;border:0;background:transparent;cursor:pointer;color:#e11d48;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-7">
+            <div class="ios-glass ios-glass-interactive rounded-3xl p-5">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Goals</p>
+                <div id="kpiTotal" class="mt-2 text-3xl font-black">0</div>
+                <div class="mt-3 text-xs font-bold text-purple-700 dark:text-purple-400"><i class="fa-solid fa-bullseye"></i> All students</div>
+            </div>
+            <div class="ios-glass ios-glass-interactive rounded-3xl p-5">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Saved</p>
+                <div id="kpiSaved" class="mt-2 text-3xl font-black text-emerald-600 dark:text-emerald-400">Rs. 0</div>
+                <div class="mt-3 text-xs font-bold text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-piggy-bank"></i> Accumulated</div>
+            </div>
+            <div class="ios-glass ios-glass-interactive rounded-3xl p-5">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Target</p>
+                <div id="kpiTarget" class="mt-2 text-3xl font-black">Rs. 0</div>
+                <div class="mt-3 text-xs font-bold text-indigo-600 dark:text-indigo-400"><i class="fa-solid fa-flag-checkered"></i> Combined aim</div>
+            </div>
+            <div class="ios-glass ios-glass-interactive rounded-3xl p-5">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Achieved</p>
+                <div id="kpiAchieved" class="mt-2 text-3xl font-black text-amber-600 dark:text-amber-400">0</div>
+                <div class="mt-3 text-xs font-bold text-amber-600 dark:text-amber-400"><i class="fa-solid fa-trophy"></i> Completed goals</div>
+            </div>
+        </section>
+
+        <section class="ios-glass rounded-3xl p-5 mb-5">
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="filterTab('all')" id="tabAll" class="px-4 py-2 rounded-2xl bg-emerald-500 text-white font-bold text-xs shadow">All</button>
+                    <button onclick="filterTab('active')" id="tabActive" class="px-4 py-2 rounded-2xl bg-slate-500/10 font-bold text-xs opacity-70 hover:opacity-100">In Progress</button>
+                    <button onclick="filterTab('achieved')" id="tabAchieved" class="px-4 py-2 rounded-2xl bg-slate-500/10 font-bold text-xs opacity-70 hover:opacity-100">Achieved</button>
+                </div>
+                <div class="relative w-full md:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input id="goalSearch" oninput="render()" type="text" placeholder="Search by student or goal..."
+                           class="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-white/40 dark:bg-slate-900/30 border border-white/70 dark:border-slate-700/60 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400/60">
+                </div>
+            </div>
+        </section>
+
+        <section id="goalsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></section>
+    </main>
+
+    <!-- GOAL MODAL -->
+    <div id="goalModal" class="fixed inset-0 z-[100] modal-bg flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div id="goalModalBox" class="ios-glass rounded-3xl w-full max-w-lg p-6 shadow-2xl transform scale-95 transition-all duration-300">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <span class="inline-flex px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider">Saving Goal</span>
+                    <h2 id="modalTitle" class="text-xl font-black mt-2">Add Goal</h2>
+                </div>
+                <button onclick="closeGoalModal()" class="w-10 h-10 rounded-xl ios-glass flex items-center justify-center text-slate-500 hover:text-rose-500">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="saveGoal(event)" class="space-y-4">
+                <input type="hidden" id="goalId">
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Student</label>
+                    <select id="goalStudent" required class="w-full px-4 py-3 rounded-2xl bg-white/40 dark:bg-slate-900/30 border border-white/70 dark:border-slate-700/60 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400/60"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Goal Title</label>
+                    <input id="goalTitle" required type="text" placeholder="e.g. New Laptop"
+                           class="w-full px-4 py-3 rounded-2xl bg-white/40 dark:bg-slate-900/30 border border-white/70 dark:border-slate-700/60 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400/60">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Target (Rs.)</label>
+                        <input id="goalTarget" required min="1" step="0.01" type="number" placeholder="1500"
+                               class="w-full px-4 py-3 rounded-2xl bg-white/40 dark:bg-slate-900/30 border border-white/70 dark:border-slate-700/60 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400/60">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Saved (Rs.)</label>
+                        <input id="goalSaved" required min="0" step="0.01" type="number" value="0"
+                               class="w-full px-4 py-3 rounded-2xl bg-white/40 dark:bg-slate-900/30 border border-white/70 dark:border-slate-700/60 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400/60">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Target Date</label>
+                    <input id="goalDate" required type="date"
+                           class="w-full px-4 py-3 rounded-2xl bg-white/40 dark:bg-slate-900/30 border border-white/70 dark:border-slate-700/60 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400/60">
+                </div>
+                <div class="flex justify-end gap-3 pt-3">
+                    <button type="button" onclick="closeGoalModal()" class="px-5 py-3 rounded-2xl ios-glass text-sm font-bold">Cancel</button>
+                    <button type="submit" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-white text-sm font-bold shadow-lg">
+                        <i class="fa-solid fa-check mr-1"></i>Save Goal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DEPOSIT MODAL -->
+    <div id="depositModal" class="fixed inset-0 z-[100] modal-bg flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div id="depositModalBox" class="ios-glass rounded-3xl w-full max-w-md p-6 shadow-2xl transform scale-95 transition-all duration-300">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <span class="inline-flex px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-600 text-[10px] font-black uppercase tracking-wider">Deposit</span>
+                    <h2 class="text-xl font-black mt-2">Add Funds</h2>
+                </div>
+                <button onclick="closeDepositModal()" class="w-10 h-10 rounded-xl ios-glass flex items-center justify-center text-slate-500">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="processDeposit(event)" class="space-y-4">
+                <input type="hidden" id="depositGoalId">
+                <div class="ios-glass rounded-2xl p-4 text-center">
+                    <p class="text-[10px] uppercase font-black text-slate-400">Goal</p>
+                    <p id="depositGoalName" class="text-sm font-black mt-1">—</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Amount (Rs.)</label>
+                    <input id="depositAmount" required min="1" step="0.01" type="number" placeholder="100"
+                           class="w-full px-4 py-3 rounded-2xl bg-white/40 dark:bg-slate-900/30 border border-white/70 dark:border-slate-700/60 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400/60">
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="quickAmount(50)" class="flex-1 py-2 rounded-xl bg-slate-500/10 text-xs font-bold">+Rs. 50</button>
+                    <button type="button" onclick="quickAmount(100)" class="flex-1 py-2 rounded-xl bg-slate-500/10 text-xs font-bold">+Rs. 100</button>
+                    <button type="button" onclick="quickAmount(500)" class="flex-1 py-2 rounded-xl bg-slate-500/10 text-xs font-bold">+Rs. 500</button>
+                </div>
+                <div class="flex justify-end gap-3 pt-3">
+                    <button type="button" onclick="closeDepositModal()" class="px-5 py-3 rounded-2xl ios-glass text-sm font-bold">Cancel</button>
+                    <button type="submit" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-white text-sm font-bold shadow-lg">
+                        <i class="fa-solid fa-plus mr-1"></i>Deposit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="fixed bottom-6 right-6 z-[200] ios-glass rounded-2xl px-5 py-4 shadow-2xl flex items-center gap-3">
+        <div id="toastIcon" class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <p id="toastTitle" class="text-xs font-black">Success</p>
+            <p id="toastText" class="text-[10px] font-medium text-slate-500 dark:text-slate-400">Done.</p>
+        </div>
+    </div>
+
+    <script>
+        let goals = [];
+        let studentsList = [];
+        let currentTab = "all";
+        const GOAL_API = "/api/admin/saving-goals";
+        const STUDENT_API = "/api/admin/budgets/students";
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const saved = localStorage.getItem("campuscoin-theme");
+            if (saved === "dark") {
+                document.documentElement.classList.remove("light");
+                document.documentElement.classList.add("dark");
+                document.body.classList.remove("light-mesh");
+                document.body.classList.add("dark-mesh");
+                document.getElementById("themeIcon").className = "fa-solid fa-sun text-lg text-amber-300";
+            } else {
+                document.body.classList.add("light-mesh");
+            }
+            await loadStudents();
+            await loadGoals();
+        });
+
+        async function loadStudents() {
+            try {
+                const r = await fetch(STUDENT_API, { credentials: "same-origin" });
+                studentsList = await r.json();
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadGoals() {
+            try {
+                const r = await fetch(GOAL_API, { credentials: "same-origin" });
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                goals = await r.json();
+                updateKPIs();
+                render();
+            } catch (e) { showToast("Load failed", e.message, "danger"); }
+        }
+
+        function updateKPIs() {
+            document.getElementById("kpiTotal").innerText = goals.length;
+            document.getElementById("kpiSaved").innerText = "$" + goals.reduce((s, g) => s + Number(g.saved || 0), 0).toLocaleString();
+            document.getElementById("kpiTarget").innerText = "$" + goals.reduce((s, g) => s + Number(g.target || 0), 0).toLocaleString();
+            document.getElementById("kpiAchieved").innerText = goals.filter(g => g.isAchieved).length;
+        }
+
+        function filterTab(tab) {
+            currentTab = tab;
+            ["all", "active", "achieved"].forEach(t => {
+                const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                btn.className = t === tab
+                    ? "px-4 py-2 rounded-2xl bg-emerald-500 text-white font-bold text-xs shadow"
+                    : "px-4 py-2 rounded-2xl bg-slate-500/10 font-bold text-xs opacity-70 hover:opacity-100";
+            });
+            render();
+        }
+
+        function render() {
+            const grid = document.getElementById("goalsGrid");
+            grid.innerHTML = "";
+
+            const term = document.getElementById("goalSearch").value.toLowerCase().trim();
+            let filtered = goals.filter(g => {
+                const matchesTab = currentTab === "all" || (currentTab === "active" && !g.isAchieved) || (currentTab === "achieved" && g.isAchieved);
+                const matchesSearch = !term || (g.title || "").toLowerCase().includes(term) || (g.student || "").toLowerCase().includes(term);
+                return matchesTab && matchesSearch;
+            });
+
+            if (!filtered.length) {
+                grid.innerHTML = `<div class="col-span-full ios-glass rounded-3xl py-16 text-center">
+                    <div class="w-16 h-16 rounded-3xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-4 text-emerald-500 text-xl"><i class="fa-solid fa-bullseye"></i></div>
+                    <h3 class="font-black">No saving goals found</h3>
+                    <p class="text-xs text-slate-400 mt-1">Create a goal to get started.</p>
+                </div>`;
+                return;
+            }
+
+            filtered.forEach(g => {
+                const pct = Number(g.target) > 0 ? Math.min(Math.round((Number(g.saved) / Number(g.target)) * 100), 100) : 0;
+                const card = document.createElement("div");
+                card.className = "ios-glass ios-glass-interactive rounded-3xl p-5 flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg shadow-lg" style="background:${g.color}">
+                                <i class="fa-solid ${g.icon}"></i>
+                            </div>
+                            <span class="text-[10px] px-3 py-1 rounded-full font-black ${g.isAchieved ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-slate-500/15'}">
+                                ${g.isAchieved ? '🎉 Achieved' : pct + '%'}
+                            </span>
+                        </div>
+                        <h3 class="font-black text-base truncate">${g.title}</h3>
+                        <p class="text-[10px] font-bold text-slate-400 mt-1"><i class="fa-regular fa-user mr-1"></i>${g.student}</p>
+                        <p class="text-[10px] text-slate-400">Target: ${g.date || "—"}</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="flex justify-between text-[11px] font-bold mb-2">
+                            <span class="text-emerald-600 dark:text-emerald-400">Rs. ${Number(g.saved).toLocaleString()}</span>
+                            <span class="text-slate-400">of Rs. ${Number(g.target).toLocaleString()}</span>
+                        </div>
+                        <div class="w-full bg-slate-500/15 h-2.5 rounded-full overflow-hidden mb-4">
+                            <div class="h-full rounded-full transition-all duration-700" style="width:${pct}%; background:${g.color}"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t border-slate-500/10">
+                            ${!g.isAchieved ? `
+                                <button onclick="openDepositModal(${g.id}, '${g.title.replace(/'/g, "\\'")}')" class="text-xs font-bold text-emerald-500 hover:text-emerald-600">
+                                    <i class="fa-solid fa-plus-circle mr-1"></i>Deposit
+                                </button>
+                            ` : `<span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-circle-check mr-1"></i>Complete</span>`}
+                            <div class="flex gap-1">
+                                <button onclick="editGoal(${g.id})" title="Edit" class="w-8 h-8 rounded-xl hover:bg-purple-600/10 text-purple-600">
+                                    <i class="fa-regular fa-pen-to-square text-xs"></i>
+                                </button>
+                                <button onclick="deleteGoal(${g.id}, '${g.title.replace(/'/g, "\\'")}')" title="Delete" class="w-8 h-8 rounded-xl hover:bg-rose-500/10 text-rose-500">
+                                    <i class="fa-regular fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function fillStudentDropdown(selectedId = null) {
+            const sel = document.getElementById("goalStudent");
+            sel.innerHTML = "";
+            studentsList.forEach(s => {
+                const o = document.createElement("option");
+                o.value = s.userId;
+                o.textContent = `${s.fullName}${s.academicYear ? ' (' + s.academicYear + ')' : ''}`;
+                sel.appendChild(o);
+            });
+            if (selectedId) sel.value = selectedId;
+        }
+
+        function openGoalModal() {
+            document.getElementById("modalTitle").innerText = "Add Goal";
+            document.getElementById("goalId").value = "";
+            document.getElementById("goalTitle").value = "";
+            document.getElementById("goalTarget").value = "";
+            document.getElementById("goalSaved").value = 0;
+            fillStudentDropdown();
+            const d = new Date(); d.setMonth(d.getMonth() + 6);
+            document.getElementById("goalDate").value = d.toISOString().split("T")[0];
+            document.getElementById("goalModal").classList.remove("opacity-0", "pointer-events-none");
+            document.getElementById("goalModalBox").classList.remove("scale-95");
+            document.getElementById("goalModalBox").classList.add("scale-100");
+        }
+
+        function editGoal(id) {
+            const g = goals.find(x => x.id === id);
+            if (!g) return;
+
+            document.getElementById("modalTitle").innerText = "Edit Goal";
+            document.getElementById("goalId").value = g.id;
+            fillStudentDropdown(g.userId);
+            document.getElementById("goalTitle").value = g.title;
+            document.getElementById("goalTarget").value = g.target;
+            document.getElementById("goalSaved").value = g.saved;
+            document.getElementById("goalDate").value = g.date || "";
+
+            document.getElementById("goalModal").classList.remove("opacity-0", "pointer-events-none");
+            document.getElementById("goalModalBox").classList.remove("scale-95");
+            document.getElementById("goalModalBox").classList.add("scale-100");
+        }
+
+        function closeGoalModal() {
+            document.getElementById("goalModal").classList.add("opacity-0", "pointer-events-none");
+            document.getElementById("goalModalBox").classList.remove("scale-100");
+            document.getElementById("goalModalBox").classList.add("scale-95");
+        }
+
+        async function saveGoal(e) {
+            e.preventDefault();
+            const id = document.getElementById("goalId").value;
+            const payload = {
+                userId: Number(document.getElementById("goalStudent").value),
+                title: document.getElementById("goalTitle").value.trim(),
+                target: Number(document.getElementById("goalTarget").value),
+                saved: Number(document.getElementById("goalSaved").value),
+                date: document.getElementById("goalDate").value
+            };
+            try {
+                const url = id ? `${GOAL_API}/${id}` : GOAL_API;
+                const method = id ? "PUT" : "POST";
+                const r = await fetch(url, {
+                    method,
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "same-origin",
+                    body: JSON.stringify(payload)
+                });
+                const d = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(d.message || `HTTP ${r.status}`);
+                closeGoalModal();
+                await loadGoals();
+                showToast(id ? "Goal updated!" : "Goal created!", payload.title);
+            } catch (err) { showToast("Save failed", err.message, "danger"); }
+        }
+
+        async function deleteGoal(id, title) {
+            if (!confirm(`Delete "${title}"?`)) return;
+            try {
+                const r = await fetch(`${GOAL_API}/${id}`, { method: "DELETE", credentials: "same-origin" });
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                await loadGoals();
+                showToast("Goal deleted", title, "danger");
+            } catch (e) { showToast("Delete failed", e.message, "danger"); }
+        }
+
+        function openDepositModal(id, title) {
+            document.getElementById("depositGoalId").value = id;
+            document.getElementById("depositGoalName").innerText = title;
+            document.getElementById("depositAmount").value = "";
+            document.getElementById("depositModal").classList.remove("opacity-0", "pointer-events-none");
+            document.getElementById("depositModalBox").classList.remove("scale-95");
+            document.getElementById("depositModalBox").classList.add("scale-100");
+        }
+
+        function closeDepositModal() {
+            document.getElementById("depositModal").classList.add("opacity-0", "pointer-events-none");
+            document.getElementById("depositModalBox").classList.remove("scale-100");
+            document.getElementById("depositModalBox").classList.add("scale-95");
+        }
+
+        function quickAmount(v) {
+            const el = document.getElementById("depositAmount");
+            el.value = (Number(el.value) || 0) + v;
+        }
+
+        async function processDeposit(e) {
+            e.preventDefault();
+            const id = Number(document.getElementById("depositGoalId").value);
+            const amount = Number(document.getElementById("depositAmount").value);
+            try {
+                const r = await fetch(`${GOAL_API}/${id}/deposit`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "same-origin",
+                    body: JSON.stringify({ amount })
+                });
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                closeDepositModal();
+                await loadGoals();
+                showToast("Deposit successful!", `Rs. ${amount.toFixed(2)} added`);
+            } catch (err) { showToast("Deposit failed", err.message, "danger"); }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById("themeIcon");
+            if (html.classList.contains("dark")) {
+                html.classList.remove("dark"); html.classList.add("light");
+                document.body.classList.remove("dark-mesh"); document.body.classList.add("light-mesh");
+                icon.className = "fa-solid fa-moon text-sm";
+                localStorage.setItem("campuscoin-theme", "light");
+            } else {
+                html.classList.remove("light"); html.classList.add("dark");
+                document.body.classList.remove("light-mesh"); document.body.classList.add("dark-mesh");
+                icon.className = "fa-solid fa-sun text-lg text-amber-300";
+                localStorage.setItem("campuscoin-theme", "dark");
+            }
+        }
+
+        function openSidebar() { document.getElementById("sidebar").classList.add("open"); document.getElementById("sidebarOverlay").classList.add("show"); }
+        function closeSidebar() { document.getElementById("sidebar").classList.remove("open"); document.getElementById("sidebarOverlay").classList.remove("show"); }
+
+        function showToast(title, text, type = "success") {
+            const t = document.getElementById("toast");
+            const icon = document.getElementById("toastIcon");
+            document.getElementById("toastTitle").innerText = title;
+            document.getElementById("toastText").innerText = text || "Done.";
+            if (type === "danger") {
+                icon.className = "w-9 h-9 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center";
+                icon.innerHTML = '<i class="fa-solid fa-trash"></i>';
+            } else {
+                icon.className = "w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center";
+                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            }
+            t.classList.add("show");
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
+        }
+
+        document.addEventListener("keydown", e => { if (e.key === "Escape") { closeGoalModal(); closeDepositModal(); closeSidebar(); } });
+    </script>
+
+
+<script>
+(function(){
+  if (typeof window.toggleDropdown !== 'function') {
+    window.toggleDropdown = function(id){
+      const t = document.getElementById(id);
+      if (!t) return;
+      document.querySelectorAll('.dropdown').forEach(d => {
+        if (d.id !== id) { d.classList.remove('show'); d.style.setProperty('display','none','important'); d.classList.remove('show'); }
+      });
+      const open = !t.classList.contains('show');
+      t.classList.toggle('show', open);
+      t.style.setProperty('display', open ? 'block' : 'none', 'important'); if(open){t.classList.add('show');} else {t.classList.remove('show');}
+    };
+    document.addEventListener('click', function(e){
+      if (!e.target.closest('.dropdown-wrap')) {
+        document.querySelectorAll('.dropdown').forEach(d => { d.classList.remove('show'); d.style.setProperty('display','none','important'); d.classList.remove('show'); });
+      }
+    });
+  }
+  if (typeof window.logoutAdmin !== 'function') {
+    window.logoutAdmin = function(){ window.location.href = '/Auth/Logout'; };
+  }
+  if (typeof window.quickAction !== 'function') {
+    window.quickAction = function(action){
+      document.querySelectorAll('.dropdown').forEach(d => { d.classList.remove('show'); d.style.setProperty('display','none','important'); d.classList.remove('show'); });
+      const routes = {
+        'Add Student': '/Admin/Students',
+        'View Transactions': '/Admin/Transactions',
+        'Send Notification': '/Admin/Notifications',
+        'Generate Report': '/Admin/Reports'
+      };
+      if (routes[action]) window.location.href = routes[action];
+    };
+  }
+})();
+</script>
+
+</body>
+</html>

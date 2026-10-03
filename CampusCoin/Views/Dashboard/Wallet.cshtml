@@ -1,0 +1,1277 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Wallet — CampusCoin</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50:  '#f6effc',
+                            100: '#ede4f6',
+                            400: '#a486e0',
+                            500: '#8b58b8',
+                            600: '#6b3a92',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        * {
+            transition:
+                background-color 0.4s ease,
+                border-color 0.4s ease,
+                box-shadow 0.4s ease,
+                color 0.3s ease;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background-color: #fbf6f0;
+            background-image:
+                radial-gradient(at 0% 0%,   rgba(237, 228, 246, 0.9) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(196, 174, 224, 0.85) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 225, 230, 0.85) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(246, 239, 252, 0.9) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(212, 243, 228, 0.4) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        body.dark-mesh {
+            background-color: #100a1a;
+            background-image:
+                radial-gradient(at 10% 10%, rgba(139, 111, 240, 0.28) 0px, transparent 50%),
+                radial-gradient(at 90% 10%, rgba(155, 111, 216, 0.22) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(109, 74, 255, 0.28) 0px, transparent 50%),
+                radial-gradient(at 10% 90%, rgba(212, 121, 159, 0.22) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+            animation: floatOrb 18s infinite alternate ease-in-out;
+        }
+
+        .orb-1 { width: 450px; height: 450px; background: rgba(155, 111, 216, 0.5); top: -100px; left: -100px; }
+        .orb-2 { width: 480px; height: 480px; background: rgba(139, 111, 240, 0.45); top: 30%; right: -120px; animation-delay: -5s; }
+        .orb-3 { width: 400px; height: 400px; background: rgba(212, 121, 159, 0.4); bottom: -100px; left: 20%; animation-delay: -10s; }
+
+        @@keyframes floatOrb {
+            0%   { transform: translate(0px, 0px) scale(1); }
+            50%  { transform: translate(40px, 60px) scale(1.08); }
+            100% { transform: translate(-30px, 30px) scale(0.95); }
+        }
+
+        .ios-glass {
+            backdrop-filter: blur(32px) saturate(240%);
+            -webkit-backdrop-filter: blur(32px) saturate(240%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light .ios-glass {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1.5px solid rgba(255, 255, 255, 0.95);
+            box-shadow:
+                0 20px 40px -12px rgba(109, 74, 255, 0.12),
+                0 4px 16px -2px rgba(0, 0, 0, 0.04),
+                inset 0 1.5px 2px 0 rgba(255, 255, 255, 1),
+                inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.03);
+            color: #1a0b2e;
+        }
+
+        .dark .ios-glass {
+            background: rgba(28, 18, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+            color: #f8fafc;
+        }
+
+        .ios-glass-interactive {
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, background 0.35s ease;
+        }
+
+        .ios-glass-interactive::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.75s ease;
+            pointer-events: none;
+        }
+
+        .dark .ios-glass-interactive::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        }
+
+        .ios-glass-interactive:hover::before { left: 150%; }
+        .ios-glass-interactive:hover { transform: translateY(-4px); }
+
+        .sidebar {
+            position: fixed;
+            top: 20px; left: 20px; bottom: 20px;
+            width: 260px; z-index: 100; border-radius: 30px; padding: 18px;
+            display: flex; flex-direction: column; transform: translateX(0);
+            transition: transform .35s ease;
+        }
+
+        .brand { display: flex; align-items: center; gap: 12px; padding: 4px 6px 22px; }
+        .brand-logo {
+            width: 46px; height: 46px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 20px;
+            background: linear-gradient(135deg, #8b58b8, #6b3a92, #241232);
+            box-shadow: 0 12px 25px rgba(109, 74, 255, 0.32);
+        }
+        .brand-name { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+        .brand-sub { font-size: 9px; font-weight: 800; letter-spacing: .16em; opacity: .45; margin-top: 3px; }
+
+        .nav-section { font-size: 9px; text-transform: uppercase; letter-spacing: .15em; font-weight: 800; opacity: .4; padding: 14px 10px 7px; }
+        .nav { flex: 1; overflow-y: auto; }
+        .nav-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 11px 12px; margin: 4px 0; border-radius: 15px;
+            text-decoration: none; color: inherit; font-size: 12px; font-weight: 650;
+            transition: all .25s ease;
+        }
+        .nav-link i { width: 20px; text-align: center; opacity: .55; }
+        .nav-link:hover { background: rgba(255,255,255,.30); transform: translateX(3px); }
+        .dark .nav-link:hover { background: rgba(255,255,255,.06); }
+        .nav-link.active {
+            color: #6b3a92;
+            background: linear-gradient(135deg, rgba(139,111,240,.18), rgba(109,74,255,.14));
+            box-shadow: inset 0 0 0 1px rgba(139,111,240,.15), 0 10px 25px rgba(109,74,255,.08);
+        }
+        .dark .nav-link.active { color: #c4aee0; background: rgba(139,111,240,.1); }
+
+        .student-mini {
+            display: flex; align-items: center; gap: 9px; padding: 11px;
+            border-radius: 18px; background: rgba(255,255,255,.30); border: 1px solid rgba(255,255,255,.35);
+        }
+        .dark .student-mini { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.08); }
+        .student-avatar {
+            width: 36px; height: 36px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 11px; font-weight: 800;
+            background: linear-gradient(135deg, #8b58b8, #6b3a92);
+        }
+
+        .main { margin-left: 300px; padding: 20px 25px 40px 0; min-height: 100vh; }
+        .topbar {
+            height: 70px; border-radius: 25px; padding: 10px 13px;
+            display: flex; align-items: center; gap: 12px; position: sticky; top: 20px; z-index: 80;
+        }
+
+        .search { flex: 1; max-width: 500px; position: relative; }
+        .search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); opacity: .4; font-size: 12px; }
+        .search input {
+            width: 100%; border: none; outline: none; padding: 11px 15px 11px 42px;
+            border-radius: 16px; background: rgba(255,255,255,.38); color: inherit;
+            font-size: 12px; border: 1px solid rgba(255,255,255,.50);
+        }
+        .dark .search input { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.08); }
+
+        .top-actions { display: flex; align-items: center; gap: 7px; margin-left: auto; }
+        .action-btn {
+            width: 42px; height: 42px; border-radius: 14px;
+            border: 1px solid rgba(255,255,255,.55); background: rgba(255,255,255,.36);
+            color: inherit; cursor: pointer; position: relative;
+        }
+        .dark .action-btn { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.08); }
+
+        .notification-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #f43f5e;
+            position: absolute; top: 8px; right: 8px;
+        }
+
+        .profile { display: flex; align-items: center; gap: 9px; padding: 4px 9px 4px 4px; border-radius: 15px; cursor: pointer; }
+        .profile-avatar {
+            width: 36px; height: 36px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 11px; font-weight: 800;
+            background: linear-gradient(135deg, #a486e0, #6b3a92);
+        }
+
+        .dropdown-wrap { position: relative; }
+        .dropdown {
+            position: absolute; right: 0; top: calc(100% + 10px);
+            width: 250px; padding: 9px; border-radius: 20px;
+            opacity: 0; pointer-events: none; transform: translateY(-8px) scale(.98);
+            transition: .2s ease; z-index: 200;
+        }
+        .dropdown.show { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+        .dropdown-item {
+            width: 100%; display: flex; align-items: center; gap: 10px;
+            border: 0; background: transparent; color: inherit;
+            padding: 11px; border-radius: 13px; cursor: pointer; text-align: left; font-size: 11px;
+        }
+
+        .page-header { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin: 28px 3px 20px; }
+        .eyebrow { color: #6b3a92; font-size: 9px; font-weight: 850; text-transform: uppercase; letter-spacing: .18em; margin-bottom: 8px; }
+        .page-title { font-size: clamp(28px, 3vw, 40px); font-weight: 900; letter-spacing: -1.8px; line-height: 1; }
+
+        /* HERO BALANCE CARD STYLING */
+        .hero-wallet-card {
+            background: linear-gradient(135deg, #8b58b8, #6b3a92, #241232);
+            border-radius: 28px;
+            padding: 28px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 45px rgba(109, 74, 255, 0.35);
+        }
+        .hero-wallet-card::before {
+            content: '';
+            position: absolute;
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            top: -50px; right: -50px;
+            pointer-events: none;
+        }
+
+        .hero-action-btn {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 12px 18px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .hero-action-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+        }
+
+        /* MODAL STYLES */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(15,23,42,.45);
+            backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 300;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-card { width: 100%; max-width: 480px; padding: 26px; border-radius: 28px; }
+
+        .glass-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: rgba(255,255,255,.35);
+            border: 1px solid rgba(255,255,255,.5);
+            font-size: 12px;
+            outline: none;
+            color: inherit;
+        }
+        .dark .glass-input { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.1); }
+
+        .method-chip {
+            padding: 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,.4);
+            background: rgba(255,255,255,.2);
+            cursor: pointer;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .method-chip.active {
+            background: #6b3a92;
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 8px 20px rgba(109,74,255,.3);
+        }
+
+        .filter-btn {
+            padding: 8px 16px; border-radius: 14px; font-size: 11px; font-weight: 700;
+            border: 1px solid rgba(255,255,255,.4); background: rgba(255,255,255,.2); cursor: pointer;
+        }
+        .filter-btn.active {
+            background: linear-gradient(135deg, #8b58b8, #6b3a92); color: white; border-color: transparent;
+        }
+
+        .mobile-btn { display: none; }
+        .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.25); backdrop-filter: blur(5px); z-index: 90; }
+        .mobile-overlay.show { display: block; }
+
+        @@media(max-width:950px) {
+            .sidebar { transform: translateX(-120%); }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; padding: 15px; }
+            .mobile-btn { display: flex; }
+        }
+
+        #toastContainer { position: fixed; right: 20px; bottom: 20px; z-index: 999; display: flex; flex-direction: column; gap: 9px; }
+        .toast { min-width: 270px; padding: 13px; border-radius: 17px; display: flex; align-items: center; gap: 10px; animation: toastIn .3s ease; }
+        @@keyframes toastIn { from { opacity: 0; transform: translateY(15px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    </style>
+</head>
+
+<body class="light min-h-screen text-slate-900 dark:text-slate-100 font-sans">
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div id="mobileOverlay" class="mobile-overlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar ios-glass">
+        <div class="brand">
+            <div class="brand-logo"><i class="fa-solid fa-coins"></i></div>
+            <div>
+                <div class="brand-name">CampusCoin</div>
+                <div class="brand-sub">STUDENT PORTAL</div>
+            </div>
+        </div>
+
+        <nav class="nav">
+        
+            <div class="nav-section">Main Menu</div>
+            <a href="/Dashboard/Index" class="nav-link"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a>
+            <a href="/Dashboard/Transactions" class="nav-link"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>My Transactions</span></a>
+            <a href="/FeeVouchers" class="nav-link"><i class="fa-solid fa-receipt"></i><span>Fee Vouchers</span></a>
+            <a href="/Dashboard/Budgets" class="nav-link"><i class="fa-solid fa-wallet"></i><span>My Budgets</span></a>
+            <a href="/Dashboard/Categories" class="nav-link"><i class="fa-solid fa-tags"></i><span>My Categories</span></a>
+            <a href="/Dashboard/SavingGoals" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>Saving Goals</span></a>
+            <a href="/FeeVouchers" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>Fee Voucher</span></a>
+            <a href="/Dashboard/Wallet" class="nav-link active"><i class="fa-solid fa-bullseye"></i><span>Wallet</span></a>
+            <a href="/Events" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>Events</span></a>
+            <a href="/Dashboard/BillSplit" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>Share Expenses</span></a>
+            
+            <div class="nav-section">Personal</div>
+            <a href="/Dashboard/FinancialHealth" class="nav-link"><i class="fa-solid fa-heart-pulse"></i><span>Financial Score</span></a>
+            <a href="/Dashboard/Notifications" class="nav-link"><i class="fa-solid fa-bell"></i><span>Inbox & Chats</span></a>
+            <a href="/Dashboard/Notifications" class="nav-link"><i class="fa-solid fa-bullhorn"></i><span>Announcement</span></a>
+            <a href="/Dashboard/Profile" class="nav-link"><i class="fa-solid fa-sliders"></i><span>Profile</span></a>
+            <a href="/AiCoach" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>AiCoach & Support</span></a>
+            <a href="/Dashboard/SavingGoals" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>Wishlist</span></a>
+        </nav>
+
+        <div class="student-mini">
+            <div class="student-avatar" id="sidebarAvatar">AR</div>
+            <div class="flex-1 min-w-0">
+                <div class="text-[11px] font-bold truncate" id="sidebarStudentName">Alex Rivera</div>
+                <div class="text-[9px] opacity-45 truncate" id="sidebarStudentRole">BS Computer Science</div>
+            </div>
+            <i class="fa-solid fa-graduation-cap text-xs opacity-35"></i>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- TOP BAR -->
+        <header class="topbar ios-glass">
+            <button class="action-btn mobile-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="globalSearch" type="text" placeholder="Search transactions, receipts, payments..." autocomplete="off">
+            </div>
+
+            <div class="top-actions">
+                <button class="action-btn" onclick="toggleTheme()">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+
+                <div class="dropdown-wrap">
+                    <button class="action-btn" onclick="toggleDropdown('notificationDropdown')">
+                        <i class="fa-regular fa-bell"></i>
+                        <span id="notificationDot" class="notification-dot"></span>
+                    </button>
+
+                    <div id="notificationDropdown" class="dropdown ios-glass">
+                        <div class="px-3 py-2">
+                            <div class="font-bold text-xs">Notifications</div>
+                            <div id="notificationCount" class="text-[9px] opacity-45 mt-1">0 unread</div>
+                        </div>
+                        <div id="notificationList"></div>
+                    </div>
+                </div>
+
+                <div class="dropdown-wrap">
+                    <div class="profile" onclick="toggleDropdown('profileDropdown')">
+                        <div class="profile-avatar" id="topAvatar">AR</div>
+                        <div class="profile-name-wrap">
+                            <div class="text-[10px] font-bold" id="topStudentName">Alex Rivera</div>
+                            <div class="text-[8px] opacity-45">Student</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-[8px] opacity-40"></i>
+                    </div>
+
+                    <div id="profileDropdown" class="dropdown ios-glass">
+                        <a href="/Dashboard/Profile" class="dropdown-item">
+                            <i class="fa-regular fa-user text-purple-500"></i> Profile
+                        </a>
+                        <button class="dropdown-item text-rose-500" onclick="logoutStudent()">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE HEADER -->
+        <section class="page-header">
+            <div>
+                <div class="eyebrow">CampusCoin / Financial Management</div>
+                <h1 class="page-title">Digital Wallet 💳</h1>
+                <p class="page-description">Manage your account balance, instant fee checkouts, top-ups, and peer transfers.</p>
+            </div>
+            <div class="px-4 py-2 rounded-2xl ios-glass text-[11px] font-bold flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-emerald-500"></i>
+                <span>2FA / PIN Verification Active</span>
+            </div>
+        </section>
+
+        <!-- RECEIVE QR CARD (dynamic) -->
+        <section class="ios-glass rounded-3xl p-5 mb-6">
+            <div class="flex flex-wrap items-center gap-6">
+                <div id="walletQrInline" class="flex-shrink-0 rounded-2xl bg-white p-3 shadow-sm" style="width:148px;height:148px;"></div>
+                <div class="flex-1 min-w-[200px]">
+                    <div class="text-[9px] font-extrabold uppercase tracking-widest text-purple-600 mb-1">Receive Money</div>
+                    <h2 class="text-base font-black mb-1">Your Wallet QR</h2>
+                    <p class="text-[11px] opacity-50 mb-3">Friends can scan this code or use your Account ID to send you CampusCoin balance.</p>
+                    <div class="font-mono text-sm font-bold mb-1" id="inlineQrAccount">—</div>
+                    <div class="text-[11px] opacity-50 mb-3" id="inlineQrName">—</div>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="copyAccountId()" class="px-4 py-2 rounded-xl text-[11px] font-bold text-white bg-gradient-to-r from-purple-600 to-purple-700 shadow-md">
+                            <i class="fa-regular fa-copy mr-1"></i> Copy ID
+                        </button>
+                        <button type="button" onclick="openModal('qrModal')" class="px-4 py-2 rounded-xl text-[11px] font-bold border border-purple-500/30 bg-purple-500/10 text-purple-700 dark:text-purple-300">
+                            <i class="fa-solid fa-expand mr-1"></i> Enlarge QR
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 text-[10px] opacity-60 min-w-[160px]">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-purple-500"></i> Secure peer transfer</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-bolt text-purple-500"></i> Instant balance update</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-database text-purple-500"></i> Saved in WalletLedgers</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- LOW BALANCE WARNING BANNER -->
+        <div id="lowBalanceWarning" class="hidden mb-6 p-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-bold flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-triangle-exclamation text-base"></i>
+                <span>Low Balance Warning: Your wallet balance is below Rs. 2,000. Please top up to avoid fee auto-pay failures.</span>
+            </div>
+            <button onclick="openModal('topUpModal')" class="underline hover:opacity-80">Top Up Now</button>
+        </div>
+
+        <!-- HERO BALANCE CARD -->
+        <section class="hero-wallet-card mb-8">
+            <div class="flex flex-wrap items-center justify-between gap-6 relative z-10">
+                <div>
+                    <div class="text-xs uppercase tracking-widest font-extrabold opacity-75 mb-1">Live Campus Balance</div>
+                    <div class="text-4xl sm:text-5xl font-black tracking-tight mb-2">
+                        Rs. <span id="walletBalance">12,500</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs opacity-85">
+                        <span>Account ID: <strong id="accountId" class="font-mono bg-white/20 px-2 py-0.5 rounded-lg">CC-8942-PK</strong></span>
+                        <button type="button" onclick="openModal('qrModal')" class="ml-2 underline text-[11px] font-bold opacity-90 hover:opacity-100">
+                            <i class="fa-solid fa-qrcode"></i> Show QR
+                        </button>
+                        <button onclick="copyAccountId()" class="hover:text-white" title="Copy Account ID"><i class="fa-regular fa-copy"></i></button>
+                        <span>• Status: <span class="text-emerald-300 font-bold">Verified Student</span></span>
+                    </div>
+                </div>
+
+                <!-- QUICK ACTIONS -->
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="openModal('topUpModal')" class="hero-action-btn">
+                        <i class="fa-solid fa-plus-circle text-emerald-300"></i> Add Money
+                    </button>
+                    <button onclick="openModal('transferModal')" class="hero-action-btn">
+                        <i class="fa-solid fa-paper-plane text-sky-300"></i> Peer Transfer
+                    </button>
+                    <button onclick="openModal('feeCheckoutModal')" class="hero-action-btn !bg-white !text-purple-900 hover:!bg-slate-100 shadow-lg">
+                        <i class="fa-solid fa-bolt text-amber-500"></i> 1-Click Fee Checkout
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANALYTICS VISUALS SECTION -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Monthly Spending Graph -->
+            <div class="lg:col-span-2 ios-glass ios-glass-interactive rounded-3xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-sm font-extrabold">Monthly Spending Breakdown</h3>
+                        <p class="text-[10px] opacity-45">Wallet expenditure by category (Rs.)</p>
+                    </div>
+                    <div class="text-xs font-bold text-purple-500 bg-purple-500/10 px-3 py-1 rounded-xl">
+                        Sep 2026
+                    </div>
+                </div>
+                <div class="h-64 relative">
+                    <canvas id="walletSpendingChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Budget Limit & Category Breakdown -->
+            <div class="ios-glass ios-glass-interactive rounded-3xl p-6 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-sm font-extrabold mb-1">Monthly Budget Limit</h3>
+                    <p class="text-[10px] opacity-45 mb-4">Target Limit: Rs. 25,000 / month</p>
+
+                    <!-- Budget Progress Bar -->
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs font-bold mb-2">
+                            <span>Spent: Rs. 14,200</span>
+                            <span id="budgetValue">56.8%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
+                            <div id="budgetProgressBar" class="bg-gradient-to-r from-purple-600 to-purple-700 h-full rounded-full transition-all duration-1000" style="width: 56.8%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 text-xs">
+                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-500/5">
+                            <span class="flex items-center gap-2 font-semibold"><i class="fa-solid fa-graduation-cap text-indigo-500"></i> Tuition & Fees</span>
+                            <span class="font-bold">Rs. 8,500</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-500/5">
+                            <span class="flex items-center gap-2 font-semibold"><i class="fa-solid fa-utensils text-amber-500"></i> Cafeteria & Food</span>
+                            <span class="font-bold">Rs. 3,200</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-500/5">
+                            <span class="flex items-center gap-2 font-semibold"><i class="fa-solid fa-ticket text-rose-500"></i> Events & Library</span>
+                            <span class="font-bold">Rs. 2,500</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-slate-500/10 text-center">
+                    <span class="text-[10px] opacity-60 font-medium">Safe spending pace • Rs. 10,800 remaining</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRANSACTION HISTORY LOG -->
+        <section class="ios-glass rounded-3xl p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="text-base font-extrabold">Transaction History Log</h3>
+                    <p class="text-[10px] opacity-45">Complete real-time log of incoming and outgoing wallet funds</p>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <button class="filter-btn active" onclick="filterTx('All', this)">All</button>
+                    <button class="filter-btn" onclick="filterTx('Incoming', this)"><i class="fa-solid fa-arrow-down-left text-emerald-500 mr-1"></i> Incoming (+)</button>
+                    <button class="filter-btn" onclick="filterTx('Outgoing', this)"><i class="fa-solid fa-arrow-up-right text-rose-500 mr-1"></i> Outgoing (-)</button>
+                </div>
+            </div>
+
+            <!-- Transaction Table / List -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="border-b border-slate-500/15 text-[10px] uppercase opacity-45 font-extrabold">
+                            <th class="pb-3 px-3">Transaction</th>
+                            <th class="pb-3 px-3">Category</th>
+                            <th class="pb-3 px-3">Date & Time</th>
+                            <th class="pb-3 px-3">Status</th>
+                            <th class="pb-3 px-3 text-right">Amount</th>
+                            <th class="pb-3 px-3 text-center">Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody id="txTableBody" class="divide-y divide-slate-500/10">
+                        <!-- Dynamic Rows Injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- TOP-UP MODAL -->
+    <div id="topUpModal" class="modal-overlay">
+        <div class="modal-card ios-glass">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-base font-extrabold flex items-center gap-2">
+                    <i class="fa-solid fa-wallet text-purple-500"></i> Top-Up Wallet
+                </h3>
+                <button onclick="closeModal('topUpModal')" class="action-btn !w-8 !h-8"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+
+            <form onsubmit="handleTopUp(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-60 mb-1">Select Payment Gateway</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        
+                <div class="flex flex-wrap gap-2 mb-1" id="quickTopUp">
+                    <button type="button" class="method-chip" onclick="document.getElementById('topUpAmount').value=500">500</button>
+                    <button type="button" class="method-chip" onclick="document.getElementById('topUpAmount').value=1000">1,000</button>
+                    <button type="button" class="method-chip" onclick="document.getElementById('topUpAmount').value=2000">2,000</button>
+                    <button type="button" class="method-chip" onclick="document.getElementById('topUpAmount').value=5000">5,000</button>
+                </div>
+                    <div class="method-chip active" onclick="selectMethod(this, 'EasyPaisa')">EasyPaisa</div>
+                        <div class="method-chip" onclick="selectMethod(this, 'JazzCash')">JazzCash</div>
+                        <div class="method-chip" onclick="selectMethod(this, 'Card')">Debit / Card</div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-60 mb-1">Amount (Rs.)</label>
+                    <input type="number" id="topUpAmount" data-quick="1" placeholder="e.g. 5000" min="100" class="glass-input font-bold" required>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-60 mb-1">Account / Mobile Number</label>
+                    <input type="text" placeholder="03XXXXXXXXX" class="glass-input font-mono" required>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-60 mb-1">Wallet Security PIN</label>
+                    <input type="password" maxlength="4" placeholder="4-Digit PIN" class="glass-input font-mono tracking-widest text-center" required>
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-purple-600 to-purple-700 shadow-lg shadow-purple-500/25 hover:opacity-95">
+                    Confirm & Load Balance
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PEER TRANSFER MODAL -->
+    <div id="transferModal" class="modal-overlay">
+        <div class="modal-card ios-glass">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-base font-extrabold flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-purple-500"></i> Peer Balance Transfer
+                </h3>
+                <button onclick="closeModal('transferModal')" class="action-btn !w-8 !h-8"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+
+            <form onsubmit="handleTransfer(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-60 mb-1">Recipient Student Registration ID</label>
+                    <input type="text" id="recipientRegId" placeholder="email or CC-0002-PK" class="glass-input font-mono" style="text-transform:none;" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-60 mb-1">Transfer Amount (Rs.)</label>
+                    <input type="number" id="transferAmount" placeholder="e.g. 1500" min="50" class="glass-input font-bold" required>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-60 mb-1">Note / Description (Optional)</label>
+                    <input type="text" placeholder="Cafeteria split, lab notes, etc." class="glass-input">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-60 mb-1">2FA Security OTP / PIN</label>
+                    <input type="password" id="transferPin" maxlength="4" placeholder="Enter 4-Digit PIN" class="glass-input font-mono tracking-widest text-center" required>
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-purple-600 to-purple-700 shadow-lg shadow-purple-500/25 hover:opacity-95">
+                    Send Funds Instantly
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 1-CLICK FEE CHECKOUT MODAL -->
+    <div id="feeCheckoutModal" class="modal-overlay">
+        <div class="modal-card ios-glass">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-base font-extrabold flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-amber-500"></i> 1-Click Fee Checkout
+                </h3>
+                <button onclick="closeModal('feeCheckoutModal')" class="action-btn !w-8 !h-8"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20 mb-5">
+                <div class="text-[10px] uppercase font-bold opacity-60">Pending Fee Voucher</div>
+                <div class="text-sm font-extrabold mt-1">Fall 2026 Midterm Exam Voucher</div>
+                <div class="flex justify-between items-center mt-3 pt-3 border-t border-slate-500/15 text-xs">
+                    <span>Due Amount:</span>
+                    <span class="font-extrabold text-purple-600 dark:text-purple-400">Rs. 4,500</span>
+                </div>
+            </div>
+
+            <form onsubmit="handleFeeCheckout(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-60 mb-1">Confirm Security PIN</label>
+                    <input type="password" maxlength="4" placeholder="Enter PIN to Authorize" class="glass-input font-mono tracking-widest text-center" required>
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25 hover:opacity-95">
+                    Pay Rs. 4,500 Instantly
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DIGITAL RECEIPT MODAL -->
+    <div id="receiptModal" class="modal-overlay">
+        <div class="modal-card ios-glass text-center">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-xl mx-auto mb-3">
+                <i class="fa-solid fa-receipt"></i>
+            </div>
+            <h3 class="text-base font-black">Digital Receipt</h3>
+            <p class="text-[10px] opacity-45 mb-4">Official CampusCoin Payment Voucher</p>
+
+            <div id="receiptDetails" class="p-4 rounded-2xl bg-slate-500/5 text-left text-xs space-y-2 mb-6 font-mono">
+                <!-- Dynamically populated -->
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeModal('receiptModal')" class="flex-1 py-2.5 rounded-xl font-bold text-xs border border-slate-500/30 hover:bg-slate-500/10">Close</button>
+                <button onclick="downloadReceiptPdf()" class="flex-1 py-2.5 rounded-xl font-bold text-xs text-white bg-purple-600 shadow-md hover:bg-purple-700">
+                    <i class="fa-solid fa-download mr-1"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- RECEIVE QR MODAL -->
+    <div id="qrModal" class="modal-overlay" onclick="if(event.target===this) closeModal('qrModal')">
+        <div class="modal-card ios-glass text-center">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-base font-extrabold"><i class="fa-solid fa-qrcode text-purple-500 mr-2"></i>Receive Money</h3>
+                <button type="button" onclick="closeModal('qrModal')" class="action-btn !w-8 !h-8"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            <p class="text-[11px] opacity-50 mb-3">Scan this QR to get your CampusCoin wallet ID</p>
+            <div id="walletQr" class="mx-auto mb-3 flex items-center justify-center p-3 rounded-2xl bg-white" style="width:200px;height:200px;"></div>
+            <div class="font-mono font-bold text-sm mb-1" id="qrAccountLabel">CC-0000-PK</div>
+            <div class="text-[11px] opacity-50 mb-4" id="qrNameLabel">Student</div>
+            <button type="button" onclick="copyAccountId()" class="w-full py-2.5 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-purple-600 to-purple-700">
+                Copy Account ID
+            </button>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        
+        // ===== DYNAMIC WALLET (same UI, live API) =====
+        let walletState = {
+            balance: 0,
+            accountId: "CC-0000-PK",
+            profile: { name: "Student", initials: "ST", department: "Student" },
+            notifications: [],
+            transactions: []
+        };
+        let pendingFees = [];
+        let activeCategoryFilter = "All";
+        let spendingChart = null;
+        let selectedTopUpMethod = "EasyPaisa";
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            initializeTheme();
+            initializeSearch();
+            await loadWalletData();
+        });
+
+        async function loadWalletData() {
+            try {
+                const [sumRes, txRes] = await Promise.all([
+                    fetch("/api/wallet/summary", { credentials: "same-origin" }),
+                    fetch("/api/wallet/transactions", { credentials: "same-origin" })
+                ]);
+
+                if (sumRes.ok) {
+                    const sum = await sumRes.json();
+                    walletState.balance = sum.balance || 0;
+                    walletState.accountId = sum.accountId || walletState.accountId;
+                    walletState.qrPayload = sum.qrPayload || ("CAMPUSCOIN|WALLET|" + walletState.accountId);
+                    const name = sum.userName || "Student";
+                    const initials = name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "ST";
+                    walletState.profile = {
+                        name: name,
+                        initials: initials,
+                        department: sum.academicYear || "Student"
+                    };
+                    pendingFees = sum.pendingFees || [];
+                    if (sum.lowBalance) {
+                        const w = document.getElementById("lowBalanceWarning");
+                        if (w) w.classList.remove("hidden");
+                    } else {
+                        const w = document.getElementById("lowBalanceWarning");
+                        if (w) w.classList.add("hidden");
+                    }
+                }
+
+                if (txRes.ok) {
+                    walletState.transactions = await txRes.json();
+                }
+
+                renderProfileDetails();
+                updateBalanceDisplay();
+                renderTransactions();
+                updateAccountIdUI();
+                initializeSpendingChart();
+                renderNotifications();
+                renderWalletQr(walletState.qrPayload || walletState.accountId);
+            } catch (err) {
+                console.error(err);
+                showToast("Could not load wallet data");
+            }
+        }
+
+        function updateAccountIdUI() {
+            const el = document.getElementById("accountId");
+            if (el) el.textContent = walletState.accountId;
+        }
+
+        function renderProfileDetails() {
+            const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            set("sidebarStudentName", walletState.profile.name);
+            set("sidebarStudentRole", walletState.profile.department);
+            set("sidebarAvatar", walletState.profile.initials);
+            set("topStudentName", walletState.profile.name);
+            set("topAvatar", walletState.profile.initials);
+        }
+
+        function updateBalanceDisplay() {
+            const el = document.getElementById("walletBalance");
+            if (el) el.textContent = Number(walletState.balance).toLocaleString();
+            const warningBanner = document.getElementById("lowBalanceWarning");
+            if (warningBanner) {
+                if (walletState.balance < 2000) warningBanner.classList.remove("hidden");
+                else warningBanner.classList.add("hidden");
+            }
+        }
+
+        function renderTransactions(searchTerm = "") {
+            const tbody = document.getElementById("txTableBody");
+            if (!tbody) return;
+            const term = (searchTerm || "").toLowerCase().trim();
+
+            const filtered = walletState.transactions.filter(tx => {
+                const matchesType = (activeCategoryFilter === "All" || tx.type === activeCategoryFilter);
+                const matchesSearch = (tx.title || "").toLowerCase().includes(term)
+                    || (tx.id || "").toLowerCase().includes(term)
+                    || (tx.category || "").toLowerCase().includes(term);
+                return matchesType && matchesSearch;
+            });
+
+            tbody.innerHTML = "";
+            if (!filtered.length) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 opacity-40">No transactions match your query.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(tx => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-500/5 transition-colors";
+                const isIncoming = tx.type === "Incoming";
+                const amountClass = isIncoming ? "text-emerald-500 font-extrabold" : "text-rose-500 font-extrabold";
+                const sign = isIncoming ? "+" : "-";
+                tr.innerHTML = `
+                    <td class="py-3.5 px-3">
+                        <div class="font-bold text-slate-800 dark:text-slate-100">${esc(tx.title)}</div>
+                        <div class="text-[9px] opacity-45 font-mono">${esc(tx.id)}</div>
+                    </td>
+                    <td class="py-3.5 px-3">
+                        <span class="px-2 py-1 rounded-lg text-[9px] font-bold bg-slate-500/10">${esc(tx.category)}</span>
+                    </td>
+                    <td class="py-3.5 px-3 opacity-60 text-[10px]">${esc(tx.date)}</td>
+                    <td class="py-3.5 px-3">
+                        <span class="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                            <i class="fa-solid fa-circle-check text-[8px]"></i> ${esc(tx.status || "Completed")}
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-3 text-right ${amountClass} font-mono">
+                        ${sign} Rs. ${Number(tx.amount).toLocaleString()}
+                    </td>
+                    <td class="py-3.5 px-3 text-center">
+                        <button onclick="viewReceipt('${esc(tx.id)}')" class="p-1.5 rounded-lg border border-slate-500/20 hover:bg-purple-500/10 hover:text-purple-500" title="View Digital Receipt">
+                            <i class="fa-solid fa-receipt text-xs"></i>
+                        </button>
+                    </td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterTx(type, btn) {
+            activeCategoryFilter = type;
+            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+            if (btn) btn.classList.add("active");
+            const search = document.getElementById("globalSearch");
+            renderTransactions(search ? search.value : "");
+        }
+
+        function initializeSearch() {
+            const el = document.getElementById("globalSearch");
+            if (el) el.addEventListener("input", function () { renderTransactions(this.value); });
+        }
+
+        async function handleTopUp(e) {
+            e.preventDefault();
+            const amt = parseFloat(document.getElementById("topUpAmount").value);
+            if (!amt || amt <= 0) return;
+            try {
+                const res = await fetch("/api/wallet/topup", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "same-origin",
+                    body: JSON.stringify({ amount: amt, method: selectedTopUpMethod })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    showToast(data.message || "Top-up failed");
+                    return;
+                }
+                showToast(data.message || `Successfully added Rs. ${amt.toLocaleString()}!`);
+                closeModal("topUpModal");
+                e.target.reset();
+                await loadWalletData();
+            } catch {
+                showToast("Network error during top-up");
+            }
+        }
+
+        async function handleTransfer(e) {
+            e.preventDefault();
+            const recipientEl = document.getElementById("recipientRegId") || e.target.querySelector('input[type="text"]');
+            const amtEl = document.getElementById("transferAmount") || e.target.querySelector('input[type="number"]');
+            const pinEl = document.getElementById("transferPin") || e.target.querySelector('input[type="password"]');
+            const noteInput = document.getElementById("transferNote") || e.target.querySelector('input[placeholder*="Cafeteria"], input[placeholder*="lab"], input[placeholder*="Note"]');
+            const recipient = (recipientEl && recipientEl.value || "").trim();
+            const amt = parseFloat(amtEl && amtEl.value);
+            const pin = (pinEl && pinEl.value || "").trim();
+            const note = noteInput ? noteInput.value.trim() : "";
+            if (!recipient) { showToast("Enter recipient email or CC-XXXX-PK"); return; }
+            if (!amt || amt < 50) { showToast("Minimum transfer is Rs. 50"); return; }
+            if (!pin || pin.length < 4) { showToast("Enter 4-digit wallet PIN"); return; }
+            try {
+                const res = await fetch("/api/wallet/transfer", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "same-origin",
+                    body: JSON.stringify({ recipient, amount: amt, note, pin })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    showToast(data.message || "Transfer failed");
+                    return;
+                }
+                showToast(data.message || `Transferred Rs. ${amt.toLocaleString()}`);
+                closeModal("transferModal");
+                e.target.reset();
+                await loadWalletData();
+            } catch {
+                showToast("Network error during transfer");
+            }
+        }
+
+        async function handleFeeCheckout(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            if (!pendingFees.length) {
+                showToast("No pending fee vouchers");
+                return;
+            }
+            const fee = pendingFees[0];
+            try {
+                const res = await fetch(`/api/wallet/pay-fee/${fee.id}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "same-origin"
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    showToast(data.message || "Fee payment failed");
+                    return;
+                }
+                showToast(data.message || "Fee payment completed!");
+                closeModal("feeCheckoutModal");
+                await loadWalletData();
+            } catch {
+                showToast("Network error during fee payment");
+            }
+        }
+
+        function viewReceipt(txId) {
+            const tx = walletState.transactions.find(t => t.id === txId);
+            if (!tx) return;
+            const details = document.getElementById("receiptDetails");
+            if (!details) return;
+            details.innerHTML = `
+                <div class="flex justify-between"><span>Transaction ID:</span> <strong>${esc(tx.id)}</strong></div>
+                <div class="flex justify-between"><span>Description:</span> <strong>${esc(tx.title)}</strong></div>
+                <div class="flex justify-between"><span>Category:</span> <strong>${esc(tx.category)}</strong></div>
+                <div class="flex justify-between"><span>Date & Time:</span> <strong>${esc(tx.date)}</strong></div>
+                <div class="flex justify-between border-t border-slate-500/20 pt-2 text-sm font-black">
+                    <span>Total Amount:</span>
+                    <span class="${tx.type === "Incoming" ? "text-emerald-500" : "text-rose-500"}">Rs. ${Number(tx.amount).toLocaleString()}</span>
+                </div>`;
+            openModal("receiptModal");
+        }
+
+        function downloadReceiptPdf() {
+            showToast("Downloading digital receipt PDF...");
+            setTimeout(() => closeModal("receiptModal"), 1200);
+        }
+
+        function selectMethod(chip, method) {
+            document.querySelectorAll(".method-chip").forEach(c => c.classList.remove("active"));
+            chip.classList.add("active");
+            selectedTopUpMethod = method || chip.textContent.trim() || "Online";
+        }
+
+        function copyAccountId() {
+            navigator.clipboard.writeText(walletState.accountId);
+            showToast("Account ID copied to clipboard!");
+        }
+
+        function initializeSpendingChart() {
+            const canvas = document.getElementById("walletSpendingChart");
+            if (!canvas || typeof Chart === "undefined") return;
+            const ctx = canvas.getContext("2d");
+            if (spendingChart) { try { spendingChart.destroy(); } catch (_) {} }
+
+            // Build simple weekly-ish series from outgoing tx amounts (UI chart only)
+            const outgoing = walletState.transactions.filter(t => t.type === "Outgoing").slice(0, 8).reverse();
+            const labels = outgoing.length ? outgoing.map((t, i) => `T${i + 1}`) : ["Week 1", "Week 2", "Week 3", "Week 4"];
+            const data = outgoing.length ? outgoing.map(t => Number(t.amount)) : [0, 0, 0, 0];
+
+            spendingChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels,
+                    datasets: [{
+                        label: "Spending (Rs.)",
+                        data,
+                        borderColor: "#8b58b8",
+                        backgroundColor: "rgba(139,88,184,0.15)",
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: "rgba(150,150,150,0.1)" } }
+                    }
+                }
+            });
+        }
+
+        function openModal(id) {
+            // When opening fee modal, fill dynamic pending fee if present
+            if (id === "feeCheckoutModal" && pendingFees.length) {
+                const fee = pendingFees[0];
+                const modal = document.getElementById("feeCheckoutModal");
+                if (modal) {
+                    const titleEl = modal.querySelector(".text-sm.font-extrabold");
+                    const amountEls = modal.querySelectorAll(".font-extrabold.text-purple-600, .text-purple-600");
+                    if (titleEl) titleEl.textContent = fee.title || "Fee Voucher";
+                    amountEls.forEach(el => {
+                        if ((el.textContent || "").includes("Rs.") || (el.textContent || "").includes("4,500")) {
+                            el.textContent = "Rs. " + Number(fee.amount).toLocaleString();
+                        }
+                    });
+                    const payBtn = modal.querySelector("button[type='submit']");
+                    if (payBtn) payBtn.textContent = "Pay Rs. " + Number(fee.amount).toLocaleString() + " Instantly";
+                }
+            }
+            document.getElementById(id).classList.add("show");
+        }
+        function closeModal(id) { document.getElementById(id).classList.remove("show"); }
+
+        function renderNotifications() {
+            const list = document.getElementById("notificationList");
+            const count = document.getElementById("notificationCount");
+            const dot = document.getElementById("notificationDot");
+            if (!list) return;
+            const unread = (walletState.notifications || []).filter(n => n.unread).length;
+            if (count) count.textContent = `${unread} unread notification${unread === 1 ? "" : "s"}`;
+            if (dot) dot.style.display = unread ? "block" : "none";
+            list.innerHTML = "";
+            (walletState.notifications || []).forEach((n, idx) => {
+                const item = document.createElement("button");
+                item.className = "dropdown-item";
+                item.onclick = () => {
+                    walletState.notifications[idx].unread = false;
+                    renderNotifications();
+                };
+                item.innerHTML = `
+                    <span class="w-2 h-2 rounded-full ${n.unread ? "bg-purple-500" : "bg-slate-300"}"></span>
+                    <span>
+                        <span class="block font-bold text-[10px]">${esc(n.title)}</span>
+                        <span class="block text-[9px] opacity-45 mt-1">${esc(n.text)}</span>
+                    </span>`;
+                list.appendChild(item);
+            });
+        }
+
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            if (!dropdown) return;
+            const isShown = dropdown.classList.contains("show");
+            document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("show"));
+            if (!isShown) dropdown.classList.add("show");
+        }
+
+        document.addEventListener("click", function (e) {
+            if (!e.target.closest(".dropdown-wrap")) {
+                document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("show"));
+            }
+        });
+
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("mobileOverlay").classList.toggle("show");
+        }
+        function closeSidebar() {
+            document.getElementById("sidebar").classList.remove("open");
+            document.getElementById("mobileOverlay").classList.remove("show");
+        }
+
+        function initializeTheme() {
+            const saved = localStorage.getItem("campuscoin-theme");
+            if (saved === "dark") {
+                document.documentElement.classList.replace("light", "dark");
+                document.body.classList.remove("light");
+                document.body.classList.add("dark-mesh");
+            }
+            updateThemeIcon();
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains("dark");
+            if (isDark) {
+                document.documentElement.classList.replace("dark", "light");
+                document.body.classList.remove("dark-mesh");
+                document.body.classList.add("light");
+                localStorage.setItem("campuscoin-theme", "light");
+            } else {
+                document.documentElement.classList.replace("light", "dark");
+                document.body.classList.remove("light");
+                document.body.classList.add("dark-mesh");
+                localStorage.setItem("campuscoin-theme", "dark");
+            }
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const icon = document.getElementById("themeIcon");
+            if (!icon) return;
+            const isDark = document.documentElement.classList.contains("dark");
+            icon.className = isDark ? "fa-solid fa-sun text-amber-300" : "fa-solid fa-moon";
+        }
+
+        function logoutStudent() {
+            showToast("Logging out...");
+            setTimeout(() => { window.location.href = "/Auth/Logout"; }, 600);
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById("toastContainer");
+            if (!container) return;
+            const toast = document.createElement("div");
+            toast.className = "toast ios-glass font-bold text-xs";
+            toast.innerHTML = `<i class="fa-solid fa-circle-info text-purple-500"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        
+        function renderWalletQr(payload) {
+            const text = payload || walletState.qrPayload || walletState.accountId || "CAMPUSCOIN";
+            const label = document.getElementById("qrAccountLabel");
+            const nameEl = document.getElementById("qrNameLabel");
+            if (label) label.textContent = walletState.accountId;
+            if (nameEl) nameEl.textContent = (walletState.profile && walletState.profile.name) || "Student";
+            const inlineAcc = document.getElementById("inlineQrAccount");
+            const inlineName = document.getElementById("inlineQrName");
+            if (inlineAcc) inlineAcc.textContent = walletState.accountId;
+            if (inlineName) inlineName.textContent = (walletState.profile && walletState.profile.name) || "Student";
+
+            function draw(boxId) {
+                const box = document.getElementById(boxId);
+                if (!box) return;
+                box.innerHTML = "";
+                if (typeof QRCode === "undefined") {
+                    box.innerHTML = '<div class="text-[10px] text-slate-500 p-4">QR loading...</div>';
+                    return;
+                }
+                try {
+                    const size = boxId === "walletQrInline" ? 120 : 180;
+                    new QRCode(box, {
+                        text: text,
+                        width: size,
+                        height: size,
+                        colorDark: "#6b3a92",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                } catch (e) {
+                    console.error(e);
+                    box.innerHTML = '<div class="text-[10px] text-slate-500">QR unavailable</div>';
+                }
+            }
+            draw("walletQr");
+            draw("walletQrInline");
+        }
+
+        function esc(s) {
+
+            return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+        }
+
+    </script>
+</body>
+</html>

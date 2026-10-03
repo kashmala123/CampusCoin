@@ -1,0 +1,159 @@
+/* ============================================================
+   CampusCoin — Motion system
+   Dropdowns/popovers are NEVER animated into a visible state.
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:root {
+  --cc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --cc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes ccPageIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+body { animation: ccPageIn 0.4s var(--cc-ease) both; }
+
+@keyframes ccSidebarIn {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.sidebar, aside.sidebar, #sidebar {
+  animation: ccSidebarIn 0.5s var(--cc-ease-out) both;
+}
+
+@keyframes ccTopbarIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.topbar, header.topbar, .admin-topbar {
+  animation: ccTopbarIn 0.45s var(--cc-ease-out) 0.04s both;
+}
+
+@keyframes ccCardIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* KPI / stat cards — staggered, no scale (avoids overlap feel) */
+.kpi-grid > .kpi,
+.kpi-grid > .ios-glass,
+.kpi-grid > div {
+  animation: ccCardIn 0.5s var(--cc-ease-out) both;
+}
+.kpi-grid > :nth-child(1) { animation-delay: 0.06s; }
+.kpi-grid > :nth-child(2) { animation-delay: 0.11s; }
+.kpi-grid > :nth-child(3) { animation-delay: 0.16s; }
+.kpi-grid > :nth-child(4) { animation-delay: 0.21s; }
+.kpi-grid > :nth-child(5) { animation-delay: 0.26s; }
+.kpi-grid > :nth-child(6) { animation-delay: 0.31s; }
+
+.page-header,
+.stat-card,
+.chart-card,
+.panel.ios-glass,
+.main > section.panel,
+.main > section.ios-glass:not(.kpi-grid) {
+  animation: ccCardIn 0.5s var(--cc-ease-out) 0.12s both;
+}
+
+/* HARD exclude menus from any entrance animation */
+.dropdown,
+.notifications-popover,
+.cc-shared-dd,
+.cc-notif-popover,
+.cc-top-dd,
+#profileDropdown,
+#quickDropdown,
+#notificationsPopover,
+#notifDropdown {
+  animation: none !important;
+}
+
+/* Hover polish */
+.kpi.ios-glass-interactive,
+.ios-glass-interactive,
+.stat-card,
+.chart-card.ios-glass-interactive {
+  transition: transform 0.3s var(--cc-ease-out), box-shadow 0.3s ease !important;
+}
+.kpi.ios-glass-interactive:hover,
+.ios-glass-interactive:hover,
+.chart-card.ios-glass-interactive:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -12px rgba(107, 58, 146, 0.18) !important;
+}
+.nav-link {
+  transition: transform 0.25s var(--cc-ease-out), background 0.25s ease, color 0.25s ease !important;
+}
+.nav-link:hover { transform: translateX(3px); }
+.action-btn {
+  transition: transform 0.25s var(--cc-ease-out) !important;
+}
+.action-btn:hover { transform: scale(1.06); }
+.action-btn:active, .nav-link:active { transform: scale(0.97); }
+
+@keyframes ccLogoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+.brand-logo, .cc-brand-mark {
+  animation: ccLogoFloat 4.5s ease-in-out infinite;
+}
+.orb { pointer-events: none; }
+
+@keyframes ccDdIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.dropdown.show,
+.cc-shared-dd.show,
+.cc-notif-popover.show,
+.cc-top-dd.show,
+.notifications-popover.show {
+  animation: ccDdIn 0.18s var(--cc-ease-out) both !important;
+}
+
+@keyframes ccTitleIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-title, h1.page-title {
+  animation: ccTitleIn 0.55s var(--cc-ease-out) 0.08s both;
+}
+
+@keyframes ccRowIn {
+  from { opacity: 0; transform: translateX(-4px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+table tbody tr { animation: ccRowIn 0.3s var(--cc-ease-out) both; }
+table tbody tr:nth-child(1) { animation-delay: 0.04s; }
+table tbody tr:nth-child(2) { animation-delay: 0.07s; }
+table tbody tr:nth-child(3) { animation-delay: 0.10s; }
+table tbody tr:nth-child(4) { animation-delay: 0.13s; }
+table tbody tr:nth-child(5) { animation-delay: 0.16s; }
+table tbody tr:nth-child(6) { animation-delay: 0.19s; }
+
+/* Spacing: cards never touch */
+.kpi-grid {
+  gap: 22px !important;
+  margin-bottom: 22px !important;
+}
+.two-grid, .three-grid, .charts-grid {
+  gap: 22px !important;
+  margin-bottom: 22px !important;
+}
+.main {
+  padding-bottom: 80px !important;
+}
+.main > section + section {
+  margin-top: 4px;
+}

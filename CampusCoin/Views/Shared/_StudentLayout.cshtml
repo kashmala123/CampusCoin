@@ -1,0 +1,704 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] — CampusCoin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="stylesheet" href="/css/cc-animations.css" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: {
+                colors: { brand: { 50:'#f6effc',100:'#ede4f6',400:'#a486e0',500:'#8b6ff0',600:'#6d4aff' } },
+                fontFamily: { sans: ['Plus Jakarta Sans','-apple-system','BlinkMacSystemFont','Inter','sans-serif'] }
+            }}
+        };
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Common CSS — jo tumhare pages mein hai */
+        * {
+            transition: background-color .4s ease,border-color .4s ease,box-shadow .4s ease,color .3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans',system-ui,sans-serif;
+            background-color: #fbf6f0;
+            background-image: radial-gradient(at 0% 0%,rgba(237,228,246,.9) 0px,transparent 50%),radial-gradient(at 100% 0%,rgba(196,174,224,.85) 0px,transparent 50%),radial-gradient(at 100% 100%,rgba(255,225,230,.85) 0px,transparent 50%),radial-gradient(at 0% 100%,rgba(246,239,252,.9) 0px,transparent 50%),radial-gradient(at 50% 50%,rgba(212,243,228,.4) 0px,transparent 50%);
+            background-attachment: fixed;
+        }
+
+            body.dark-mesh {
+                background-color: #100a1a;
+                background-image: radial-gradient(at 10% 10%,rgba(139,111,240,.28) 0px,transparent 50%),radial-gradient(at 90% 10%,rgba(155,111,216,.22) 0px,transparent 50%),radial-gradient(at 90% 90%,rgba(109,74,255,.28) 0px,transparent 50%),radial-gradient(at 10% 90%,rgba(212,121,159,.22) 0px,transparent 50%);
+                background-attachment: fixed;
+            }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+            animation: floatOrb 18s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(155,111,216,.5);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 480px;
+            height: 480px;
+            background: rgba(139,111,240,.45);
+            top: 30%;
+            right: -120px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: rgba(212,121,159,.4);
+            bottom: -100px;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @@keyframes floatOrb {
+            0% {
+                transform: translate(0,0) scale(1);
+            }
+
+            50% {
+                transform: translate(40px,60px) scale(1.08);
+            }
+
+            100% {
+                transform: translate(-30px,30px) scale(.95);
+            }
+        }
+
+        .ios-glass {
+            backdrop-filter: blur(32px) saturate(240%);
+            -webkit-backdrop-filter: blur(32px) saturate(240%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light .ios-glass {
+            background: rgba(255,255,255,.72);
+            border: 1.5px solid rgba(255,255,255,.95);
+            box-shadow: 0 20px 40px -12px rgba(109,74,255,.12),0 4px 16px -2px rgba(0,0,0,.04),inset 0 1.5px 2px 0 rgba(255,255,255,1),inset 0 -1.5px 2px 0 rgba(0,0,0,.03);
+            color: #1a0b2e;
+        }
+
+        .dark .ios-glass {
+            background: rgba(28,18,42,.6);
+            border: 1px solid rgba(255,255,255,.15);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,.45),inset 0 1px 0 0 rgba(255,255,255,.18);
+            color: #f8fafc;
+        }
+
+        .ios-glass-interactive {
+            transition: transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s ease,background .35s ease;
+        }
+
+            .ios-glass-interactive:hover {
+                transform: translateY(-4px);
+            }
+
+        .sidebar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            bottom: 20px;
+            width: 260px;
+            z-index: 100;
+            border-radius: 30px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(0);
+            transition: transform .35s ease;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 6px 22px;
+        }
+
+        .brand-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            background: linear-gradient(135deg,#8b6ff0,#6d4aff,#4b2568);
+            box-shadow: 0 12px 25px rgba(109,74,255,.32);
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        .brand-sub {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .16em;
+            opacity: .45;
+            margin-top: 3px;
+        }
+
+        .nav-section {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .15em;
+            font-weight: 800;
+            opacity: .4;
+            padding: 14px 10px 7px;
+        }
+
+        .nav {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            margin: 4px 0;
+            border-radius: 15px;
+            text-decoration: none;
+            color: inherit;
+            font-size: 12px;
+            font-weight: 650;
+            transition: all .25s ease;
+        }
+
+            .nav-link i {
+                width: 20px;
+                text-align: center;
+                opacity: .55;
+            }
+
+            .nav-link:hover {
+                background: rgba(255,255,255,.30);
+                transform: translateX(3px);
+            }
+
+        .dark .nav-link:hover {
+            background: rgba(255,255,255,.06);
+        }
+
+        .nav-link.active {
+            color: #6d4aff;
+            background: linear-gradient(135deg,rgba(139,111,240,.18),rgba(109,74,255,.14));
+            box-shadow: inset 0 0 0 1px rgba(139,111,240,.15),0 10px 25px rgba(109,74,255,.08);
+        }
+
+        .dark .nav-link.active {
+            color: #c4aee0;
+            background: rgba(139,111,240,.1);
+        }
+
+        .student-mini {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 11px;
+            border-radius: 18px;
+            background: rgba(255,255,255,.30);
+            border: 1px solid rgba(255,255,255,.35);
+        }
+
+        .dark .student-mini {
+            background: rgba(255,255,255,.04);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .student-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            background: linear-gradient(135deg,#8b6ff0,#6d4aff);
+        }
+
+        .main {
+            margin-left: 300px;
+            padding: 20px 25px 40px 0;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 70px;
+            border-radius: 25px;
+            padding: 10px 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 20px;
+            z-index: 80;
+        }
+
+        .search {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+            .search i {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                opacity: .4;
+                font-size: 12px;
+            }
+
+            .search input {
+                width: 100%;
+                border: none;
+                outline: none;
+                padding: 11px 15px 11px 42px;
+                border-radius: 16px;
+                background: rgba(255,255,255,.38);
+                color: inherit;
+                font-size: 12px;
+                border: 1px solid rgba(255,255,255,.50);
+            }
+
+        .dark .search input {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-left: auto;
+        }
+
+        .action-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(255,255,255,.36);
+            color: inherit;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .dark .action-btn {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 4px 9px 4px 4px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            background: linear-gradient(135deg,#a486e0,#6d4aff);
+        }
+
+        .page-header {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 28px 3px 20px;
+        }
+
+        .eyebrow {
+            color: #6d4aff;
+            font-size: 9px;
+            font-weight: 850;
+            text-transform: uppercase;
+            letter-spacing: .18em;
+            margin-bottom: 8px;
+        }
+
+        .page-title {
+            font-size: clamp(28px,3vw,40px);
+            font-weight: 900;
+            letter-spacing: -1.8px;
+            line-height: 1;
+        }
+
+        .page-description {
+            font-size: 11px;
+            opacity: .55;
+            margin-top: 8px;
+        }
+
+        .glass-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: rgba(255,255,255,.35);
+            border: 1px solid rgba(255,255,255,.5);
+            font-size: 12px;
+            outline: none;
+            color: inherit;
+            transition: all .2s;
+        }
+
+            .glass-input:focus {
+                border-color: rgba(109,74,255,.5);
+                box-shadow: 0 0 0 3px rgba(109,74,255,.1);
+            }
+
+        .dark .glass-input {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.1);
+        }
+
+        .mobile-btn {
+            display: none;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,.25);
+            backdrop-filter: blur(5px);
+            z-index: 90;
+        }
+
+            .mobile-overlay.show {
+                display: block;
+            }
+
+        @@media(max-width:950px) {
+            .sidebar {
+                transform: translateX(-120%);
+            }
+
+                .sidebar.open {
+                    transform: translateX(0);
+                }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .mobile-btn {
+                display: flex;
+            }
+        }
+
+        #toastContainer {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .toast {
+            min-width: 270px;
+            padding: 13px;
+            border-radius: 17px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn .3s ease;
+        }
+
+        @@keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+    <link rel="stylesheet" href="/css/cc-header-widgets.css" asp-append-version="true" />
+
+    <style id="cc-a11y">
+      html { font-size: 16px; }
+      html.cc-font-sm { font-size: 14px; }
+      html.cc-font-lg { font-size: 18px; }
+      html.cc-font-xl { font-size: 20px; }
+      .cc-font-controls { display:inline-flex; align-items:center; gap:4px; }
+      .cc-font-controls button {
+        width:28px;height:28px;border-radius:8px;border:1px solid rgba(148,163,184,.35);
+        background:rgba(255,255,255,.08);color:inherit;font-weight:800;font-size:11px;cursor:pointer;
+      }
+      .cc-font-controls button:hover { background:rgba(56,189,248,.2); }
+    </style>
+</head>
+
+<body class="light min-h-screen text-slate-900 dark:text-slate-100 font-sans">
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div id="mobileOverlay" class="mobile-overlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar ios-glass">
+                <div class="brand cc-brand-block">
+            <div class="brand-logo cc-brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 44 44" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="ccCoinBG_sb" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#6b3a92"/><stop offset="1" stop-color="#241232"/>
+                        </linearGradient>
+                        <linearGradient id="ccCoinAccent_sb" x1="10" y1="10" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#d4ff3d"/><stop offset="1" stop-color="#10b981"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="22" cy="22" r="21" fill="url(#ccCoinBG_sb)"/>
+                    <circle cx="22" cy="22" r="16.5" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1" stroke-dasharray="1.5 3"/>
+                    <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5" stroke="url(#ccCoinAccent_sb)" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                    <path d="M31 12c0 2.2-1.3 3.5-3.5 3.5 2.2 0 3.5 1.3 3.5 3.5 0-2.2 1.3-3.5 3.5-3.5-2.2 0-3.5-1.3-3.5-3.5z" fill="#d4ff3d"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-name cc-brand-title"><b>Cash</b><span>Campus</span></div>
+                <div class="brand-sub">STUDENT PORTAL</div>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <div class="nav-section">Main Menu</div>
+            <a href="/Dashboard/Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                <i class="fa-solid fa-chart-line"></i><span>Dashboard</span>
+            </a>
+            <a href="/Dashboard/Transactions" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Transactions" ? "active" : "")">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i><span>My Transactions</span>
+            </a>
+            <a href="/FeeVouchers" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "FeeVouchers" ? "active" : "")">
+                <i class="fa-solid fa-receipt"></i><span>Fee Vouchers</span>
+            </a>
+            <a href="/Dashboard/Budgets" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Budgets" ? "active" : "")">
+                <i class="fa-solid fa-wallet"></i><span>My Budgets</span>
+            </a>
+            <a href="/Dashboard/SavingGoals" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "SavingGoals" ? "active" : "")">
+                <i class="fa-solid fa-bullseye"></i><span>Saving Goals</span>
+            </a>
+            <a href="/Events" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Events" ? "active" : "")">
+                <i class="fa-solid fa-calendar-days"></i><span>Events</span>
+            </a>
+
+            <div class="nav-section">Personal</div>
+            <a href="/Dashboard/FinancialHealth" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "FinancialHealth" ? "active" : "")">
+                <i class="fa-solid fa-heart-pulse"></i><span>Financial Score</span>
+            </a>
+            <a href="/Dashboard/Notifications" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Notifications" ? "active" : "")">
+                <i class="fa-solid fa-bell"></i><span>Inbox & Chats</span>
+            </a>
+            <a href="/AiCoach" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AiCoach" ? "active" : "")">
+                <i class="fa-solid fa-robot"></i><span>AI Coach & Support</span>
+            </a>
+            <a href="/Dashboard/Profile" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Profile" ? "active" : "")">
+                <i class="fa-solid fa-sliders"></i><span>Profile</span>
+            </a>
+        </nav>
+
+        <div class="student-mini">
+            <div class="student-avatar" id="sidebarAvatar">AR</div>
+            <div class="flex-1 min-w-0">
+                <div class="text-[11px] font-bold truncate" id="sidebarStudentName">Loading...</div>
+                <div class="text-[9px] opacity-45 truncate">Student</div>
+            </div>
+            <i class="fa-solid fa-graduation-cap text-xs opacity-35"></i>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+        <header class="topbar ios-glass">
+            <button class="action-btn mobile-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="globalSearch" type="text" placeholder="Search..." autocomplete="off">
+            </div>
+
+            <div class="top-actions">
+                <button class="action-btn" onclick="toggleTheme()">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+            <div class="cc-font-controls" title="Text size">
+              <button type="button" onclick="ccSetFont('sm')" aria-label="Smaller text">A-</button>
+              <button type="button" onclick="ccSetFont('md')" aria-label="Default text">A</button>
+              <button type="button" onclick="ccSetFont('lg')" aria-label="Larger text">A+</button>
+            </div>
+
+
+                <div class="dropdown-wrap" style="position:relative;">
+                    <div class="profile" id="profileMenuBtn" style="cursor:pointer;">
+                        <div class="profile-avatar" id="topAvatar">AR</div>
+                        <div class="text-[10px] font-bold" id="topStudentName">Loading...</div>
+                        <i class="fa-solid fa-chevron-down text-[8px] opacity-40"></i>
+                    </div>
+                    <div id="profileDropdown" class="cc-profile-dropdown">
+                        <a href="/Dashboard/Profile" class="cc-dd-item"><i class="fa-regular fa-user"></i> Profile</a>
+                        <a href="/Dashboard/Index" class="cc-dd-item"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+                        <a href="/Auth/Logout" class="cc-dd-item cc-dd-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        @RenderBody()
+    </main>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        // Global JS — user info load, theme, sidebar, toast
+        async function loadUserInfo() {
+            try {
+                const res = await fetch('/api/student/summary');
+                if (!res.ok) return;
+                const data = await res.json();
+                const name = data.user?.name || 'Student';
+                const initials = data.user?.initials || 'AR';
+                document.getElementById("sidebarStudentName").textContent = name;
+                document.getElementById("topStudentName").textContent = name;
+                document.getElementById("sidebarAvatar").textContent = initials;
+                document.getElementById("topAvatar").textContent = initials;
+            } catch (err) { console.error(err); }
+        }
+
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("mobileOverlay").classList.toggle("show");
+        }
+        function closeSidebar() {
+            document.getElementById("sidebar").classList.remove("open");
+            document.getElementById("mobileOverlay").classList.remove("show");
+        }
+
+        function initializeTheme() {
+            const saved = localStorage.getItem("campuscoin-theme");
+            if (saved === "dark") {
+                document.documentElement.classList.replace("light", "dark");
+                document.body.classList.replace("light", "dark-mesh");
+            }
+            updateThemeIcon();
+        }
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains("dark");
+            if (isDark) {
+                document.documentElement.classList.replace("dark", "light");
+                document.body.classList.replace("dark-mesh", "light");
+                localStorage.setItem("campuscoin-theme", "light");
+            } else {
+                document.documentElement.classList.replace("light", "dark");
+                document.body.classList.replace("light", "dark-mesh");
+                localStorage.setItem("campuscoin-theme", "dark");
+            }
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            const icon = document.getElementById("themeIcon");
+            const isDark = document.documentElement.classList.contains("dark");
+            icon.className = isDark ? "fa-solid fa-sun text-amber-300" : "fa-solid fa-moon";
+        }
+
+        function showToast(msg) {
+            const c = document.getElementById("toastContainer");
+            const t = document.createElement("div");
+            t.className = "toast ios-glass font-bold text-xs";
+            t.innerHTML = `<i class="fa-solid fa-circle-info text-violet-500"></i> ${msg}`;
+            c.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initializeTheme();
+            loadUserInfo();
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+<script>
+(function(){
+  const KEY='cc-font-size';
+  function apply(size){
+    document.documentElement.classList.remove('cc-font-sm','cc-font-lg','cc-font-xl');
+    if(size==='sm') document.documentElement.classList.add('cc-font-sm');
+    else if(size==='lg') document.documentElement.classList.add('cc-font-lg');
+    else if(size==='xl') document.documentElement.classList.add('cc-font-xl');
+    localStorage.setItem(KEY, size||'md');
+  }
+  const saved = localStorage.getItem(KEY)||'md';
+  apply(saved);
+  window.ccSetFont = apply;
+})();
+</script>
+</body>
+</html>

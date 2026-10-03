@@ -1,0 +1,45 @@
+## .NET build / IDE
+bin/
+obj/
+out/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.rsuser
+*.DotSettings.user
+
+## Secrets and local config — never commit
+.env
+.env.*
+!.env.example
+*.env
+secrets.json
+**/secrets/
+appsettings.*.local.json
+appsettings.Local.json
+appsettings.Production.json
+
+## User Secrets (if ever copied into the repo)
+**/UserSecrets/
+
+## Local databases
+*.db
+*.db-shm
+*.db-wal
+*.mdf
+*.ldf
+*.sdf
+
+## Logs / publish
+*.log
+logs/
+publish/
+artifacts/
+
+## OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~

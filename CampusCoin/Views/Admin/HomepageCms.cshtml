@@ -1,0 +1,2056 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <script>
+    (function(){
+      try {
+        var k='campuscoin-theme';
+        var s=localStorage.getItem(k);
+        if(s==='dark'){ document.documentElement.classList.add('dark'); document.documentElement.classList.remove('light'); }
+        else { document.documentElement.classList.add('light'); document.documentElement.classList.remove('dark'); localStorage.setItem(k,'light'); }
+      } catch(e){}
+    })();
+    </script>
+
+    <link rel="stylesheet" href="/css/admin-theme.css" />
+    <link rel="stylesheet" href="/css/cc-animations.css" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCoin — Homepage CMS</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50:'#f6effc', 100:'#ede4f6', 400:'#a486e0', 500:'#8b58b8', 600:'#6b3a92' }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans','-apple-system', 'BlinkMacSystemFont', 'Inter', 'Segoe UI', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, color 0.3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body.light-mesh {
+            background-color: #fbf6f0;
+            background-image: radial-gradient(at 0% 0%, rgba(237, 228, 246, 0.9) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(196, 174, 224, 0.85) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(255, 225, 230, 0.85) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(246, 239, 252, 0.9) 0px, transparent 50%), radial-gradient(at 50% 50%, rgba(212, 243, 228, 0.4) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        body.dark-mesh {
+            background-color: #100a1a;
+            background-image: radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.28) 0px, transparent 50%), radial-gradient(at 90% 10%, rgba(168, 85, 247, 0.22) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(107, 58, 146, 0.28) 0px, transparent 50%), radial-gradient(at 10% 90%, rgba(236, 72, 153, 0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+            animation: floatOrb 18s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(192, 132, 252, 0.4);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 480px;
+            height: 480px;
+            background: rgba(139, 88, 184, 0.45);
+            top: 30%;
+            right: -120px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: rgba(251, 113, 133, 0.35);
+            bottom: -100px;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @@keyframes floatOrb {
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+
+            50% {
+                transform: translate(40px, 60px) scale(1.08);
+            }
+
+            100% {
+                transform: translate(-30px, 30px) scale(0.95);
+            }
+        }
+
+        .ios-glass {
+            backdrop-filter: blur(32px) saturate(240%);
+            -webkit-backdrop-filter: blur(32px) saturate(240%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light .ios-glass {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1.5px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 20px 40px -12px rgba(107, 58, 146, 0.12), 0 4px 16px -2px rgba(0, 0, 0, 0.04), inset 0 1.5px 2px 0 rgba(255, 255, 255, 1), inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.03);
+            color: #0f172a;
+        }
+
+        .dark .ios-glass {
+            background: rgba(18, 24, 38, 0.58);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+            color: #f8fafc;
+        }
+
+        .ios-glass-interactive {
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, background 0.35s ease;
+        }
+
+            .ios-glass-interactive::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -150%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+                transform: skewX(-25deg);
+                transition: left 0.75s ease;
+                pointer-events: none;
+            }
+
+        .dark .ios-glass-interactive::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+        }
+
+        .ios-glass-interactive:hover::before {
+            left: 150%;
+        }
+
+        .ios-glass-interactive:hover {
+            transform: translateY(-4px);
+        }
+
+        .light .ios-glass-interactive:hover {
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: 0 25px 50px -10px rgba(139, 88, 184, 0.22), inset 0 1.5px 3px 0 rgba(255, 255, 255, 1);
+        }
+
+        .dark .ios-glass-interactive:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6), inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(150, 150, 150, 0.3);
+            border-radius: 999px;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            bottom: 20px;
+            width: 260px;
+            z-index: 100;
+            border-radius: 30px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(0);
+            transition: transform .35s ease;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 6px 22px;
+        }
+
+        .brand-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            background: linear-gradient(135deg, #a486e0, #8b58b8, #6366f1);
+            box-shadow: 0 12px 25px rgba(107, 58, 146, .28);
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-sub {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .16em;
+            opacity: .45;
+            margin-top: 3px;
+        }
+
+        .nav-section {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .15em;
+            font-weight: 800;
+            opacity: .4;
+            padding: 14px 10px 7px;
+        }
+
+        .nav {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            margin: 4px 0;
+            border-radius: 15px;
+            text-decoration: none;
+            color: inherit;
+            font-size: 12px;
+            font-weight: 650;
+            transition: all .25s ease;
+        }
+
+            .nav-link i {
+                width: 20px;
+                text-align: center;
+                opacity: .55;
+            }
+
+            .nav-link:hover {
+                background: rgba(255,255,255,.30);
+                transform: translateX(3px);
+            }
+
+        .dark .nav-link:hover {
+            background: rgba(255,255,255,.06);
+        }
+
+        .nav-link.active {
+            color: #6b3a92;
+            background: linear-gradient(135deg, rgba(139,88,184,.18), rgba(99,102,241,.14));
+            box-shadow: inset 0 0 0 1px rgba(139,88,184,.15), 0 10px 25px rgba(107,58,146,.08);
+        }
+
+        .dark .nav-link.active {
+            color: #c4aee0;
+            background: rgba(139,88,184,.10);
+        }
+
+        .admin-mini {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 11px;
+            border-radius: 18px;
+            background: rgba(255,255,255,.30);
+            border: 1px solid rgba(255,255,255,.35);
+        }
+
+        .dark .admin-mini {
+            background: rgba(255,255,255,.04);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b58b8, #6366f1);
+        }
+
+        .main {
+            margin-left: 300px;
+            padding: 20px 25px 40px 0;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 70px;
+            border-radius: 25px;
+            padding: 10px 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 20px;
+            z-index: 99999;
+        }
+
+        .search {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+            .search i {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                opacity: .4;
+                font-size: 12px;
+            }
+
+            .search input {
+                width: 100%;
+                border: none;
+                outline: none;
+                padding: 11px 15px 11px 42px;
+                border-radius: 16px;
+                background: rgba(255,255,255,.38);
+                color: inherit;
+                font-size: 12px;
+                border: 1px solid rgba(255,255,255,.50);
+            }
+
+        .dark .search input {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-left: auto;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(255,255,255,.36);
+            color: inherit;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .dark .action-btn {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,.65);
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #f43f5e;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            box-shadow: 0 0 0 3px rgba(244,63,94,.10);
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 4px 9px 4px 4px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+            .profile:hover {
+                background: rgba(255,255,255,.30);
+            }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a486e0, #6366f1);
+        }
+
+        .dropdown-wrap {
+            position: relative;
+        }
+
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 10px);
+            width: 250px;
+            padding: 9px;
+            border-radius: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-8px) scale(.98);
+            transition: .2s ease;
+            z-index: 99999;
+        }
+
+            .dropdown.show {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(0) scale(1);
+            }
+
+        .dropdown-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 0;
+            background: transparent;
+            color: inherit;
+            padding: 11px;
+            border-radius: 13px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 11px;
+        }
+
+            a.dropdown-item { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px; }
+            .dropdown-item:hover {
+                background: rgba(139,88,184,.10);
+            }
+
+        .page-header {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 28px 3px 20px;
+        }
+
+        .eyebrow {
+            color: #6b3a92;
+            font-size: 9px;
+            font-weight: 850;
+            text-transform: uppercase;
+            letter-spacing: .18em;
+            margin-bottom: 8px;
+        }
+
+        .page-title {
+            font-size: clamp(28px, 3vw, 40px);
+            font-weight: 900;
+            letter-spacing: -1.8px;
+            line-height: 1;
+        }
+
+        .page-description {
+            font-size: 12px;
+            opacity: .48;
+            margin-top: 8px;
+        }
+
+        .date-pill {
+            padding: 10px 14px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 15px;
+        }
+
+        .kpi {
+            min-height: 155px;
+            padding: 19px;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .kpi::after {
+                content: '';
+                position: absolute;
+                width: 110px;
+                height: 110px;
+                border-radius: 50%;
+                right: -45px;
+                top: -45px;
+                background: rgba(139,88,184,.08);
+                pointer-events: none;
+            }
+
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139,88,184,.13);
+            color: #6b3a92;
+            margin-bottom: 13px;
+        }
+
+        .kpi-label {
+            font-size: 10px;
+            font-weight: 700;
+            opacity: .48;
+        }
+
+        .kpi-value {
+            font-size: 25px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-top: 3px;
+        }
+
+        .kpi-change {
+            font-size: 9px;
+            font-weight: 750;
+            margin-top: 5px;
+        }
+
+        .positive {
+            color: #059669;
+        }
+
+        .negative {
+            color: #e11d48;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1.7fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .chart-card {
+            border-radius: 27px;
+            padding: 20px;
+            min-height: 350px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 17px;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 850;
+        }
+
+        .chart-sub {
+            font-size: 9px;
+            opacity: .45;
+            margin-top: 3px;
+        }
+
+        .select {
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(255,255,255,.38);
+            color: inherit;
+            border-radius: 12px;
+            padding: 8px 10px;
+            outline: none;
+            font-size: 10px;
+        }
+
+        .dark .select {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .chart-container {
+            height: 260px;
+            position: relative;
+        }
+
+        .three-grid {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .small-chart {
+            min-height: 330px;
+        }
+
+        .health-card {
+            margin-top: 15px;
+            border-radius: 27px;
+            padding: 21px;
+            display: grid;
+            grid-template-columns: 145px 1fr;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .health-ring {
+            width: 125px;
+            height: 125px;
+            border-radius: 50%;
+            background: conic-gradient(#a486e0 0deg, #6366f1 316deg, rgba(148,163,184,.13) 316deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: auto;
+        }
+
+            .health-ring::after {
+                content: '';
+                position: absolute;
+                width: 91px;
+                height: 91px;
+                border-radius: 50%;
+                background: rgba(255,255,255,.82);
+            }
+
+        .dark .health-ring::after {
+            background: #121826;
+        }
+
+        .health-score {
+            position: relative;
+            z-index: 2;
+            font-size: 27px;
+            font-weight: 900;
+        }
+
+        .progress {
+            height: 8px;
+            background: rgba(148,163,184,.13);
+            border-radius: 50px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #a486e0, #8b58b8, #6366f1);
+            transition: width 1.2s ease;
+        }
+
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .panel {
+            padding: 20px;
+            border-radius: 27px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 850;
+        }
+
+        .panel-sub {
+            font-size: 9px;
+            opacity: .45;
+            margin-top: 3px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 17px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 8px;
+            text-align: left;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            opacity: .4;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 8px;
+            border-top: 1px solid rgba(148,163,184,.12);
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .student {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .student-avatar {
+            width: 31px;
+            height: 31px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(139,88,184,.20), rgba(99,102,241,.14));
+            color: #6b3a92;
+            font-size: 9px;
+            font-weight: 850;
+        }
+
+        .status {
+            padding: 5px 8px;
+            border-radius: 8px;
+            font-size: 8px;
+            font-weight: 800;
+        }
+
+            .status.completed {
+                background: rgba(16,185,129,.10);
+                color: #059669;
+            }
+
+            .status.pending {
+                background: rgba(245,158,11,.10);
+                color: #d97706;
+            }
+
+        .insight {
+            display: flex;
+            gap: 10px;
+            padding: 11px;
+            margin-top: 9px;
+            border-radius: 15px;
+            background: rgba(255,255,255,.25);
+            border: 1px solid rgba(255,255,255,.30);
+        }
+
+        .dark .insight {
+            background: rgba(255,255,255,.035);
+            border-color: rgba(255,255,255,.06);
+        }
+
+        .insight-icon {
+            width: 33px;
+            height: 33px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .insight-title {
+            font-size: 10px;
+            font-weight: 850;
+        }
+
+        .insight-text {
+            font-size: 9px;
+            opacity: .52;
+            line-height: 1.45;
+            margin-top: 3px;
+        }
+
+        .glass-btn {
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(255,255,255,.38);
+            color: inherit;
+            border-radius: 13px;
+            padding: 9px 12px;
+            font-size: 10px;
+            font-weight: 750;
+            cursor: pointer;
+        }
+
+        .dark .glass-btn {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .glass-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,.65);
+        }
+
+        .primary-btn {
+            color: white;
+            border: none;
+            background: linear-gradient(135deg, #a486e0, #8b58b8, #6366f1);
+            box-shadow: 0 10px 22px rgba(107,58,146,.20);
+        }
+
+        .mobile-btn {
+            display: none;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,.25);
+            backdrop-filter: blur(5px);
+            z-index: 90;
+        }
+
+            .mobile-overlay.show {
+                display: block;
+            }
+
+        #toastContainer {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .toast {
+            min-width: 270px;
+            padding: 13px;
+            border-radius: 17px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn .3s ease;
+        }
+
+        @@keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @@media(max-width:1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .three-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+
+        @@media(max-width:950px) {
+            .sidebar {
+                transform: translateX(-120%);
+            }
+
+                .sidebar.open {
+                    transform: translateX(0);
+                }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .mobile-btn {
+                display: flex;
+            }
+
+            .chart-grid, .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media(max-width:700px) {
+            .kpi-grid, .three-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .health-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+    
+    /* CMS WORKSPACE POLISH */
+    .cms-field-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        width: 100%;
+    }
+    .cms-card {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px;
+        width: 100%;
+    }
+    .cms-card-badge {
+        display: inline-flex;
+        align-self: flex-start;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(139,111,240,.15), rgba(107,58,146,.12));
+        color: #6d4aff;
+    }
+    .dark .cms-card-badge { color: #c4b5fd; }
+
+    .cms-tab-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding: 8px;
+        border-radius: 18px;
+        background: rgba(255,255,255,.45);
+        border: 1px solid rgba(148,163,184,.2);
+        backdrop-filter: blur(12px);
+    }
+    .dark .cms-tab-row {
+        background: rgba(15,23,42,.45);
+        border-color: rgba(255,255,255,.08);
+    }
+    .cms-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 750;
+        border: 1px solid transparent;
+        background: transparent;
+        color: inherit;
+        opacity: .75;
+        cursor: pointer;
+        transition: .18s ease;
+    }
+    .cms-tab:hover { opacity: 1; background: rgba(107,58,146,.08); }
+    .cms-tab.active {
+        opacity: 1;
+        color: #6b3a92;
+        background: linear-gradient(135deg, rgba(139,88,184,.18), rgba(99,102,241,.12));
+        border-color: rgba(139,88,184,.25);
+        box-shadow: 0 8px 20px rgba(107,58,146,.1);
+    }
+    .dark .cms-tab.active { color: #c4aee0; }
+
+    .cms-panel {
+        border-radius: 24px !important;
+        padding: 22px 22px 28px !important;
+        margin-bottom: 18px;
+        border: 1px solid rgba(148,163,184,.18);
+        box-shadow: 0 18px 40px -18px rgba(15,23,42,.12);
+    }
+    .dark .cms-panel {
+        border-color: rgba(255,255,255,.1);
+        box-shadow: 0 18px 40px -12px rgba(0,0,0,.35);
+    }
+    .cms-panel-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid rgba(148,163,184,.15);
+    }
+    .cms-panel-head h2, .cms-panel-head h3 {
+        font-size: 15px;
+        font-weight: 850;
+        letter-spacing: -.02em;
+        margin: 0 0 4px;
+    }
+    .cms-panel-head p {
+        margin: 0;
+        font-size: 12px;
+        opacity: .55;
+        max-width: 52ch;
+        line-height: 1.45;
+    }
+
+    /* Content fields grid */
+    #panel-content .cms-fields,
+    .cms-fields {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px;
+    }
+    .cms-field, .cms-card, .cms-item-card {
+        border-radius: 16px;
+        padding: 14px 14px 12px;
+        background: rgba(255,255,255,.55);
+        border: 1px solid rgba(148,163,184,.18);
+        transition: border-color .15s, box-shadow .15s;
+    }
+    .dark .cms-field, .dark .cms-card, .dark .cms-item-card {
+        background: rgba(15,23,42,.4);
+        border-color: rgba(255,255,255,.08);
+    }
+    .cms-field:focus-within, .cms-card:hover, .cms-item-card:hover {
+        border-color: rgba(139,88,184,.45);
+        box-shadow: 0 10px 24px rgba(107,58,146,.08);
+    }
+    .cms-field label, .cms-card label, .cms-item-card label {
+        display: block;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        opacity: .5;
+        margin-bottom: 6px;
+    }
+    .cms-field input, .cms-field textarea,
+    .cms-card input, .cms-card textarea, .cms-card select,
+    .cms-item-card input, .cms-item-card textarea, .cms-item-card select,
+    #panel-content input, #panel-content textarea,
+    #panel-features input, #panel-features textarea,
+    #panel-categories input, #panel-categories textarea,
+    #panel-testimonials input, #panel-testimonials textarea,
+    #panel-proofs input, #panel-proofs textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(148,163,184,.25);
+        background: rgba(255,255,255,.7);
+        outline: none;
+        font-size: 13px;
+        transition: border-color .15s, box-shadow .15s;
+    }
+    .dark #panel-content input, .dark #panel-content textarea,
+    .dark #panel-features input, .dark #panel-features textarea,
+    .dark #panel-categories input, .dark #panel-categories textarea,
+    .dark #panel-testimonials input, .dark #panel-testimonials textarea,
+    .dark #panel-proofs input, .dark #panel-proofs textarea,
+    .dark .cms-field input, .dark .cms-field textarea,
+    .dark .cms-card input, .dark .cms-card textarea {
+        background: rgba(2,6,23,.45);
+        border-color: rgba(255,255,255,.1);
+        color: #f8fafc;
+    }
+    #panel-content input:focus, #panel-content textarea:focus,
+    #panel-features input:focus, #panel-features textarea:focus,
+    #panel-categories input:focus, #panel-testimonials input:focus,
+    #panel-proofs input:focus {
+        border-color: rgba(107,58,146,.55);
+        box-shadow: 0 0 0 3px rgba(139,88,184,.15);
+    }
+
+    .cms-actions, .cms-panel-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(148,163,184,.12);
+    }
+    .cms-hint {
+        font-size: 11px;
+        opacity: .55;
+        line-height: 1.4;
+        margin: 6px 0 12px;
+    }
+    .cms-list {
+        display: grid;
+        gap: 12px;
+    }
+    .cms-list .cms-item-card,
+    .cms-list .cms-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: start;
+    }
+    .cms-item-body {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 10px;
+        width: 100%;
+    }
+    .cms-empty {
+        text-align: center;
+        padding: 28px 16px;
+        border-radius: 16px;
+        border: 1px dashed rgba(148,163,184,.3);
+        font-size: 12px;
+        opacity: .55;
+    }
+    /* Toggle switches in design panel */
+    #panel-design label.row,
+    .cms-toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(255,255,255,.5);
+        border: 1px solid rgba(148,163,184,.15);
+        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: 650;
+    }
+    .dark #panel-design label.row,
+    .dark .cms-toggle-row {
+        background: rgba(15,23,42,.4);
+        border-color: rgba(255,255,255,.08);
+    }
+
+    
+        .dropdown, .cc-shared-dd, .cc-notif-popover, #profileDropdown, .notifications-popover {
+          z-index: 10080 !important;
+        }
+        .topbar, .top-actions { overflow: visible !important; }
+        </style>
+    <link rel="stylesheet" href="/css/cc-header-widgets.css" asp-append-version="true" />
+</head>
+
+<body class="light-mesh min-h-screen text-slate-900 dark:text-slate-100 font-sans">
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div id="mobileOverlay" class="mobile-overlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar ios-glass">
+                <div class="brand cc-brand-block">
+            <div class="brand-logo cc-brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 44 44" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="ccCoinBG_ad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#6b3a92"/><stop offset="1" stop-color="#241232"/>
+                        </linearGradient>
+                        <linearGradient id="ccCoinAccent_ad" x1="10" y1="10" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#d4ff3d"/><stop offset="1" stop-color="#10b981"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="22" cy="22" r="21" fill="url(#ccCoinBG_ad)"/>
+                    <circle cx="22" cy="22" r="16.5" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1" stroke-dasharray="1.5 3"/>
+                    <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5" stroke="url(#ccCoinAccent_ad)" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                    <path d="M31 12c0 2.2-1.3 3.5-3.5 3.5 2.2 0 3.5 1.3 3.5 3.5 0-2.2 1.3-3.5 3.5-3.5-2.2 0-3.5-1.3-3.5-3.5z" fill="#d4ff3d"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-name cc-brand-title"><b>Cash</b><span>Campus</span></div>
+                <div class="brand-sub">ADMIN CONSOLE</div>
+            </div>
+        </div>
+
+                <nav class="nav">
+            <div class="nav-section">Overview</div>
+            <a href="/Admin/Index" class="nav-link"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a>
+            <a href="/Admin/Students" class="nav-link"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a>
+            <a href="/Admin/Transactions" class="nav-link"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Transactions</span></a>
+            <a href="/Admin/VoucherManagement" class="nav-link"><i class="fa-solid fa-receipt"></i><span>Voucher Management</span></a>
+            <div class="nav-section">Financial Management</div>
+            <a href="/Admin/Categories" class="nav-link"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
+            <a href="/Admin/Budgets" class="nav-link"><i class="fa-solid fa-wallet"></i><span>Budgets</span></a>
+            <a href="/Admin/EventManager" class="nav-link"><i class="fa-solid fa-calendar-days"></i><span>Event Manager</span></a>
+            <a href="/Admin/SavingGoals" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>Saving Goals</span></a>
+            <div class="nav-section">System</div>
+            <a href="/Admin/Notifications" class="nav-link"><i class="fa-solid fa-bell"></i><span>Notifications</span></a>
+            <a href="/Admin/Reports" class="nav-link"><i class="fa-solid fa-chart-pie"></i><span>Reports & Analytics</span></a>
+            <a href="/Admin/HomepageCms" class="nav-link active"><i class="fa-solid fa-pager"></i><span>Homepage CMS</span></a>
+            <a href="/Admin/Settings" class="nav-link"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+        </nav>
+
+        <div class="admin-mini">
+            <div class="admin-avatar">AK</div>
+            <div class="flex-1 min-w-0">
+                <div class="text-[11px] font-bold">Admin</div>
+                <div class="text-[9px] opacity-45">System Administrator</div>
+            </div>
+            <i class="fa-solid fa-ellipsis text-xs opacity-35"></i>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar ios-glass">
+            <button class="action-btn mobile-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="globalSearch" type="text" placeholder="Search students, transactions, categories..." autocomplete="off">
+            </div>
+
+            <div class="top-actions">
+                <div class="dropdown-wrap">
+                    <button class="glass-btn primary-btn" onclick="toggleDropdown('quickDropdown')">
+                        <i class="fa-solid fa-plus"></i>
+                        <span class="quick-label ml-1">Quick Action</span>
+                    </button>
+                    <div id="quickDropdown" class="dropdown ios-glass" style="z-index:99999;">
+                        <button class="dropdown-item" onclick="quickAction('Add Student')"><i class="fa-solid fa-user-plus text-purple-600"></i> Add Student</button>
+                        <button class="dropdown-item" onclick="quickAction('View Transactions')"><i class="fa-solid fa-money-bill-transfer text-blue-500"></i> View Transactions</button>
+                        <button class="dropdown-item" onclick="quickAction('Send Notification')"><i class="fa-solid fa-paper-plane text-indigo-500"></i> Send Notification</button>
+                        <button class="dropdown-item" onclick="quickAction('Generate Report')"><i class="fa-solid fa-file-lines text-purple-600"></i> Generate Report</button>
+                    </div>
+                </div>
+
+                <button class="action-btn" onclick="toggleTheme()"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+
+                <div class="dropdown-wrap">
+                    <button class="action-btn" onclick="toggleDropdown('notificationDropdown')">
+                        <i class="fa-regular fa-bell"></i>
+                        <span id="notificationDot" class="notification-dot"></span>
+                    </button>
+                    <div id="notificationDropdown" class="dropdown ios-glass" style="z-index:99999;">
+                        <div class="px-3 py-2">
+                            <div class="font-bold text-xs">Notifications</div>
+                            <div id="notificationCount" class="text-[9px] opacity-45 mt-1">0 unread</div>
+                        </div>
+                        <div id="notificationList"></div>
+                    </div>
+                </div>
+
+                <div class="dropdown-wrap">
+                    <div class="profile" onclick="toggleDropdown('profileDropdown')">
+                        <div class="profile-avatar">AK</div>
+                        <div class="profile-name-wrap">
+                            <div class="text-[10px] font-bold">Admin</div>
+                            <div class="text-[8px] opacity-45">Administrator</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-[8px] opacity-40"></i>
+                    </div>
+                    <div id="profileDropdown" class="dropdown" style="display:none !important;position:absolute;right:0;top:calc(100% + 10px);min-width:200px;z-index:99999;padding:8px;border-radius:16px;background:#fff;border:1px solid rgba(22,11,33,.1);box-shadow:0 18px 40px rgba(22,11,33,.14);">
+                        <a class="dropdown-item" href="/Admin/Settings"><i class="fa-regular fa-user"></i> My Profile</a>
+                        <a class="dropdown-item" href="/Admin/Settings"><i class="fa-solid fa-gear"></i> Settings</a>
+                        <a class="dropdown-item text-rose-500" href="/Auth/Logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="page-header">
+            <div>
+                <div class="eyebrow">CashCampus / Administration</div>
+                <h1 class="page-title">Homepage CMS</h1>
+                <p class="page-description">Edit public homepage content — changes save to the database and appear on the live site.</p>
+            </div>
+            <div class="date-pill ios-glass">
+                <i class="fa-regular fa-calendar mr-1"></i>
+                <span id="currentDate">Loading...</span>
+            </div>
+        </section>
+
+        
+        <div id="cmsTabs" class="cms-toolbar ios-glass">
+            <div class="cms-tab-row">
+                <button type="button" class="cms-tab active" data-tab="content"><i class="fa-solid fa-font"></i> Site text</button>
+                <button type="button" class="cms-tab" data-tab="features"><i class="fa-solid fa-th-large"></i> Feature cards</button>
+                <button type="button" class="cms-tab" data-tab="categories"><i class="fa-solid fa-tags"></i> Category demos</button>
+                <button type="button" class="cms-tab" data-tab="testimonials"><i class="fa-solid fa-quote-left"></i> Testimonials</button>
+                <button type="button" class="cms-tab" data-tab="proofs"><i class="fa-solid fa-certificate"></i> Proof chips</button>
+                <button type="button" class="cms-tab" data-tab="design"><i class="fa-solid fa-palette"></i> Design &amp; visibility</button>
+            </div>
+            <div class="cms-toolbar-actions">
+                <a href="/" target="_blank" class="cms-ghost-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> View live site</a>
+                <button type="button" id="btnEnsure" class="cms-primary-btn"><i class="fa-solid fa-wrench"></i> Init / Repair CMS</button>
+                <a href="/" target="_blank" rel="noopener" class="cms-ghost-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Preview homepage</a>
+            </div>
+        </div>
+
+        <section id="panel-content" class="cms-panel ios-glass">
+            <div class="cms-panel-head">
+                <div>
+                    <h3>Site text</h3>
+                    <p>Hero, section headings, newsletter and contact copy shown on the public homepage.</p>
+                </div>
+            </div>
+            <div id="contentList" class="cms-list"></div>
+        </section>
+
+        <section id="panel-features" class="cms-panel ios-glass hidden">
+            <div class="cms-panel-head">
+                <div>
+                    <h3>Feature cards</h3>
+                    <p>Bento-style cards on the homepage. Use tone for color accent and sort order for placement.</p>
+                </div>
+                <button type="button" onclick="addFeature()" class="cms-primary-btn"><i class="fa-solid fa-plus"></i> Add card</button>
+            </div>
+            <div id="featuresList" class="cms-list"></div>
+        </section>
+
+        <section id="panel-categories" class="cms-panel ios-glass hidden">
+            <div class="cms-panel-head">
+                <div>
+                    <h3>Category demos</h3>
+                    <p>Income / expense rows in the “Categories that fit real life” section. Percent = progress bar (0–100).</p>
+                </div>
+                <button type="button" onclick="addCategory()" class="cms-primary-btn"><i class="fa-solid fa-plus"></i> Add row</button>
+            </div>
+            <div id="categoriesList" class="cms-list"></div>
+        </section>
+
+        <section id="panel-testimonials" class="cms-panel ios-glass hidden">
+            <div class="cms-panel-head">
+                <div>
+                    <h3>Testimonials</h3>
+                    <p>Student quotes and metrics. Mark one as Featured to highlight it.</p>
+                </div>
+                <button type="button" onclick="addTestimonial()" class="cms-primary-btn"><i class="fa-solid fa-plus"></i> Add testimonial</button>
+            </div>
+            <div id="testimonialsList" class="cms-list"></div>
+        </section>
+
+        <section id="panel-proofs" class="cms-panel ios-glass hidden">
+            <div class="cms-panel-head">
+                <div>
+                    <h3>Proof chips</h3>
+                    <p>Small social-proof badges (e.g. “Saved Rs. 3,200”). Keep labels short.</p>
+                </div>
+                <button type="button" onclick="addProof()" class="cms-primary-btn"><i class="fa-solid fa-plus"></i> Add chip</button>
+            </div>
+            <div id="proofsList" class="cms-list"></div>
+        </section>
+
+        <section id="panel-design" class="cms-panel ios-glass hidden">
+            <div class="cms-panel-head">
+                <div>
+                    <h3>Design &amp; visibility</h3>
+                    <p>Turn sections on/off and tweak display labels. Changes apply on the public homepage after refresh.</p>
+                </div>
+                <button type="button" class="cms-primary-btn" onclick="saveDesign()"><i class="fa-solid fa-floppy-disk"></i> Save design</button>
+            </div>
+            <div class="cms-design-grid" id="designGrid">
+                <div class="cms-card">
+                    <h4><i class="fa-solid fa-eye"></i> Section visibility</h4>
+                    <p class="cms-hint">Hide a section without deleting its content.</p>
+                    <div class="cms-switch-list" id="visibilitySwitches"></div>
+                </div>
+                <div class="cms-card">
+                    <h4><i class="fa-solid fa-heading"></i> Extra display labels</h4>
+                    <p class="cms-hint">Optional short labels used in hero / CTA areas.</p>
+                    <div class="cms-fields" id="designLabels"></div>
+                </div>
+                <div class="cms-card">
+                    <h4><i class="fa-solid fa-table-columns"></i> Category cards look</h4>
+                    <p class="cms-hint">Control how the Income / Expenses demo cards appear on the homepage. Content always starts at the top — no empty void.</p>
+                    <div class="cms-fields" style="display:grid;gap:12px;">
+                        <div>
+                            <label>Density</label>
+                            <select data-dkey="cat_card_density">
+                                <option value="compact">Compact — tighter padding</option>
+                                <option value="comfortable" selected>Comfortable (default)</option>
+                                <option value="spacious">Spacious — more breathing room</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Corner radius (px)</label>
+                            <input type="number" data-dkey="cat_card_radius" min="12" max="36" step="1" value="22" />
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <input type="checkbox" data-dkey="cat_card_equal_height" id="catEqualH" style="width:auto;" />
+                            <label for="catEqualH" style="margin:0;opacity:1;font-weight:600;">Force equal card heights</label>
+                        </div>
+                        <div>
+                            <label>Income title</label>
+                            <input type="text" data-dkey="income_title" placeholder="Income" />
+                        </div>
+                        <div>
+                            <label>Income subtitle</label>
+                            <input type="text" data-dkey="income_subtitle" placeholder="Where your money comes from" />
+                        </div>
+                        <div>
+                            <label>Expenses title</label>
+                            <input type="text" data-dkey="expense_title" placeholder="Expenses" />
+                        </div>
+                        <div>
+                            <label>Expenses subtitle</label>
+                            <input type="text" data-dkey="expense_subtitle" placeholder="Where it actually goes" />
+                        </div>
+                        <div>
+                            <label>Demo income total</label>
+                            <input type="text" data-dkey="income_total" placeholder="32500" />
+                        </div>
+                        <div>
+                            <label>Demo expense total</label>
+                            <input type="text" data-dkey="expense_total" placeholder="24850" />
+                        </div>
+                    </div>
+                </div>
+                <div class="cms-card">
+                    <h4><i class="fa-solid fa-circle-info"></i> How design works</h4>
+                    <ul class="cms-help">
+                        <li><b>Tone</b> on cards: mint, rose, violet, coral, amber</li>
+                        <li><b>Sort order</b> — lower numbers appear first</li>
+                        <li><b>Active</b> — No hides item from the public site</li>
+                        <li><b>Icon</b> — Remix Icon class (e.g. ri-wallet-3-line)</li>
+                        <li><b>Percent</b> — category progress bar fill 0–100</li>
+                        <li><b>Category density</b> — compact / comfortable / spacious</li>
+                        <li><b>Equal heights</b> — off by default so cards hug their content</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+</main>
+
+    <div id="cmsToast" style="position:fixed;right:18px;bottom:18px;z-index:99;background:#0f172a;color:#fff;padding:12px 16px;border-radius:14px;font-size:13px;font-weight:700;opacity:0;transform:translateY(12px);transition:.25s;">Saved</div>
+
+<style>
+a.dropdown-item { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.dropdown.show,.dropdown.open{display:block!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;z-index:99999;}
+.cms-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:22px;margin-bottom:18px;}
+.cms-tab-row{display:flex;flex-wrap:wrap;gap:8px;}
+.cms-toolbar-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.cms-tab{padding:10px 14px;border-radius:999px;font-size:12px;font-weight:700;border:0;cursor:pointer;background:rgba(255,255,255,.45);color:#334155;display:inline-flex;align-items:center;gap:6px;}
+.dark .cms-tab{background:rgba(255,255,255,.06);color:#e2e8f0;}
+.cms-tab.active{background:linear-gradient(135deg,#a486e0,#6366f1);color:#fff;box-shadow:0 10px 22px rgba(107,58,146,.25);}
+.cms-primary-btn{padding:10px 14px;border-radius:999px;font-size:12px;font-weight:700;border:0;cursor:pointer;background:linear-gradient(135deg,#8b6ff0,#6d4aff);color:#fff;display:inline-flex;align-items:center;gap:6px;box-shadow:0 10px 20px rgba(109,74,255,.25);}
+.cms-ghost-btn{padding:10px 14px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid rgba(148,163,184,.35);background:rgba(255,255,255,.4);color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.dark .cms-ghost-btn{background:rgba(255,255,255,.06);}
+.cms-panel{padding:20px;border-radius:24px;margin-bottom:20px;}
+.cms-panel.hidden{display:none!important;}
+.cms-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.cms-panel-head h3{font-size:16px;font-weight:800;margin:0 0 4px;}
+.cms-panel-head p{font-size:12px;opacity:.65;margin:0;max-width:520px;line-height:1.45;}
+.cms-list{display:flex;flex-direction:column;gap:12px;}
+.cms-card{border-radius:18px;padding:16px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.7);}
+.dark .cms-card{background:rgba(15,23,42,.55);border-color:rgba(255,255,255,.08);}
+.cms-card h4{font-size:13px;font-weight:800;margin:0 0 6px;display:flex;align-items:center;gap:8px;}
+.cms-hint{font-size:11px;opacity:.6;margin:0 0 12px;}
+.cms-card label{display:block;font-size:11px;font-weight:700;opacity:.65;margin-bottom:4px;}
+.cms-card input,.cms-card textarea,.cms-card select{width:100%;border-radius:12px;border:1px solid rgba(148,163,184,.35);padding:9px 11px;font-size:13px;background:rgba(255,255,255,.9);}
+.dark .cms-card input,.dark .cms-card textarea,.dark .cms-card select{background:rgba(15,23,42,.9);color:#e2e8f0;border-color:rgba(255,255,255,.12);}
+.cms-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.cms-btn{padding:8px 12px;border-radius:12px;font-size:12px;font-weight:700;border:0;cursor:pointer;}
+.cms-btn-primary{background:linear-gradient(135deg,#a486e0,#6366f1);color:#fff;}
+.cms-btn-danger{background:#fee2e2;color:#b91c1c;}
+.cms-key{font-size:10px;opacity:.45;font-family:ui-monospace,monospace;margin-bottom:6px;}
+.cms-title{font-size:12px;font-weight:800;margin-bottom:2px;}
+.cms-design-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+.cms-switch-list{display:flex;flex-direction:column;gap:10px;}
+.cms-switch{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.35);font-size:12px;font-weight:700;}
+.dark .cms-switch{background:rgba(255,255,255,.05);}
+.cms-switch input{width:18px;height:18px;}
+.cms-fields{display:flex;flex-direction:column;gap:10px;}
+.cms-help{font-size:12px;line-height:1.7;padding-left:18px;margin:0;opacity:.85;}
+#cmsToast{position:fixed;right:18px;bottom:18px;z-index:99;background:#0f172a;color:#fff;padding:12px 16px;border-radius:14px;font-size:13px;font-weight:700;opacity:0;transform:translateY(12px);transition:.25s;}
+#cmsToast.show{opacity:1;transform:none;}
+
+.cms-loading{display:flex;align-items:center;gap:10px;padding:28px 12px;font-size:13px;font-weight:600;opacity:.75;}
+.cms-switch-label{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px;font-weight:600;cursor:pointer;}
+.cms-switch-label input{width:18px;height:18px;}
+.cms-field{margin-bottom:10px;}
+.cms-field label{display:block;font-size:12px;font-weight:700;margin-bottom:4px;opacity:.8;}
+.cms-btn i{margin-right:4px;}
+.cms-ghost-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;border:1px solid rgba(15,23,42,.12);background:rgba(255,255,255,.55);backdrop-filter:blur(8px);cursor:pointer;color:inherit;text-decoration:none;}
+.dark .cms-ghost-btn{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.06);}
+.cms-ghost-btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(15,23,42,.08);}
+</style>
+
+<script>
+
+let _contentCache = null;
+
+function showToast(m){ toast(m); }
+const toast = (m) => {
+  const el = document.getElementById('cmsToast');
+  if (!el) return;
+  el.textContent = m;
+  el.classList.add('show');
+  el.style.opacity = '1';
+  el.style.transform = 'none';
+  setTimeout(() => {
+    el.classList.remove('show');
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(12px)';
+  }, 2200);
+};
+const esc = s => (s ?? '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+
+async function j(u, o = {}) {
+  const r = await fetch(u, {
+    headers: { 'Content-Type': 'application/json', ...(o.headers || {}) },
+    credentials: 'same-origin',
+    ...o
+  });
+  const ct = r.headers.get('content-type') || '';
+  let data = {};
+  try {
+    data = ct.includes('json') ? await r.json() : {};
+  } catch (_) {}
+  if (!r.ok) throw new Error(data.message || ('HTTP ' + r.status));
+  return data;
+}
+
+function setLoading(elId, on) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  if (on) {
+    el.innerHTML = '<div class="cms-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading…</div>';
+  }
+}
+
+document.querySelectorAll('.cms-tab[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cms-tab[data-tab]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.cms-panel').forEach(p => p.classList.add('hidden'));
+    const panel = document.getElementById('panel-' + btn.dataset.tab);
+    if (panel) panel.classList.remove('hidden');
+  });
+});
+
+const btnEnsure = document.getElementById('btnEnsure');
+if (btnEnsure) {
+  btnEnsure.addEventListener('click', async () => {
+    try {
+      btnEnsure.disabled = true;
+      await j('/api/admin/cms/ensure', { method: 'POST', body: '{}' });
+      toast('CMS tables ready');
+      await loadAll();
+    } catch (e) {
+      toast(e.message);
+      const cl = document.getElementById('contentList');
+      if (cl) cl.innerHTML = '<p style="color:#e11d48;font-size:13px;">' + esc(e.message) + '</p>';
+    } finally {
+      btnEnsure.disabled = false;
+    }
+  });
+}
+
+async function loadContent() {
+  const el = document.getElementById('contentList');
+  if (!el) return;
+  try {
+    setLoading('contentList', true);
+    const rows = await j('/api/admin/cms/content');
+    _contentCache = rows;
+    if (!Array.isArray(rows) || !rows.length) {
+      el.innerHTML = '<p style="font-size:13px;opacity:.7;">No rows yet. Click <b>Init / Repair CMS</b>.</p>';
+      return;
+    }
+    el.innerHTML = rows.map(r => `<div class="cms-card" data-id="${r.id}">
+      <div class="cms-title">${esc(r.label || r.key)}</div>
+      <div class="cms-key">${esc(r.key)}</div>
+      <textarea rows="2" data-field="value">${esc(r.value)}</textarea>
+      <div class="cms-actions">
+        <button type="button" class="cms-btn cms-btn-primary" onclick="saveContent(${r.id},this)">
+          <i class="fa-solid fa-floppy-disk"></i> Save
+        </button>
+      </div>
+    </div>`).join('');
+  } catch (e) {
+    el.innerHTML = `<p style="color:#e11d48;font-size:13px;">${esc(e.message)} — click <b>Init / Repair CMS</b>.</p>`;
+  }
+}
+
+async function saveContent(id, btn) {
+  try {
+    const value = btn.closest('[data-id]').querySelector('[data-field=value]').value;
+    btn.disabled = true;
+    await j('/api/admin/cms/content/' + id, { method: 'PUT', body: JSON.stringify({ value }) });
+    toast('Saved');
+  } catch (e) {
+    toast(e.message || 'Save failed');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function grid(fields) {
+  const html = Array.isArray(fields) ? fields.join('') : (fields || '');
+  return `<div class="cms-field-grid">${html}</div>`;
+}
+function field(label, html) {
+  return `<div class="cms-field"><label>${label || ''}</label>${html}</div>`;
+}
+function toneSelect(val) {
+  const opts = ['violet', 'mint', 'coral', 'rose', 'amber', 'yellow', 'plum'];
+  const v = (val || 'violet').toLowerCase();
+  return `<select data-f="tone">${opts.map(o =>
+    `<option value="${o}" ${o === v || (o === 'amber' && v === 'yellow') ? 'selected' : ''}>${o}</option>`
+  ).join('')}</select>`;
+}
+
+function featureCard(r = {}) {
+  return `<div class="cms-card" data-id="${r.id || ''}">
+  <div class="cms-card-badge">Feature card</div>
+  ${grid([
+    field('Title', `<input data-f="title" placeholder="e.g. Friendly AI insights" value="${esc(r.title)}"/>`),
+    field('Status label', `<input data-f="status" placeholder="Live / Online / On track" value="${esc(r.status || 'Live')}"/>`),
+    field('Description', `<textarea rows="2" data-f="description" placeholder="Short description">${esc(r.description)}</textarea>`),
+    field('Icon class', `<input data-f="icon" placeholder="ri-sparkling-2-line" value="${esc(r.icon || 'ri-sparkling-2-line')}"/>`),
+    field('Tone color', toneSelect(r.tone)),
+    field('Sort order', `<input type="number" data-f="sortOrder" value="${r.sortOrder ?? 0}"/>`),
+    field('Show on site', `<select data-f="isActive"><option value="true" ${r.isActive !== false ? 'selected' : ''}>Yes</option><option value="false" ${r.isActive === false ? 'selected' : ''}>No</option></select>`)
+  ])}
+  <div class="cms-actions">
+    <button type="button" class="cms-btn cms-btn-primary" onclick="saveFeature(this)"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+    ${r.id ? `<button type="button" class="cms-btn cms-btn-danger" onclick="delFeature(${r.id})"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
+  </div>
+</div>`;
+}
+
+async function loadFeatures() {
+  const el = document.getElementById('featuresList');
+  if (!el) return;
+  try {
+    setLoading('featuresList', true);
+    const rows = await j('/api/admin/cms/features');
+    el.innerHTML = (rows || []).map(featureCard).join('') ||
+      '<p style="font-size:13px;opacity:.7;">No feature cards yet. Click <b>Add card</b>.</p>';
+  } catch (e) {
+    el.innerHTML = '<p style="color:#e11d48;font-size:13px;">' + esc(e.message) + '</p>';
+  }
+}
+function addFeature() {
+  document.getElementById('featuresList').insertAdjacentHTML('afterbegin',
+    featureCard({ isActive: true, sortOrder: 0, status: 'Live', tone: 'violet', icon: 'ri-sparkling-2-line' }));
+}
+async function saveFeature(btn) {
+  try {
+    const box = btn.closest('[data-id]');
+    const body = Object.fromEntries([...box.querySelectorAll('[data-f]')].map(i =>
+      [i.dataset.f, i.type === 'number' ? +i.value : i.value]));
+    body.isActive = body.isActive === 'true';
+    body.sortOrder = +body.sortOrder || 0;
+    btn.disabled = true;
+    const id = box.dataset.id;
+    if (id) await j('/api/admin/cms/features/' + id, { method: 'PUT', body: JSON.stringify(body) });
+    else await j('/api/admin/cms/features', { method: 'POST', body: JSON.stringify(body) });
+    toast('Feature saved');
+    await loadFeatures();
+  } catch (e) {
+    toast(e.message || 'Save failed');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+async function delFeature(id) {
+  if (!confirm('Delete this feature card?')) return;
+  try {
+    await j('/api/admin/cms/features/' + id, { method: 'DELETE' });
+    toast('Deleted');
+    await loadFeatures();
+  } catch (e) {
+    toast(e.message || 'Delete failed');
+  }
+}
+
+function catCard(r = {}) {
+  return `<div class="cms-card" data-id="${r.id || ''}">
+  <div class="cms-card-badge">${esc(r.group || 'Expense')} row</div>
+  ${grid([
+    field('Group', `<select data-f="group"><option value="Income" ${r.group === 'Income' ? 'selected' : ''}>Income</option><option value="Expense" ${r.group !== 'Income' ? 'selected' : ''}>Expense</option></select>`),
+    field('Name', `<input data-f="name" placeholder="e.g. Food" value="${esc(r.name)}"/>`),
+    field('Icon class', `<input data-f="icon" placeholder="ri-restaurant-line" value="${esc(r.icon || 'ri-price-tag-3-line')}"/>`),
+    field('Amount (Rs.)', `<input type="number" data-f="amount" value="${r.amount ?? 0}"/>`),
+    field('Bar percent (0-100)', `<input type="number" data-f="percent" min="0" max="100" value="${r.percent ?? 0}"/>`),
+    field('Sort order', `<input type="number" data-f="sortOrder" value="${r.sortOrder ?? 0}"/>`),
+    field('Show on site', `<select data-f="isActive"><option value="true" ${r.isActive !== false ? 'selected' : ''}>Yes</option><option value="false" ${r.isActive === false ? 'selected' : ''}>No</option></select>`)
+  ])}
+  <div class="cms-actions">
+    <button type="button" class="cms-btn cms-btn-primary" onclick="saveCategory(this)"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+    ${r.id ? `<button type="button" class="cms-btn cms-btn-danger" onclick="delCategory(${r.id})"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
+  </div>
+</div>`;
+}
+
+async function loadCategories() {
+  const el = document.getElementById('categoriesList');
+  if (!el) return;
+  try {
+    setLoading('categoriesList', true);
+    const rows = await j('/api/admin/cms/categories');
+    el.innerHTML = (rows || []).map(catCard).join('') ||
+      '<p style="font-size:13px;opacity:.7;">No category rows yet. Click <b>Add row</b>.</p>';
+  } catch (e) {
+    el.innerHTML = '<p style="color:#e11d48;font-size:13px;">' + esc(e.message) + '</p>';
+  }
+}
+function addCategory() {
+  document.getElementById('categoriesList').insertAdjacentHTML('afterbegin',
+    catCard({ group: 'Expense', isActive: true, sortOrder: 0 }));
+}
+async function saveCategory(btn) {
+  try {
+    const box = btn.closest('[data-id]');
+    const body = Object.fromEntries([...box.querySelectorAll('[data-f]')].map(i =>
+      [i.dataset.f, i.type === 'number' ? +i.value : i.value]));
+    body.isActive = body.isActive === 'true';
+    body.sortOrder = +body.sortOrder || 0;
+    body.amount = +body.amount || 0;
+    body.percent = Math.min(100, Math.max(0, +body.percent || 0));
+    btn.disabled = true;
+    const id = box.dataset.id;
+    if (id) await j('/api/admin/cms/categories/' + id, { method: 'PUT', body: JSON.stringify(body) });
+    else await j('/api/admin/cms/categories', { method: 'POST', body: JSON.stringify(body) });
+    toast('Category saved');
+    await loadCategories();
+  } catch (e) {
+    toast(e.message || 'Save failed');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+async function delCategory(id) {
+  if (!confirm('Delete this category row?')) return;
+  try {
+    await j('/api/admin/cms/categories/' + id, { method: 'DELETE' });
+    toast('Deleted');
+    await loadCategories();
+  } catch (e) {
+    toast(e.message || 'Delete failed');
+  }
+}
+
+function testimonialCard(r = {}) {
+  return `<div class="cms-card" data-id="${r.id || ''}">
+  <div class="cms-card-badge">Testimonial</div>
+  ${grid([
+    field('Quote', `<textarea rows="3" data-f="quote">${esc(r.quote)}</textarea>`),
+    field('Author name', `<input data-f="authorName" value="${esc(r.authorName)}"/>`),
+    field('Author meta', `<input data-f="authorMeta" value="${esc(r.authorMeta)}"/>`),
+    field('Avatar initials', `<input data-f="avatarInitials" maxlength="4" value="${esc(r.avatarInitials || 'ST')}"/>`),
+    field('Metric label', `<input data-f="metricLabel" value="${esc(r.metricLabel)}"/>`),
+    field('Metric value', `<input data-f="metricValue" value="${esc(r.metricValue)}"/>`),
+    field('Metric badge', `<input data-f="metricBadge" value="${esc(r.metricBadge)}"/>`),
+    field('Tags', `<input data-f="tags" value="${esc(r.tags)}"/>`),
+    field('Tone', toneSelect(r.tone || 'mint')),
+    field('Sort order', `<input type="number" data-f="sortOrder" value="${r.sortOrder ?? 0}"/>`),
+    field('Featured', `<select data-f="isFeatured"><option value="false" ${!r.isFeatured ? 'selected' : ''}>No</option><option value="true" ${r.isFeatured ? 'selected' : ''}>Yes</option></select>`),
+    field('Show on site', `<select data-f="isActive"><option value="true" ${r.isActive !== false ? 'selected' : ''}>Yes</option><option value="false" ${r.isActive === false ? 'selected' : ''}>No</option></select>`)
+  ])}
+  <div class="cms-actions">
+    <button type="button" class="cms-btn cms-btn-primary" onclick="saveTestimonial(this)"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+    ${r.id ? `<button type="button" class="cms-btn cms-btn-danger" onclick="delTestimonial(${r.id})"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
+  </div>
+</div>`;
+}
+
+async function loadTestimonials() {
+  const el = document.getElementById('testimonialsList');
+  if (!el) return;
+  try {
+    setLoading('testimonialsList', true);
+    const rows = await j('/api/admin/cms/testimonials');
+    el.innerHTML = (rows || []).map(testimonialCard).join('') ||
+      '<p style="font-size:13px;opacity:.7;">No testimonials yet. Click <b>Add testimonial</b>.</p>';
+  } catch (e) {
+    el.innerHTML = '<p style="color:#e11d48;font-size:13px;">' + esc(e.message) + '</p>';
+  }
+}
+function addTestimonial() {
+  document.getElementById('testimonialsList').insertAdjacentHTML('afterbegin',
+    testimonialCard({ isActive: true, tone: 'mint', avatarInitials: 'ST' }));
+}
+async function saveTestimonial(btn) {
+  try {
+    const box = btn.closest('[data-id]');
+    const body = Object.fromEntries([...box.querySelectorAll('[data-f]')].map(i =>
+      [i.dataset.f, i.type === 'number' ? +i.value : i.value]));
+    body.isActive = body.isActive === 'true';
+    body.isFeatured = body.isFeatured === 'true';
+    body.sortOrder = +body.sortOrder || 0;
+    btn.disabled = true;
+    const id = box.dataset.id;
+    if (id) await j('/api/admin/cms/testimonials/' + id, { method: 'PUT', body: JSON.stringify(body) });
+    else await j('/api/admin/cms/testimonials', { method: 'POST', body: JSON.stringify(body) });
+    toast('Saved');
+    await loadTestimonials();
+  } catch (e) {
+    toast(e.message || 'Save failed');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+async function delTestimonial(id) {
+  if (!confirm('Delete this testimonial?')) return;
+  try {
+    await j('/api/admin/cms/testimonials/' + id, { method: 'DELETE' });
+    toast('Deleted');
+    await loadTestimonials();
+  } catch (e) {
+    toast(e.message || 'Delete failed');
+  }
+}
+
+function proofCard(r = {}) {
+  return `<div class="cms-card" data-id="${r.id || ''}">
+  <div class="cms-card-badge">Proof chip</div>
+  ${grid([
+    field('Label', `<input data-f="label" value="${esc(r.label)}"/>`),
+    field('Value', `<input data-f="value" value="${esc(r.value)}"/>`),
+    field('Badge', `<input data-f="badge" value="${esc(r.badge || 'Verified')}"/>`),
+    field('Tone', toneSelect(r.tone || 'mint')),
+    field('Sort order', `<input type="number" data-f="sortOrder" value="${r.sortOrder ?? 0}"/>`),
+    field('Show on site', `<select data-f="isActive"><option value="true" ${r.isActive !== false ? 'selected' : ''}>Yes</option><option value="false" ${r.isActive === false ? 'selected' : ''}>No</option></select>`)
+  ])}
+  <div class="cms-actions">
+    <button type="button" class="cms-btn cms-btn-primary" onclick="saveProof(this)"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+    ${r.id ? `<button type="button" class="cms-btn cms-btn-danger" onclick="delProof(${r.id})"><i class="fa-solid fa-trash"></i> Delete</button>` : ''}
+  </div>
+</div>`;
+}
+
+async function loadProofs() {
+  const el = document.getElementById('proofsList');
+  if (!el) return;
+  try {
+    setLoading('proofsList', true);
+    const rows = await j('/api/admin/cms/proofs');
+    el.innerHTML = (rows || []).map(proofCard).join('') ||
+      '<p style="font-size:13px;opacity:.7;">None yet.</p>';
+  } catch (e) {
+    el.innerHTML = '<p style="color:#e11d48;font-size:13px;">' + esc(e.message) + '</p>';
+  }
+}
+function addProof() {
+  document.getElementById('proofsList').insertAdjacentHTML('afterbegin',
+    proofCard({ isActive: true, tone: 'mint' }));
+}
+async function saveProof(btn) {
+  try {
+    const box = btn.closest('[data-id]');
+    const body = Object.fromEntries([...box.querySelectorAll('[data-f]')].map(i =>
+      [i.dataset.f, i.type === 'number' ? +i.value : i.value]));
+    body.isActive = body.isActive === 'true';
+    body.sortOrder = +body.sortOrder || 0;
+    btn.disabled = true;
+    const id = box.dataset.id;
+    if (id) await j('/api/admin/cms/proofs/' + id, { method: 'PUT', body: JSON.stringify(body) });
+    else await j('/api/admin/cms/proofs', { method: 'POST', body: JSON.stringify(body) });
+    toast('Saved');
+    await loadProofs();
+  } catch (e) {
+    toast(e.message || 'Save failed');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+async function delProof(id) {
+  if (!confirm('Delete this proof chip?')) return;
+  try {
+    await j('/api/admin/cms/proofs/' + id, { method: 'DELETE' });
+    toast('Deleted');
+    await loadProofs();
+  } catch (e) {
+    toast(e.message || 'Delete failed');
+  }
+}
+
+async function loadDesign() {
+  try {
+    const rows = _contentCache || await j('/api/admin/cms/content');
+    const map = Object.fromEntries((rows || []).map(r => [r.key || r.Key || r.contentKey, r]));
+    const val = (k, def = '') => {
+      const r = map[k];
+      if (!r) return def;
+      return r.value ?? r.Value ?? def;
+    };
+    const visKeys = [
+      ['show_features', 'Features'],
+      ['show_categories', 'Categories'],
+      ['show_manage_bar', 'Manage categories bar'],
+      ['show_testimonials', 'Testimonials'],
+      ['show_proofs', 'Proof chips'],
+      ['show_newsletter', 'Newsletter'],
+      ['show_contact', 'Contact']
+    ];
+    const visEl = document.getElementById('visibilitySwitches');
+    if (visEl) {
+      visEl.innerHTML = visKeys.map(([k, label]) => {
+        const on = val(k, '1') === '1';
+        return `<label class="cms-switch-label">
+          <input type="checkbox" data-dkey="${k}" ${on ? 'checked' : ''} />
+          <span>${label}</span>
+        </label>`;
+      }).join('');
+    }
+    const labelKeys = [
+      ['hero_badge', 'Hero badge'],
+      ['footer_tagline', 'Footer tagline'],
+      ['ai_coach_placeholder', 'AI coach placeholder'],
+      ['cta_secondary_label', 'Secondary CTA label']
+    ];
+    const labEl = document.getElementById('designLabels');
+    if (labEl) {
+      labEl.innerHTML = labelKeys.map(([k, label]) =>
+        `<div class="cms-field"><label>${label}</label><input type="text" data-dkey="${k}" value="${esc(val(k, ''))}" /></div>`
+      ).join('');
+    }
+    document.querySelectorAll('#designGrid [data-dkey]').forEach(el => {
+      const k = el.dataset.dkey;
+      const v = val(k, el.type === 'checkbox' ? '0' : (el.value || ''));
+      if (el.type === 'checkbox') el.checked = v === '1';
+      else if (el.tagName === 'SELECT') el.value = v || el.value;
+      else el.value = v;
+    });
+  } catch (e) {
+    console.warn('loadDesign', e);
+  }
+}
+
+async function saveDesign() {
+  try {
+    await j('/api/admin/cms/ensure', { method: 'POST', body: '{}' });
+    const rows = await j('/api/admin/cms/content');
+    const map = Object.fromEntries((rows || []).map(r => [r.key || r.Key || r.contentKey, r]));
+    const inputs = document.querySelectorAll('#designGrid [data-dkey]');
+    let updated = 0;
+    for (const el of inputs) {
+      const key = el.dataset.dkey;
+      let value = el.type === 'checkbox' ? (el.checked ? '1' : '0') : el.value;
+      const row = map[key];
+      if (row) {
+        const id = row.id ?? row.Id;
+        await j('/api/admin/cms/content/' + id, { method: 'PUT', body: JSON.stringify({ value }) });
+        updated++;
+      }
+    }
+    toast(updated ? `Design saved (${updated} fields)` : 'No matching design keys — run Init first');
+    _contentCache = await j('/api/admin/cms/content');
+  } catch (e) {
+    toast(e.message || 'Save failed');
+  }
+}
+
+async function loadAll() {
+  await Promise.all([loadContent(), loadFeatures(), loadCategories(), loadTestimonials(), loadProofs()]);
+  await loadDesign();
+}
+
+(async function init() {
+  try { await j('/api/admin/cms/ensure', { method: 'POST', body: '{}' }); } catch (e) { console.warn(e); }
+  await loadAll();
+})();
+
+</script>
+
+<script>
+function toggleSidebar(){ const s=document.getElementById('sidebar'); if(s) s.classList.toggle('open'); const o=document.getElementById('mobileOverlay')||document.getElementById('sidebarOverlay'); if(o){ o.classList.toggle('hidden'); o.classList.toggle('show'); } }
+function closeSidebar(){ const s=document.getElementById('sidebar'); if(s) s.classList.remove('open'); const o=document.getElementById('mobileOverlay')||document.getElementById('sidebarOverlay'); if(o){ o.classList.add('hidden'); o.classList.remove('show'); } }
+function toggleTheme(){
+  const html=document.documentElement;
+  const dark=html.classList.toggle('dark');
+  document.body.classList.toggle('dark-mesh', dark);
+  document.body.classList.toggle('light-mesh', !dark);
+  localStorage.setItem('campuscoin-theme', dark?'dark':'light');
+  localStorage.setItem('cc-admin-theme', dark?'dark':'light');
+  const icon=document.getElementById('themeIcon');
+  if(icon){ icon.className = dark ? 'fa-solid fa-sun' : 'fa-solid fa-moon'; }
+}
+function toggleDropdown(id){
+  document.querySelectorAll('.dropdown').forEach(d=>{ if(d.id!==id) d.classList.remove('show','open'); });
+  const el=document.getElementById(id);
+  if(el){ el.classList.toggle('show'); el.classList.toggle('open'); }
+}
+function logoutAdmin(){ window.location.href='/Auth/Logout'; }
+function quickAction(name){ if(name==='Add Student') location.href='/Admin/Students'; else if(name==='View Transactions') location.href='/Admin/Transactions'; else if(name==='Send Notification') location.href='/Admin/Notifications'; else if(name==='Generate Report') location.href='/Admin/Reports'; }
+(function(){
+  // Prefer shared campuscoin-theme; only use dark if explicitly saved
+  const saved = localStorage.getItem('campuscoin-theme') || localStorage.getItem('cc-admin-theme') || 'light';
+  if(saved==='dark'){
+    document.documentElement.classList.add('dark');
+    document.documentElement.classList.remove('light');
+    document.body.classList.add('dark-mesh');
+    document.body.classList.remove('light-mesh');
+    const icon=document.getElementById('themeIcon');
+    if(icon) icon.className='fa-solid fa-sun';
+  } else {
+    document.documentElement.classList.add('light');
+    document.documentElement.classList.remove('dark');
+    document.body.classList.add('light-mesh');
+    document.body.classList.remove('dark-mesh');
+    localStorage.setItem('campuscoin-theme','light');
+  }
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.dropdown-wrap') && !e.target.closest('.cc-notif-wrap'))
+      document.querySelectorAll('.dropdown, .cc-shared-dd, .cc-notif-popover').forEach(d=>d.classList.remove('show','open'));
+  });
+})();
+</script>
+
+</body>
+</html>

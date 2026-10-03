@@ -1,0 +1,214 @@
+@{
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+    ViewData["Title"] = "Cookie Policy";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/legal.css" asp-append-version="true" />
+}
+
+<div class="legal-page">
+    <span class="legal-orb legal-orb-1" aria-hidden="true"></span>
+    <span class="legal-orb legal-orb-2" aria-hidden="true"></span>
+    <span class="legal-orb legal-orb-3" aria-hidden="true"></span>
+
+    <div class="legal-shell">
+
+        <!-- ══════════ HERO ══════════ -->
+        <div class="legal-hero">
+            <a asp-controller="Home" asp-action="Index" class="legal-back">
+                <i class="ri-arrow-left-line"></i> Back to home
+            </a>
+
+            <div>
+                <span class="legal-eyebrow">
+                    <i class="ri-cookie-line"></i> Cookies
+                </span>
+            </div>
+
+            <h1>Cookie <em>Policy.</em></h1>
+            <p>The short version: we barely use any. Here's exactly what we do use, and why.</p>
+
+            <div class="legal-meta">
+                <span class="legal-meta-chip">
+                    <i class="ri-calendar-line"></i>
+                    Last updated <b>January 2026</b>
+                </span>
+                <span class="legal-meta-chip mint">
+                    <i class="ri-shield-check-line"></i>
+                    <b>Zero</b> tracking cookies
+                </span>
+            </div>
+        </div>
+
+        <!-- ══════════ TOC + CONTENT ══════════ -->
+        <div class="legal-body-grid">
+
+            <!-- TOC -->
+            <aside class="legal-toc">
+                <div class="legal-toc-label">
+                    <i class="ri-list-check-2"></i> On this page
+                </div>
+                <ol class="legal-toc-list">
+                    <li><a class="legal-toc-link" href="#what-are-cookies">What cookies are</a></li>
+                    <li><a class="legal-toc-link" href="#what-we-use">What we actually use</a></li>
+                    <li><a class="legal-toc-link" href="#what-we-dont-use">What we don't use</a></li>
+                    <li><a class="legal-toc-link" href="#your-controls">Your controls</a></li>
+                    <li><a class="legal-toc-link" href="#contact">Contact</a></li>
+                </ol>
+            </aside>
+
+            <!-- Reader -->
+            <article class="legal-reader">
+
+                <section class="legal-section" id="what-are-cookies">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">01</span>
+                        <div class="legal-section-title">
+                            <h2>What cookies are</h2>
+                            <small>The 30-second version</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>Cookies are tiny text files your browser stores when you visit a website. They help sites remember things — like whether you're signed in, or what theme you prefer.</p>
+                        <p>Some are essential (the site won't work without them). Some are for tracking (we don't use those). We only use the first kind.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="what-we-use">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">02</span>
+                        <div class="legal-section-title">
+                            <h2>What we actually use</h2>
+                            <small>Two things. That's it.</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p><b>1. Session cookie</b> — keeps you signed in while you use the app. Without it, you'd have to log in on every page click. This cookie is essential and cannot be disabled.</p>
+                        <p><b>2. Theme preference</b> — stored in your browser's <code>localStorage</code> (not technically a cookie), it remembers whether you prefer light or dark mode. You can clear it anytime from your browser settings.</p>
+                        <div class="legal-callout mint">
+                            <span class="legal-callout-icon"><i class="ri-check-line"></i></span>
+                            <div class="legal-callout-text">
+                                <b>That's the complete list.</b>
+                                <small>No analytics, no ads, no social pixels, no third parties.</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="what-we-dont-use">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">03</span>
+                        <div class="legal-section-title">
+                            <h2>What we don't use</h2>
+                            <small>The things you should worry about</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <ul>
+                            <li>No advertising cookies</li>
+                            <li>No analytics or tracking cookies</li>
+                            <li>No social media pixels</li>
+                            <li>No cross-site tracking</li>
+                            <li>No third-party cookies of any kind</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="your-controls">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">04</span>
+                        <div class="legal-section-title">
+                            <h2>Your controls</h2>
+                            <small>You're always in charge</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>Every browser lets you view, block, or delete cookies. The exact steps vary, but look for "Cookies" in your browser's privacy settings.</p>
+                        <p>If you block the session cookie, you won't be able to sign in — but everything else on the site works fine. To clear your theme preference, just clear your browser's local storage for this site.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="contact">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">05</span>
+                        <div class="legal-section-title">
+                            <h2>Contact</h2>
+                            <small>Something we missed?</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>Questions about cookies, or spotted something that looks off? We'd love to hear from you.</p>
+                        <div class="legal-callout">
+                            <span class="legal-callout-icon"><i class="ri-mail-send-line"></i></span>
+                            <div class="legal-callout-text">
+                                <b>hello@campuscoin.app</b>
+                                <small>Reply within 24 hours.</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </article>
+
+        </div>
+
+        <!-- ══════════ FOOT ══════════ -->
+        <div class="legal-foot">
+            <p>
+                Want the full picture?
+                <a asp-controller="Home" asp-action="Privacy">Read our Privacy Policy →</a>
+                &nbsp;·&nbsp;
+                <a asp-controller="Home" asp-action="Terms">Read our Terms →</a>
+            </p>
+            <span class="legal-foot-credit">
+                © 2026 CashCampus · Made with <i class="ri-heart-fill"></i> intention
+            </span>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const links = document.querySelectorAll('.legal-toc-link');
+            const sections = document.querySelectorAll('.legal-section');
+            if (!links.length || !sections.length) return;
+
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const id = link.getAttribute('href').slice(1);
+                    const target = document.getElementById(id);
+                    if (!target) return;
+                    e.preventDefault();
+
+                    const y = target.getBoundingClientRect().top + window.scrollY - 100;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                    history.replaceState(null, '', '#' + id);
+
+                    links.forEach(l => l.classList.toggle('active', l === link));
+                });
+            });
+
+            const setActive = (id) => {
+                links.forEach(l => {
+                    l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+                });
+            };
+
+            const updateActive = () => {
+                const scrollY = window.scrollY + 140;
+                let current = sections[0]?.id;
+                sections.forEach(sec => {
+                    if (sec.offsetTop <= scrollY) current = sec.id;
+                });
+                if (current) setActive(current);
+            };
+
+            window.addEventListener('scroll', updateActive, { passive: true });
+            window.addEventListener('resize', updateActive, { passive: true });
+            updateActive();
+        })();
+    </script>
+}

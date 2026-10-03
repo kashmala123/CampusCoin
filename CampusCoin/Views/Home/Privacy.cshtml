@@ -1,0 +1,218 @@
+@{
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+    ViewData["Title"] = "Privacy Policy";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/legal.css" asp-append-version="true" />
+}
+
+<div class="legal-page">
+    <span class="legal-orb legal-orb-1" aria-hidden="true"></span>
+    <span class="legal-orb legal-orb-2" aria-hidden="true"></span>
+    <span class="legal-orb legal-orb-3" aria-hidden="true"></span>
+
+    <div class="legal-shell">
+
+        <!-- ══════════ HERO ══════════ -->
+        <div class="legal-hero">
+            <a asp-controller="Home" asp-action="Index" class="legal-back">
+                <i class="ri-arrow-left-line"></i> Back to home
+            </a>
+
+            <div>
+                <span class="legal-eyebrow">
+                    <i class="ri-lock-2-line"></i> Privacy
+                </span>
+            </div>
+
+            <h1>Privacy <em>Policy.</em></h1>
+            <p>What we collect, why we collect it — and what we'll never do with it.</p>
+
+            <div class="legal-meta">
+                <span class="legal-meta-chip">
+                    <i class="ri-calendar-line"></i>
+                    Last updated <b>January 2026</b>
+                </span>
+                <span class="legal-meta-chip mint">
+                    <i class="ri-shield-check-line"></i>
+                    <b>No tracking</b> cookies
+                </span>
+            </div>
+        </div>
+
+        <!-- ══════════ TOC + CONTENT ══════════ -->
+        <div class="legal-body-grid">
+
+            <!-- TOC -->
+            <aside class="legal-toc">
+                <div class="legal-toc-label">
+                    <i class="ri-list-check-2"></i> On this page
+                </div>
+                <ol class="legal-toc-list">
+                    <li><a class="legal-toc-link" href="#what-we-collect">What we collect</a></li>
+                    <li><a class="legal-toc-link" href="#how-we-use-it">How we use it</a></li>
+                    <li><a class="legal-toc-link" href="#what-we-dont-do">What we don't do</a></li>
+                    <li><a class="legal-toc-link" href="#your-controls">Your controls</a></li>
+                    <li><a class="legal-toc-link" href="#cookies">Cookies</a></li>
+                    <li><a class="legal-toc-link" href="#contact">Contact</a></li>
+                </ol>
+            </aside>
+
+            <!-- Reader -->
+            <article class="legal-reader">
+
+                <section class="legal-section" id="what-we-collect">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">01</span>
+                        <div class="legal-section-title">
+                            <h2>What we collect</h2>
+                            <small>Only what you give us</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>CampusCoin stores only the data you manually enter: your name, email, transactions, budgets, categories, and preferences.</p>
+                        <p>We do <b>not</b> connect to your bank, we do <b>not</b> read your SMS, and we do <b>not</b> track your location.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="how-we-use-it">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">02</span>
+                        <div class="legal-section-title">
+                            <h2>How we use it</h2>
+                            <small>Only to power your app</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>Your data is used exclusively to power the features you use inside the app — showing your balance, generating insights, and rendering charts. <b>Nothing more.</b></p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="what-we-dont-do">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">03</span>
+                        <div class="legal-section-title">
+                            <h2>What we don't do</h2>
+                            <small>The promise we keep</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <ul>
+                            <li>We don't sell your data.</li>
+                            <li>We don't share it with advertisers.</li>
+                            <li>We don't use it to train third-party models.</li>
+                            <li>We don't send it to any external service without your explicit action.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="your-controls">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">04</span>
+                        <div class="legal-section-title">
+                            <h2>Your controls</h2>
+                            <small>You're in charge</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>You can export or permanently delete your data at any time from <b>Profile → Settings</b>. Deletion is immediate and irreversible.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="cookies">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">05</span>
+                        <div class="legal-section-title">
+                            <h2>Cookies</h2>
+                            <small>Barely any — on purpose</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>We use a single essential cookie to keep you signed in. No tracking cookies, no analytics cookies, no third-party pixels.</p>
+                    </div>
+                </section>
+
+                <section class="legal-section" id="contact">
+                    <div class="legal-section-head">
+                        <span class="legal-section-num">06</span>
+                        <div class="legal-section-title">
+                            <h2>Contact</h2>
+                            <small>Real humans, real replies</small>
+                        </div>
+                    </div>
+                    <div class="legal-section-body">
+                        <p>Questions about your data, a request to delete it, or anything else — we're one email away.</p>
+                        <div class="legal-callout mint">
+                            <span class="legal-callout-icon"><i class="ri-mail-send-line"></i></span>
+                            <div class="legal-callout-text">
+                                <b>hello@campuscoin.app</b>
+                                <small>We usually reply within 24 hours.</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </article>
+
+        </div>
+
+        <!-- ══════════ FOOT ══════════ -->
+        <div class="legal-foot">
+            <p>
+                Looking for the rules of the app?
+                <a asp-controller="Home" asp-action="Terms">Read our Terms →</a>
+            </p>
+            <span class="legal-foot-credit">
+                © 2026 CashCampus · Made with <i class="ri-heart-fill"></i> intention
+            </span>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const links = document.querySelectorAll('.legal-toc-link');
+            const sections = document.querySelectorAll('.legal-section');
+            if (!links.length || !sections.length) return;
+
+            /* Smooth scroll on TOC click */
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const id = link.getAttribute('href').slice(1);
+                    const target = document.getElementById(id);
+                    if (!target) return;
+                    e.preventDefault();
+
+                    const y = target.getBoundingClientRect().top + window.scrollY - 100;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                    history.replaceState(null, '', '#' + id);
+
+                    links.forEach(l => l.classList.toggle('active', l === link));
+                });
+            });
+
+            /* Scroll spy */
+            const setActive = (id) => {
+                links.forEach(l => {
+                    l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+                });
+            };
+
+            const updateActive = () => {
+                const scrollY = window.scrollY + 140;
+                let current = sections[0]?.id;
+                sections.forEach(sec => {
+                    if (sec.offsetTop <= scrollY) current = sec.id;
+                });
+                if (current) setActive(current);
+            };
+
+            window.addEventListener('scroll', updateActive, { passive: true });
+            window.addEventListener('resize', updateActive, { passive: true });
+            updateActive();
+        })();
+    </script>
+}

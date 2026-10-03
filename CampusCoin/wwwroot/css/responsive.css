@@ -1,0 +1,1688 @@
+﻿/* ════════════════════════════════════════════════════════════
+   CASHCAMPUS — RESPONSIVE OVERRIDES
+   Loaded LAST so it wins every conflict.
+   Fixes navbar, hero, all landing sections, footer.
+   ════════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════════════════
+   1. GLOBAL — prevent horizontal overflow
+   ════════════════════════════════════════════════════════════ */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+.cc-landing,
+.cc-landing * {
+    max-width: 100%;
+}
+
+    .cc-landing .wrap {
+        max-width: 100%;
+        padding-left: clamp(16px, 4vw, 44px);
+        padding-right: clamp(16px, 4vw, 44px);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+   2. NAVBAR
+   ════════════════════════════════════════════════════════════ */
+
+    /* Remove the fixed 76px height so it can breathe on mobile */
+    .cc-landing .nav {
+        height: auto !important;
+        min-height: 64px;
+        padding: 12px 16px !important;
+    }
+
+        .cc-landing .nav.scrolled {
+            height: auto !important;
+            min-height: 58px;
+            padding: 8px 16px !important;
+        }
+
+    .cc-landing .nav-inner {
+        padding: 8px 8px 8px 14px !important;
+        gap: 12px !important;
+        border-radius: 18px !important;
+    }
+
+    .cc-landing .nav .brand {
+        font-size: 16px !important;
+        gap: 9px !important;
+    }
+
+    .cc-landing .nav .brand-mark {
+        width: 34px !important;
+        height: 34px !important;
+    }
+
+    .cc-landing .nav-actions {
+        gap: 6px !important;
+    }
+
+    .cc-landing .nav-theme-toggle {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 16px !important;
+    }
+
+    .cc-landing .nav-toggle {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 18px !important;
+    }
+
+/* Mobile drawer — full width on small phones */
+@media (max-width: 480px) {
+    .cc-landing .nav-drawer-panel {
+        width: 100vw !important;
+    }
+}
+
+/* ── Hide nav links + show hamburger below 900px ── */
+@media (max-width: 900px) {
+    .cc-landing .nav-links {
+        display: none !important;
+    }
+
+    .cc-landing .nav-toggle {
+        display: flex !important;
+    }
+}
+
+/* ── Very small phones — hide sign-in / get-started in navbar ── */
+@media (max-width: 640px) {
+    .cc-landing .nav .nav-link-plain {
+        display: none !important;
+    }
+
+    .cc-landing .nav .nav-actions .btn-primary {
+        padding: 8px 14px !important;
+        font-size: 12.5px !important;
+    }
+
+    .cc-landing .nav .brand-name {
+        font-size: 15px !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   3. HERO — responsive stacking
+   ════════════════════════════════════════════════════════════ */
+
+/* Fix the 3D scene container so it doesn't overflow */
+.cc-landing .hero3d-scene {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: clamp(360px, 60vw, 620px) !important;
+    min-height: 360px !important;
+}
+
+.cc-landing .hero3d-title {
+    font-size: clamp(32px, 7vw, 64px) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -.03em !important;
+}
+
+.cc-landing .hero3d-lead {
+    font-size: clamp(14px, 2.4vw, 16.5px) !important;
+    max-width: 100% !important;
+}
+
+/* Stack hero columns on tablet */
+@media (max-width: 1100px) {
+    .cc-landing .hero3d {
+        padding: 100px 0 60px !important;
+    }
+
+    .cc-landing .hero3d-grid {
+        grid-template-columns: 1fr !important;
+        gap: 40px !important;
+        text-align: center !important;
+    }
+
+    .cc-landing .hero3d-copy {
+        margin: 0 auto !important;
+        align-items: center !important;
+        text-align: center !important;
+        max-width: 560px !important;
+    }
+
+    .cc-landing .hero3d-lead {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .cc-landing .hero-actions,
+    .cc-landing .hero-features,
+    .cc-landing .hero-trust {
+        justify-content: center !important;
+    }
+
+    .cc-landing .hero3d-scene {
+        margin: 0 auto !important;
+    }
+}
+
+/* Small phones */
+@media (max-width: 640px) {
+    .cc-landing .hero3d {
+        padding: 90px 0 50px !important;
+    }
+
+    .cc-landing .hero3d-title {
+        font-size: clamp(30px, 9vw, 42px) !important;
+    }
+
+    .cc-landing .hero-actions {
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 10px !important;
+    }
+
+        .cc-landing .hero-actions .btn {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+
+    .cc-landing .hero-features {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 14px !important;
+    }
+
+    .cc-landing .hero3d-scene {
+        height: 380px !important;
+        min-height: 380px !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   4. MARQUEE
+   ════════════════════════════════════════════════════════════ */
+.cc-landing .marquee {
+    padding: 20px 0 !important;
+}
+
+.cc-landing .marquee-track {
+    gap: 32px !important;
+}
+
+.cc-landing .marquee-item {
+    font-size: 12.5px !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   5. ALL SECTIONS — kill giant padding on mobile
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-landing .section,
+    .cc-landing .section-tight,
+    .cc-landing .features-glass,
+    .cc-landing .ai-section,
+    .cc-landing .cat-section,
+    .cc-landing .how-section,
+    .cc-landing .test-section,
+    .cc-landing .about-section,
+    .cc-landing .sitemap-section,
+    .cc-landing .contact-section {
+        padding-top: 70px !important;
+        padding-bottom: 70px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .section,
+    .cc-landing .section-tight,
+    .cc-landing .features-glass,
+    .cc-landing .ai-section,
+    .cc-landing .cat-section,
+    .cc-landing .how-section,
+    .cc-landing .test-section,
+    .cc-landing .about-section,
+    .cc-landing .sitemap-section,
+    .cc-landing .contact-section {
+        padding-top: 52px !important;
+        padding-bottom: 52px !important;
+    }
+
+    .cc-landing .section-head {
+        margin-bottom: 32px !important;
+    }
+
+        .cc-landing .section-head h2 {
+            font-size: clamp(26px, 7vw, 36px) !important;
+        }
+
+        .cc-landing .section-head p {
+            font-size: 14.5px !important;
+        }
+}
+
+/* ════════════════════════════════════════════════════════════
+   6. FEATURES / BENTO
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-landing .bento,
+    .cc-landing .features-glass .bento {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .bento,
+    .cc-landing .features-glass .bento {
+        grid-template-columns: 1fr !important;
+    }
+
+    .cc-landing .bento-card,
+    .cc-landing .features-glass .bento-card {
+        min-height: 0 !important;
+        padding: 20px 18px !important;
+    }
+
+        .cc-landing .bento-card h3 {
+            font-size: 16px !important;
+        }
+
+        .cc-landing .bento-card p {
+            font-size: 13px !important;
+        }
+
+    .cc-landing .features-glass .bento-card {
+        backdrop-filter: blur(18px) saturate(160%) !important;
+        -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+    }
+
+    /* Compact previews */
+    .cc-landing .bp-balance b {
+        font-size: 18px !important;
+    }
+
+    .cc-landing .bp-chart {
+        height: 48px !important;
+    }
+
+    .cc-landing .bp-legend {
+        gap: 8px 10px !important;
+        flex-wrap: wrap !important;
+    }
+
+    .cc-landing .ring-wrap svg {
+        max-width: 60px !important;
+    }
+
+    .cc-landing .budget-preview {
+        padding: 12px 6px !important;
+        gap: 4px !important;
+    }
+
+    .cc-landing .pp-stats {
+        gap: 12px !important;
+    }
+
+        .cc-landing .pp-stats b {
+            font-size: 17px !important;
+        }
+}
+
+/* ════════════════════════════════════════════════════════════
+   7. AI SECTION
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-landing .ai-grid {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+    }
+
+    .cc-landing .ai-chat {
+        padding: 20px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .ai-chat {
+        padding: 16px !important;
+    }
+
+    .cc-landing .ai-msg {
+        font-size: 13px !important;
+        max-width: 100% !important;
+    }
+
+    .cc-landing .ai-list li {
+        padding: 14px 16px !important;
+    }
+
+    .cc-landing .ai-actions {
+        flex-wrap: wrap !important;
+    }
+
+    .cc-landing .ai-act {
+        flex: 1 1 auto;
+        justify-content: center !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   8. CATEGORIES
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-landing .cat-grid,
+    .cc-landing .cat-split {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .cat-panel {
+        padding: 20px 16px !important;
+    }
+
+    .cc-landing .cat-panel-head {
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+
+    .cc-landing .cat-panel-total {
+        margin-left: 0 !important;
+        width: 100% !important;
+        text-align: left !important;
+        margin-top: 8px !important;
+    }
+
+    .cc-landing .cat-list li {
+        grid-template-columns: 34px 1fr auto !important;
+        padding: 10px 12px !important;
+    }
+
+    .cc-landing .cat-custom {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 16px !important;
+        padding: 20px !important;
+    }
+
+    .cc-landing .cat-custom-cta {
+        justify-content: center !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   9. HOW IT WORKS
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-landing .how-timeline {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+    }
+
+    .cc-landing .how-line {
+        display: none !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .how-step-body {
+        padding: 20px 18px !important;
+    }
+
+    .cc-landing .how-step-marker {
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 18px !important;
+    }
+
+    .cc-landing .how-marker-num {
+        font-size: 22px !important;
+    }
+
+    .cc-landing .how-summary {
+        flex-direction: column !important;
+        gap: 16px !important;
+        padding: 18px 20px !important;
+    }
+
+    .cc-landing .hs-item {
+        width: 100% !important;
+    }
+
+    .cc-landing .hs-div {
+        display: none !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   10. TESTIMONIALS
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-landing .testimonials {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .cc-landing .test.featured {
+        transform: none !important;
+    }
+
+    .cc-landing .test-summary {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 16px !important;
+        padding: 18px 20px !important;
+    }
+
+    .cc-landing .ts-div {
+        display: none !important;
+    }
+
+    .cc-landing .ts-avatars-block {
+        margin-left: 0 !important;
+        align-items: flex-start !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .ts-score {
+        font-size: 34px !important;
+    }
+
+    .cc-landing .test {
+        padding: 22px 20px 18px !important;
+    }
+
+    .cc-landing .test-quote-mark {
+        font-size: 38px !important;
+    }
+
+    .cc-landing .test-ribbon {
+        top: 12px !important;
+        right: 12px !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   11. ABOUT
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-landing .about-split {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+    }
+
+    .cc-landing .about-values {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .about-values {
+        grid-template-columns: 1fr !important;
+    }
+
+    .cc-landing .about-story-block {
+        padding: 18px 18px !important;
+        gap: 14px !important;
+    }
+
+    .cc-landing .about-story-num {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 17px !important;
+    }
+
+    .cc-landing .about-stats {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .cc-landing .about-stat {
+        padding: 16px !important;
+    }
+
+        .cc-landing .about-stat b {
+            font-size: 22px !important;
+        }
+}
+
+/* ════════════════════════════════════════════════════════════
+   12. SITEMAP
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-landing .sitemap-grid {
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+    }
+
+    .cc-landing .sitemap-col.featured {
+        order: -1 !important;
+    }
+
+    .cc-landing .sm-branches {
+        display: none !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .sitemap-col {
+        padding: 18px 16px !important;
+    }
+
+    .cc-landing .sitemap-list li {
+        grid-template-columns: 30px 1fr 16px !important;
+        padding: 9px 10px !important;
+    }
+
+    .cc-landing .sl-icon {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 14px !important;
+    }
+
+    .cc-landing .sl-text b {
+        font-size: 13px !important;
+    }
+
+    .cc-landing .sitemap-note {
+        flex-direction: column !important;
+        gap: 12px !important;
+        padding: 16px 18px !important;
+    }
+
+    .cc-landing .sm-note-div {
+        display: none !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   13. CONTACT
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-landing .contact-split {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .contact-method {
+        grid-template-columns: 42px 1fr 18px !important;
+        padding: 14px 16px !important;
+        gap: 12px !important;
+    }
+
+    .cc-landing .cm-icon {
+        width: 42px !important;
+        height: 42px !important;
+        font-size: 19px !important;
+    }
+
+    .cc-landing .cm-info b {
+        font-size: 14px !important;
+    }
+
+    .cc-landing .cm-info span {
+        font-size: 12.5px !important;
+    }
+
+    .cc-landing .contact-form-wrap {
+        padding: 22px 18px 20px !important;
+    }
+
+    .cc-landing .cf-head h3 {
+        font-size: 19px !important;
+    }
+
+    .cc-landing .cf-row {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   14. FINAL CTA
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-landing .cta {
+        grid-template-columns: 1fr !important;
+        padding: 44px 32px !important;
+        gap: 28px !important;
+        border-radius: 28px !important;
+    }
+
+    .cc-landing .cta-actions {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+    }
+
+        .cc-landing .cta-actions .btn {
+            flex: 1 1 220px !important;
+        }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .cta-wrap {
+        padding: 0 0 60px !important;
+    }
+
+    .cc-landing .cta {
+        padding: 32px 22px !important;
+        border-radius: 24px !important;
+    }
+
+    .cc-landing .cta-text h2 {
+        font-size: clamp(24px, 7vw, 32px) !important;
+    }
+
+    .cc-landing .cta-text p {
+        font-size: 14px !important;
+    }
+
+    .cc-landing .cta-actions {
+        flex-direction: column !important;
+    }
+
+        .cc-landing .cta-actions .btn {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+
+    .cc-landing .cta-badges {
+        flex-wrap: wrap !important;
+    }
+
+        .cc-landing .cta-badges span {
+            font-size: 11px !important;
+            padding: 6px 11px !important;
+        }
+}
+
+/* ════════════════════════════════════════════════════════════
+   15. FOOTER
+   ════════════════════════════════════════════════════════════ */
+
+/* Newsletter band */
+@media (max-width: 1024px) {
+    .cc-landing .footer .footer-news-inner {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        padding: 0 32px !important;
+    }
+
+    .cc-landing .footer .footer-wrap {
+        padding: 0 32px !important;
+    }
+
+    .cc-landing .footer .footer-top {
+        grid-template-columns: 1fr !important;
+        gap: 40px !important;
+        padding: 44px 0 36px !important;
+    }
+
+    .cc-landing .footer .footer-cols {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 24px !important;
+    }
+}
+
+@media (max-width: 720px) {
+    .cc-landing .footer .footer-cols {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 24px 20px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .footer .footer-news {
+        padding: 32px 0 !important;
+    }
+
+    .cc-landing .footer .footer-news-inner {
+        padding: 0 20px !important;
+    }
+
+    .cc-landing .footer .footer-news-text h3 {
+        font-size: 20px !important;
+    }
+
+    .cc-landing .footer .footer-news-text p {
+        font-size: 13px !important;
+    }
+
+    .cc-landing .footer .footer-news-form {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        border-radius: 18px !important;
+        padding: 10px !important;
+        gap: 8px !important;
+    }
+
+        .cc-landing .footer .footer-news-form > i {
+            display: none !important;
+        }
+
+        .cc-landing .footer .footer-news-form input {
+            width: 100% !important;
+            padding: 12px 14px !important;
+            background: rgba(255, 255, 255, .06) !important;
+            border-radius: 99px !important;
+        }
+
+        .cc-landing .footer .footer-news-form button {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+
+    .cc-landing .footer .footer-wrap {
+        padding: 0 20px !important;
+    }
+
+    .cc-landing .footer .footer-top {
+        padding: 32px 0 28px !important;
+        gap: 28px !important;
+    }
+
+    .cc-landing .footer .footer-brand .brand {
+        font-size: 17px !important;
+    }
+
+    .cc-landing .footer .footer-brand p {
+        font-size: 13px !important;
+    }
+
+    .cc-landing .footer .footer-badges {
+        flex-wrap: wrap !important;
+    }
+
+    .cc-landing .footer .footer-cols {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+    }
+
+    .cc-landing .footer .footer-col h5 {
+        margin-bottom: 12px !important;
+    }
+
+    .cc-landing .footer .footer-col ul {
+        gap: 10px !important;
+    }
+
+    .cc-landing .footer .footer-bottom {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+        padding: 20px 0 26px !important;
+        text-align: left !important;
+    }
+
+    .cc-landing .footer .footer-legal {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+}
+
+/* Very small phones — collapse footer cols */
+@media (max-width: 420px) {
+    .cc-landing .footer .footer-cols {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   16. BACK TO TOP + TOAST
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+    .back-to-top {
+        right: 16px !important;
+        bottom: 16px !important;
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 18px !important;
+    }
+
+    .toast {
+        left: 16px !important;
+        right: 16px !important;
+        bottom: 16px !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   17. APP SHELL (dashboard) — responsive polish
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .cc-app .sidebar {
+        width: 240px !important;
+    }
+
+    .cc-app .main {
+        margin-left: 280px !important;
+    }
+}
+
+@media (max-width: 950px) {
+    .cc-app .sidebar {
+        width: 260px !important;
+        transform: translateX(-120%) !important;
+    }
+
+        .cc-app .sidebar.open {
+            transform: translateX(0) !important;
+        }
+
+    .cc-app .main {
+        margin-left: 0 !important;
+        padding: 14px !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   18. LARGE SCREENS — pull content in slightly
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 1600px) {
+    .cc-landing .wrap {
+        max-width: 1440px;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   19. LANDSCAPE PHONES — shorter sections
+   ════════════════════════════════════════════════════════════ */
+@media (max-height: 500px) and (orientation: landscape) {
+    .cc-landing .hero3d {
+        padding: 80px 0 40px !important;
+    }
+
+    .cc-landing .hero3d-scene {
+        height: 340px !important;
+        min-height: 340px !important;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   20. REDUCED MOTION — respect user preference
+   ════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+    .cc-landing *,
+    .cc-landing *::before,
+    .cc-landing *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+/* ════════════════════════════════════════════════════════════
+   HERO — HIDE ANIMATED SCENE ON SMALL SCREENS
+   Targets .hero-scene (the container for floating cards + canvas)
+   ════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+    .cc-landing .hero-scene {
+        max-width: 480px !important;
+        margin: 0 auto !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .hero-scene,
+    .cc-landing .hero-cards,
+    .cc-landing .ui-card,
+    .cc-landing .debit-card,
+    .cc-landing #ccHeroCanvas,
+    .cc-landing .hero-scene canvas {
+        display: none !important;
+        animation: none !important;
+    }
+
+        .cc-landing .hero-scene.in * {
+            animation: none !important;
+            transition: none !important;
+        }
+
+    .cc-landing .hero-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+
+    .cc-landing .hero-copy {
+        max-width: 100% !important;
+        padding-bottom: 20px !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cc-landing .hero-scene,
+    .cc-landing .ui-card,
+    .cc-landing .debit-card {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+/* ════════════════════════════════════════════════════════════
+   NAVBAR — MOBILE FIX (aggressive)
+   At ≤ 640px the pill was overflowing. Shrink everything,
+   reduce gaps, and if needed hide the theme toggle in the
+   navbar (it's available in the mobile drawer anyway).
+   ════════════════════════════════════════════════════════════ */
+
+/* ── ≤ 900px: hamburger appears, hide desktop links ── */
+@media (max-width: 900px) {
+    .cc-landing .nav-links {
+        display: none !important;
+    }
+
+    .cc-landing .nav-toggle {
+        display: flex !important;
+    }
+}
+
+/* ── ≤ 720px: shrink everything in the nav pill ── */
+@media (max-width: 720px) {
+    .cc-landing .nav {
+        padding: 10px 12px !important;
+    }
+
+        .cc-landing .nav.scrolled {
+            padding: 8px 12px !important;
+        }
+
+    .cc-landing .nav-inner {
+        padding: 6px 6px 6px 12px !important;
+        gap: 8px !important;
+        border-radius: 16px !important;
+    }
+
+    .cc-landing .nav.scrolled .nav-inner {
+        padding: 6px 6px 6px 12px !important;
+    }
+
+    /* Brand */
+    .cc-landing .nav .brand {
+        gap: 8px !important;
+        font-size: 15px !important;
+        min-width: 0 !important;
+        flex-shrink: 1 !important;
+    }
+
+    .cc-landing .nav .brand-mark {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .cc-landing .nav .brand-name b,
+    .cc-landing .nav .brand-name span {
+        font-size: 15px !important;
+    }
+
+    /* Actions cluster */
+    .cc-landing .nav-actions {
+        gap: 5px !important;
+        flex-shrink: 0 !important;
+        margin-left: auto !important;
+    }
+
+    /* Theme toggle */
+    .cc-landing .nav-theme-toggle {
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 15px !important;
+        border-radius: 10px !important;
+    }
+
+    /* "Get started" button */
+    .cc-landing .nav .nav-actions .btn-primary {
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+        border-radius: 10px !important;
+        gap: 5px !important;
+    }
+
+        .cc-landing .nav .nav-actions .btn-primary i {
+            font-size: 14px !important;
+        }
+
+    /* Hamburger */
+    .cc-landing .nav-toggle {
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 17px !important;
+        border-radius: 10px !important;
+        flex-shrink: 0 !important;
+    }
+}
+
+/* ── ≤ 480px: hide "Get started" text-only, show icon ── */
+@media (max-width: 480px) {
+    .cc-landing .nav .nav-actions .btn-primary {
+        padding: 8px 10px !important;
+        font-size: 0 !important; /* hide text */
+        gap: 0 !important;
+    }
+
+        .cc-landing .nav .nav-actions .btn-primary i {
+            font-size: 15px !important;
+            margin: 0 !important;
+        }
+
+    /* Hide the theme toggle in the navbar — it's in the drawer */
+    .cc-landing .nav .nav-theme-toggle {
+        display: none !important;
+    }
+
+    .cc-landing .nav .nav-inner {
+        padding: 6px 8px 6px 12px !important;
+    }
+}
+
+/* ── ≤ 380px: very small phones (iPhone SE) ── */
+@media (max-width: 380px) {
+    .cc-landing .nav .brand-name span {
+        /* Hide "Campus" only, keep "Cash" + logo */
+        display: none !important;
+    }
+
+    .cc-landing .nav .brand-name::after {
+        content: "Campus";
+        color: #6d4aff;
+        font-weight: 700;
+        background: linear-gradient(115deg, #7b5ce7 0%, #9b6fd8 35%, #d4799f 75%, #e8a3a8 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 15px;
+        display: inline;
+    }
+
+    .cc-landing .nav .brand {
+        gap: 6px !important;
+    }
+
+    .cc-landing .nav .brand-mark {
+        width: 28px !important;
+        height: 28px !important;
+    }
+}
+
+/* ── Ensure the pill never clips the hamburger ── */
+.cc-landing .nav-inner {
+    overflow: visible !important;
+    flex-wrap: nowrap !important;
+}
+/* ════════════════════════════════════════════════════════════
+   MOBILE DRAWER — DARK MODE BUTTON + THEME TOGGLE FIX
+   The drawer footer buttons had light backgrounds with white
+   text, making them invisible. Also styles the theme toggle
+   in the drawer header.
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Theme toggle (wide) inside the drawer ── */
+.cc-landing .nav-drawer .nav-theme-toggle-wide {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    height: 48px !important;
+    padding: 0 16px !important;
+    margin-bottom: 14px !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.55) !important;
+    border: 1px solid rgba(22, 11, 33, 0.08) !important;
+    color: #4b2568 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all .25s ease !important;
+}
+
+    .cc-landing .nav-drawer .nav-theme-toggle-wide:hover {
+        background: #fff !important;
+        box-shadow: 0 8px 20px -8px rgba(107, 58, 146, 0.25) !important;
+    }
+
+html.dark .cc-landing .nav-drawer .nav-theme-toggle-wide {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    color: #f5b544 !important;
+}
+
+    html.dark .cc-landing .nav-drawer .nav-theme-toggle-wide:hover {
+        background: rgba(255, 255, 255, 0.14) !important;
+    }
+
+/* Position the two icons inline (not absolutely) in the wide variant */
+.cc-landing .nav-drawer .nav-theme-toggle-wide [data-theme-icon] {
+    position: static !important;
+    transform: none !important;
+    opacity: 1 !important;
+    font-size: 18px !important;
+    transition: none !important;
+}
+
+/* Show the correct label per theme */
+.cc-landing .nav-drawer .nav-theme-toggle-wide .theme-label-dark {
+    display: none !important;
+}
+
+html.dark .cc-landing .nav-drawer .nav-theme-toggle-wide .theme-label-light {
+    display: none !important;
+}
+
+html.dark .cc-landing .nav-drawer .nav-theme-toggle-wide .theme-label-dark {
+    display: inline !important;
+}
+
+/* ══════════ Drawer footer buttons — light mode ══════════ */
+.cc-landing .nav-drawer .nav-drawer-foot .btn-ghost {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border: 1px solid rgba(22, 11, 33, 0.1) !important;
+    color: #241232 !important;
+    font-weight: 600 !important;
+    justify-content: center !important;
+}
+
+    .cc-landing .nav-drawer .nav-drawer-foot .btn-ghost:hover {
+        background: #fff !important;
+        box-shadow: 0 6px 16px -8px rgba(107, 58, 146, 0.25) !important;
+    }
+
+.cc-landing .nav-drawer .nav-drawer-foot .btn-primary {
+    background: linear-gradient(135deg, #8b6ff0, #6d4aff) !important;
+    color: #fff !important;
+    border: 1px solid rgba(109, 74, 255, 0.9) !important;
+    font-weight: 700 !important;
+    justify-content: center !important;
+    box-shadow: 0 10px 24px -8px rgba(109, 74, 255, 0.55) !important;
+}
+
+    .cc-landing .nav-drawer .nav-drawer-foot .btn-primary:hover {
+        background: linear-gradient(135deg, #9a7dff, #7b5ce7) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 16px 32px -10px rgba(109, 74, 255, 0.75) !important;
+    }
+
+/* ══════════ Drawer footer buttons — dark mode ══════════ */
+html.dark .cc-landing .nav-drawer .nav-drawer-foot .btn-ghost {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    color: #f5f1fa !important;
+}
+
+    html.dark .cc-landing .nav-drawer .nav-drawer-foot .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.12) !important;
+        border-color: rgba(255, 255, 255, 0.22) !important;
+        box-shadow: 0 6px 16px -8px rgba(155, 111, 216, 0.4) !important;
+    }
+
+html.dark .cc-landing .nav-drawer .nav-drawer-foot .btn-primary {
+    background: linear-gradient(135deg, #a486e0, #7b5ce7) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(196, 174, 224, 0.35) !important;
+    box-shadow: 0 10px 24px -8px rgba(155, 111, 216, 0.65) !important;
+}
+
+    html.dark .cc-landing .nav-drawer .nav-drawer-foot .btn-primary:hover {
+        background: linear-gradient(135deg, #b39ae8, #8b6ff0) !important;
+        box-shadow: 0 16px 32px -10px rgba(155, 111, 216, 0.85) !important;
+    }
+
+/* ══════════ Drawer panel — ensure proper dark background ══════════ */
+html.dark .cc-landing .nav-drawer-panel {
+    background: #0f0820 !important;
+}
+
+    html.dark .cc-landing .nav-drawer-panel .brand-name b {
+        color: #ffffff !important;
+    }
+
+    html.dark .cc-landing .nav-drawer-panel .brand-name span {
+        background: linear-gradient(115deg, #a78bfa 0%, #c084fc 45%, #f0a3c4 100%) !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        color: transparent !important;
+        -webkit-text-fill-color: transparent !important;
+    }
+
+/* ══════════ Drawer links — visible in both themes ══════════ */
+html.dark .cc-landing .nav-drawer-link {
+    color: rgba(255, 255, 255, 0.78) !important;
+}
+
+    html.dark .cc-landing .nav-drawer-link:hover {
+        background: rgba(255, 255, 255, 0.06) !important;
+        color: #ffffff !important;
+    }
+
+    html.dark .cc-landing .nav-drawer-link i {
+        color: #c4aee0 !important;
+    }
+
+/* ══════════ Drawer foot separator ══════════ */
+html.dark .cc-landing .nav-drawer-foot {
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ══════════ Close button ══════════ */
+html.dark .cc-landing .nav-drawer-close {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #f5f1fa !important;
+}
+
+    html.dark .cc-landing .nav-drawer-close:hover {
+        background: rgba(255, 255, 255, 0.12) !important;
+        transform: rotate(90deg) !important;
+    }
+/* ════════════════════════════════════════════════════════════
+   NAVBAR — proper mobile layout (keep button text!)
+   ════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+    .cc-landing .nav-links {
+        display: none !important;
+    }
+
+    .cc-landing .nav-toggle {
+        display: flex !important;
+    }
+}
+
+@media (max-width: 720px) {
+    .cc-landing .nav {
+        padding: 10px 12px !important;
+    }
+
+        .cc-landing .nav.scrolled {
+            padding: 8px 12px !important;
+        }
+
+    .cc-landing .nav-inner {
+        padding: 6px 8px 6px 12px !important;
+        gap: 8px !important;
+        border-radius: 18px !important;
+    }
+
+    .cc-landing .nav .brand {
+        gap: 8px !important;
+        font-size: 15px !important;
+    }
+
+    .cc-landing .nav .brand-mark {
+        width: 30px !important;
+        height: 30px !important;
+    }
+
+    .cc-landing .nav .brand-name b,
+    .cc-landing .nav .brand-name span {
+        font-size: 15px !important;
+    }
+
+    .cc-landing .nav-actions {
+        gap: 6px !important;
+        margin-left: auto !important;
+    }
+
+    .cc-landing .nav-theme-toggle {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 16px !important;
+        border-radius: 11px !important;
+    }
+
+    /* KEEP the "Get started" text — don't collapse to icon */
+    .cc-landing .nav .nav-actions .btn-primary {
+        padding: 8px 14px !important;
+        font-size: 12.5px !important;
+        gap: 5px !important;
+        border-radius: 11px !important;
+    }
+
+        .cc-landing .nav .nav-actions .btn-primary i {
+            font-size: 14px !important;
+        }
+
+    .cc-landing .nav-toggle {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 18px !important;
+        border-radius: 11px !important;
+    }
+}
+
+/* ── ≤ 400px: tighten brand so "CashCampus" reads as one word ── */
+@media (max-width: 400px) {
+    .cc-landing .nav .brand-name {
+        gap: 0 !important;
+    }
+
+        .cc-landing .nav .brand-name b,
+        .cc-landing .nav .brand-name span {
+            font-size: 14.5px !important;
+        }
+
+    .cc-landing .nav .brand {
+        gap: 7px !important;
+    }
+
+    .cc-landing .nav .nav-actions .btn-primary {
+        padding: 7px 12px !important;
+        font-size: 12px !important;
+    }
+}
+
+/* ── ≤ 360px: only now hide the button text ── */
+@media (max-width: 360px) {
+    .cc-landing .nav .nav-actions .btn-primary {
+        padding: 8px 11px !important;
+        font-size: 0 !important;
+        gap: 0 !important;
+    }
+
+        .cc-landing .nav .nav-actions .btn-primary i {
+            font-size: 15px !important;
+            margin: 0 !important;
+        }
+}
+
+/* ════════════════════════════════════════════════════════════
+   DRAWER — obvious close + "Close menu" button at bottom
+   ════════════════════════════════════════════════════════════ */
+
+/* Bigger, more obvious X in the drawer header */
+.cc-landing .nav-drawer .nav-drawer-close {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(22, 11, 33, 0.08) !important;
+    color: #241232 !important;
+    font-size: 20px !important;
+    display: grid !important;
+    place-items: center !important;
+    cursor: pointer !important;
+    transition: all .25s cubic-bezier(.22,1,.36,1) !important;
+}
+
+    .cc-landing .nav-drawer .nav-drawer-close:hover {
+        background: #fff !important;
+        transform: rotate(90deg) scale(1.05) !important;
+        box-shadow: 0 10px 24px -8px rgba(107, 58, 146, 0.35) !important;
+    }
+
+html.dark .cc-landing .nav-drawer .nav-drawer-close {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    color: #f5f1fa !important;
+}
+
+    html.dark .cc-landing .nav-drawer .nav-drawer-close:hover {
+        background: rgba(255, 255, 255, 0.14) !important;
+    }
+
+/* "Close menu" button at the bottom of the drawer */
+.cc-landing .nav-drawer .btn-close-drawer {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    padding: 12px 18px !important;
+    border-radius: 14px !important;
+    background: transparent !important;
+    border: 1.5px dashed rgba(22, 11, 33, 0.15) !important;
+    color: #4b2568 !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: -.005em !important;
+    cursor: pointer !important;
+    transition: all .22s cubic-bezier(.22,1,.36,1) !important;
+    margin-top: 6px !important;
+    font-family: inherit !important;
+}
+
+    .cc-landing .nav-drawer .btn-close-drawer:hover {
+        background: rgba(123, 92, 231, 0.06) !important;
+        border-color: rgba(123, 92, 231, 0.35) !important;
+        color: #6d4aff !important;
+        border-style: solid !important;
+    }
+
+    .cc-landing .nav-drawer .btn-close-drawer i {
+        font-size: 17px !important;
+        transition: transform .22s cubic-bezier(.22,1,.36,1) !important;
+    }
+
+    .cc-landing .nav-drawer .btn-close-drawer:hover i {
+        transform: translateX(-3px) !important;
+    }
+
+html.dark .cc-landing .nav-drawer .btn-close-drawer {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: #c4aee0 !important;
+}
+
+    html.dark .cc-landing .nav-drawer .btn-close-drawer:hover {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border-color: rgba(155, 111, 216, 0.45) !important;
+        color: #ffffff !important;
+    }
+
+/* ── Fix the wide theme toggle to show only ONE icon (current state) ── */
+.cc-landing .nav-drawer .nav-theme-toggle-wide [data-theme-icon="light"] {
+    display: inline !important;
+}
+
+.cc-landing .nav-drawer .nav-theme-toggle-wide [data-theme-icon="dark"] {
+    display: none !important;
+}
+
+html.dark .cc-landing .nav-drawer .nav-theme-toggle-wide [data-theme-icon="light"] {
+    display: none !important;
+}
+
+html.dark .cc-landing .nav-drawer .nav-theme-toggle-wide [data-theme-icon="dark"] {
+    display: inline !important;
+}
+/* ════════════════════════════════════════════════════════════
+   DRAWER — "Close menu" button + visible X + proper theme toggle
+   ════════════════════════════════════════════════════════════ */
+
+/* Bigger, more obvious X in the drawer header */
+.cc-landing .nav-drawer .nav-drawer-close {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(22, 11, 33, 0.08) !important;
+    color: #241232 !important;
+    font-size: 20px !important;
+    display: grid !important;
+    place-items: center !important;
+    cursor: pointer !important;
+    transition: all .25s cubic-bezier(.22,1,.36,1) !important;
+}
+
+    .cc-landing .nav-drawer .nav-drawer-close:hover {
+        background: #fff !important;
+        transform: rotate(90deg) scale(1.05) !important;
+        box-shadow: 0 10px 24px -8px rgba(107, 58, 146, 0.35) !important;
+    }
+
+html.dark .cc-landing .nav-drawer .nav-drawer-close {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    color: #f5f1fa !important;
+}
+
+    html.dark .cc-landing .nav-drawer .nav-drawer-close:hover {
+        background: rgba(255, 255, 255, 0.14) !important;
+    }
+
+/* "Close menu" button at the bottom of the drawer */
+.cc-landing .nav-drawer .btn-close-drawer {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    padding: 12px 18px !important;
+    border-radius: 14px !important;
+    background: transparent !important;
+    border: 1.5px dashed rgba(22, 11, 33, 0.15) !important;
+    color: #4b2568 !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: -.005em !important;
+    cursor: pointer !important;
+    transition: all .22s cubic-bezier(.22,1,.36,1) !important;
+    margin-top: 4px !important;
+    font-family: inherit !important;
+}
+
+    .cc-landing .nav-drawer .btn-close-drawer:hover {
+        background: rgba(123, 92, 231, 0.06) !important;
+        border-color: rgba(123, 92, 231, 0.35) !important;
+        color: #6d4aff !important;
+        border-style: solid !important;
+    }
+
+    .cc-landing .nav-drawer .btn-close-drawer i {
+        font-size: 17px !important;
+        transition: transform .22s cubic-bezier(.22,1,.36,1) !important;
+    }
+
+    .cc-landing .nav-drawer .btn-close-drawer:hover i {
+        transform: translateX(-3px) !important;
+    }
+
+html.dark .cc-landing .nav-drawer .btn-close-drawer {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: #c4aee0 !important;
+}
+
+    html.dark .cc-landing .nav-drawer .btn-close-drawer:hover {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border-color: rgba(155, 111, 216, 0.45) !important;
+        color: #ffffff !important;
+    }
+
+/* Drawer theme toggle — visible in both themes */
+html.dark .cc-landing .nav-drawer .nav-theme-toggle-wide {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    color: #f5b544 !important;
+}
+
+    html.dark .cc-landing .nav-drawer .nav-theme-toggle-wide:hover {
+        background: rgba(255, 255, 255, 0.12) !important;
+    }
+
+/* Drawer footer buttons — visible in dark mode */
+html.dark .cc-landing .nav-drawer .nav-drawer-foot {
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+    html.dark .cc-landing .nav-drawer .nav-drawer-foot .btn-ghost {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.14) !important;
+        color: #f5f1fa !important;
+    }
+
+        html.dark .cc-landing .nav-drawer .nav-drawer-foot .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+        }
+
+    html.dark .cc-landing .nav-drawer .nav-drawer-foot .btn-primary {
+        background: linear-gradient(135deg, #a486e0, #7b5ce7) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(196, 174, 224, 0.35) !important;
+        box-shadow: 0 10px 24px -8px rgba(155, 111, 216, 0.65) !important;
+    }
+
+        html.dark .cc-landing .nav-drawer .nav-drawer-foot .btn-primary:hover {
+            background: linear-gradient(135deg, #b39ae8, #8b6ff0) !important;
+        }
+/* ════════════════════════════════════════════════════════════
+   CTA BUTTONS — FIX oversized ovals on mobile
+   The earlier `flex: 1 1 220px` was making buttons 220px tall
+   in the column layout. Reset flex to natural height.
+   ════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+    .cc-landing .cta-actions {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 12px !important;
+    }
+
+        .cc-landing .cta-actions .btn {
+            flex: 0 1 auto !important; /* natural width, can shrink */
+            min-height: 0 !important;
+            height: auto !important;
+            align-self: auto !important;
+        }
+}
+
+@media (max-width: 640px) {
+    .cc-landing .cta-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+
+        .cc-landing .cta-actions .btn {
+            flex: 0 0 auto !important; /* ← KEY: don't stretch vertically */
+            width: 100% !important;
+            min-height: 48px !important; /* sensible tap target */
+            height: auto !important;
+            padding: 14px 22px !important;
+            justify-content: center !important;
+            align-self: auto !important;
+        }
+
+            .cc-landing .cta-actions .btn i {
+                font-size: 17px !important;
+                margin: 0 !important;
+            }
+}
+
+/* ── Also guard against any inherited min-height / padding issues ── */
+.cc-landing .cta .btn {
+    max-height: none !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.cc-landing .cta .btn-light,
+.cc-landing .cta .btn-ghost {
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+}
+
+/* ── On tiny phones, allow text to wrap if a button is long ── */
+@media (max-width: 400px) {
+    .cc-landing .cta .btn {
+        white-space: normal !important;
+        text-align: center !important;
+        font-size: 14px !important;
+        padding: 14px 18px !important;
+    }
+}
+@media (max-width: 440px) {
+    .cc-landing .nav .nav-actions .btn-primary {
+        padding: 7px 12px !important;
+        font-size: 12px !important;
+    }
+
+        .cc-landing .nav .nav-actions .btn-primary i {
+            font-size: 13px !important;
+        }
+
+    .cc-landing .nav .brand-name b,
+    .cc-landing .nav .brand-name span {
+        font-size: 14.5px !important;
+    }
+}

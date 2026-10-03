@@ -1,0 +1,1240 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "CampusCoin — Reports & Analytics";
+}
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <link rel="stylesheet" href="/css/admin-theme.css" />
+    <link rel="stylesheet" href="/css/cc-animations.css" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=4" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { 50:'#f6effc',100:'#ede4f6',400:'#a486e0',500:'#8b58b8',600:'#6b3a92' } },
+                    fontFamily: { sans: ['Plus Jakarta Sans','-apple-system','BlinkMacSystemFont','Inter','Segoe UI','Roboto','sans-serif'] }
+                }
+            }
+        };
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        * {
+            transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, color 0.3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #fbf6f0;
+            background-image: radial-gradient(at 0% 0%, rgba(237, 228, 246, 0.9) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(196, 174, 224, 0.85) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(255, 225, 230, 0.85) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(246, 239, 252, 0.9) 0px, transparent 50%), radial-gradient(at 50% 50%, rgba(212, 243, 228, 0.4) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+            body.dark-mesh {
+                background-color: #100a1a;
+                background-image: radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.28) 0px, transparent 50%), radial-gradient(at 90% 10%, rgba(168, 85, 247, 0.22) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(107, 58, 146, 0.28) 0px, transparent 50%), radial-gradient(at 10% 90%, rgba(236, 72, 153, 0.2) 0px, transparent 50%);
+                background-attachment: fixed;
+            }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+            animation: floatOrb 18s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(192, 132, 252, 0.4);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 480px;
+            height: 480px;
+            background: rgba(139, 88, 184, 0.45);
+            top: 30%;
+            right: -120px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: rgba(251, 113, 133, 0.35);
+            bottom: -100px;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @@keyframes floatOrb {
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+
+            50% {
+                transform: translate(40px, 60px) scale(1.08);
+            }
+
+            100% {
+                transform: translate(-30px, 30px) scale(0.95);
+            }
+        }
+
+        .ios-glass {
+            backdrop-filter: blur(32px) saturate(240%);
+            -webkit-backdrop-filter: blur(32px) saturate(240%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light .ios-glass {
+            background: rgba(255,255,255,.72);
+            border: 1.5px solid rgba(255,255,255,.95);
+            box-shadow: 0 20px 40px -12px rgba(107,58,146,.12), 0 4px 16px -2px rgba(0,0,0,.04);
+            color: #0f172a;
+        }
+
+        .dark .ios-glass {
+            background: rgba(18,24,38,.58);
+            border: 1px solid rgba(255,255,255,.15);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,.45);
+            color: #f8fafc;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            bottom: 20px;
+            width: 260px;
+            z-index: 100;
+            border-radius: 30px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(0);
+            transition: transform .35s ease;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 6px 22px;
+        }
+
+        .brand-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            background: linear-gradient(135deg, #a486e0, #8b58b8, #6366f1);
+            box-shadow: 0 12px 25px rgba(107,58,146,.28);
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-sub {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .16em;
+            opacity: .45;
+            margin-top: 3px;
+        }
+
+        .nav-section {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .15em;
+            font-weight: 800;
+            opacity: .4;
+            padding: 14px 10px 7px;
+        }
+
+        .nav {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            margin: 4px 0;
+            border-radius: 15px;
+            text-decoration: none;
+            color: inherit;
+            font-size: 12px;
+            font-weight: 650;
+            transition: all .25s ease;
+        }
+
+            .nav-link i {
+                width: 20px;
+                text-align: center;
+                opacity: .55;
+            }
+
+            .nav-link:hover {
+                background: rgba(255,255,255,.30);
+                transform: translateX(3px);
+            }
+
+        .dark .nav-link:hover {
+            background: rgba(255,255,255,.06);
+        }
+
+        .nav-link.active {
+            color: #6b3a92;
+            background: linear-gradient(135deg, rgba(139,88,184,.18), rgba(99,102,241,.14));
+            box-shadow: inset 0 0 0 1px rgba(139,88,184,.15), 0 10px 25px rgba(107,58,146,.08);
+        }
+
+        .dark .nav-link.active {
+            color: #c4aee0;
+            background: rgba(139,88,184,.10);
+        }
+
+        .admin-mini {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 11px;
+            border-radius: 18px;
+            background: rgba(255,255,255,.30);
+            border: 1px solid rgba(255,255,255,.35);
+        }
+
+        .dark .admin-mini {
+            background: rgba(255,255,255,.04);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b58b8, #6366f1);
+        }
+
+        .main {
+            margin-left: 300px;
+            padding: 20px 25px 40px 0;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 70px;
+            border-radius: 25px;
+            padding: 10px 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 20px;
+            z-index: 80;
+        }
+
+        .search {
+            flex: 1;
+            max-width: 450px;
+            position: relative;
+        }
+
+            .search i {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                opacity: .4;
+                font-size: 12px;
+            }
+
+            .search input {
+                width: 100%;
+                border: none;
+                outline: none;
+                padding: 11px 15px 11px 42px;
+                border-radius: 16px;
+                background: rgba(255,255,255,.38);
+                color: inherit;
+                font-size: 12px;
+                border: 1px solid rgba(255,255,255,.50);
+            }
+
+        .dark .search input {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(255,255,255,.36);
+            color: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dark .action-btn {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .glass-btn {
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(255,255,255,.38);
+            color: inherit;
+            border-radius: 14px;
+            padding: 9px 14px;
+            font-size: 11px;
+            font-weight: 750;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dark .glass-btn {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .primary-btn {
+            color: white;
+            border: none;
+            background: linear-gradient(135deg, #a486e0, #8b58b8, #6366f1);
+            box-shadow: 0 10px 22px rgba(107,58,146,.20);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .kpi {
+            min-height: 120px;
+            padding: 18px;
+            border-radius: 22px;
+        }
+
+        .kpi-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139,88,184,.13);
+            color: #6b3a92;
+            margin-bottom: 10px;
+        }
+
+        #toastContainer {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .toast {
+            min-width: 250px;
+            padding: 12px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-input {
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.38);
+            border: 1px solid rgba(255,255,255,.55);
+            color: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            outline: none;
+        }
+
+        .dark .filter-input {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.1);
+        }
+
+        @@media(max-width:1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+
+        @@media(max-width:950px) {
+            .sidebar {
+                transform: translateX(-120%);
+            }
+
+                .sidebar.open {
+                    transform: translateX(0);
+                }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
+
+        @@media(max-width:700px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+        #profileDropdown.dropdown { z-index: 99999 !important; }
+        .topbar, .top-actions, header { overflow: visible !important; }
+        .dropdown:not(.show) { display: none !important; opacity: 0 !important; pointer-events: none !important; }
+        .dropdown.show { display: block !important; opacity: 1 !important; pointer-events: auto !important; visibility: visible !important; }
+        </style>
+    <link rel="stylesheet" href="/css/cc-header-widgets.css" asp-append-version="true" />
+</head>
+
+<body class="light min-h-screen text-slate-900 dark:text-slate-100 font-sans">
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div id="mobileOverlay" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-90 hidden" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar ios-glass">
+                <div class="brand cc-brand-block">
+            <div class="brand-logo cc-brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 44 44" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="ccCoinBG_ad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#6b3a92"/><stop offset="1" stop-color="#241232"/>
+                        </linearGradient>
+                        <linearGradient id="ccCoinAccent_ad" x1="10" y1="10" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#d4ff3d"/><stop offset="1" stop-color="#10b981"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="22" cy="22" r="21" fill="url(#ccCoinBG_ad)"/>
+                    <circle cx="22" cy="22" r="16.5" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1" stroke-dasharray="1.5 3"/>
+                    <path d="M28.5 15c-1.9-2.2-4.7-3.5-7.8-3.5-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5c3.1 0 5.9-1.3 7.8-3.5" stroke="url(#ccCoinAccent_ad)" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                    <path d="M31 12c0 2.2-1.3 3.5-3.5 3.5 2.2 0 3.5 1.3 3.5 3.5 0-2.2 1.3-3.5 3.5-3.5-2.2 0-3.5-1.3-3.5-3.5z" fill="#d4ff3d"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-name cc-brand-title"><b>Cash</b><span>Campus</span></div>
+                <div class="brand-sub">ADMIN CONSOLE</div>
+            </div>
+        </div>
+
+                <nav class="nav">
+            <div class="nav-section">Overview</div>
+            <a href="/Admin/Index" class="nav-link"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a>
+            <a href="/Admin/Students" class="nav-link"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a>
+            <a href="/Admin/Transactions" class="nav-link"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Transactions</span></a>
+            <a href="/Admin/VoucherManagement" class="nav-link"><i class="fa-solid fa-receipt"></i><span>Voucher Management</span></a>
+            <div class="nav-section">Financial Management</div>
+            <a href="/Admin/Categories" class="nav-link"><i class="fa-solid fa-layer-group"></i><span>Categories</span></a>
+            <a href="/Admin/Budgets" class="nav-link"><i class="fa-solid fa-wallet"></i><span>Budgets</span></a>
+            <a href="/Admin/EventManager" class="nav-link"><i class="fa-solid fa-calendar-days"></i><span>Event Manager</span></a>
+            <a href="/Admin/SavingGoals" class="nav-link"><i class="fa-solid fa-bullseye"></i><span>Saving Goals</span></a>
+            <div class="nav-section">System</div>
+            <a href="/Admin/Notifications" class="nav-link"><i class="fa-solid fa-bell"></i><span>Notifications</span></a>
+            <a href="/Admin/Reports" class="nav-link active"><i class="fa-solid fa-chart-pie"></i><span>Reports & Analytics</span></a>
+            <a href="/Admin/HomepageCms" class="nav-link"><i class="fa-solid fa-pager"></i><span>Homepage CMS</span></a>
+            <a href="/Admin/Settings" class="nav-link"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+        </nav>
+
+        <div class="admin-mini">
+            <div class="admin-avatar">AK</div>
+            <div class="flex-1 min-w-0">
+                <div class="text-[11px] font-bold">Admin</div>
+                <div class="text-[9px] opacity-45">System Administrator</div>
+            </div>
+        </div>
+        <a href="/Auth/Logout" style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-top:8px;border-radius:12px;font-size:13px;font-weight:700;color:#e11d48;text-decoration:none;">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main" id="reportContainer">
+
+        <header class="topbar ios-glass">
+            <button class="action-btn lg:hidden" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="globalSearch" type="text" placeholder="Search report metrics..." autocomplete="off">
+            </div>
+
+            <div class="top-actions">
+                <button class="glass-btn primary-btn" onclick="exportPDF()">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Export PDF</span>
+                </button>
+                <button class="glass-btn" onclick="exportCSV()">
+                    <i class="fa-solid fa-file-csv"></i>
+                    <span>Export CSV</span>
+                </button>
+                <button class="glass-btn" onclick="exportImage()">
+                    <i class="fa-solid fa-image"></i>
+                    <span>PNG</span>
+                </button>
+                <button class="action-btn" onclick="toggleTheme()">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+                <div class="dropdown-wrap" style="position:relative;overflow:visible;">
+                    <button type="button" class="action-btn" onclick="toggleDropdown('profileDropdown')" title="Account" style="display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:14px;">
+                        <span style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#a486e0,#6366f1);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;">AD</span>
+                        <span class="hidden sm:inline" style="font-size:12px;font-weight:700;">Admin</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size:9px;opacity:.5;"></i>
+                    </button>
+                    <div id="profileDropdown" class="dropdown" style="display:none !important;position:absolute;right:0;top:calc(100% + 10px);min-width:200px;z-index:99999;padding:8px;border-radius:16px;background:#fff;border:1px solid rgba(22,11,33,.1);box-shadow:0 18px 40px rgba(22,11,33,.14);">
+                        <a href="/Admin/Settings" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:#1a1420;"><i class="fa-regular fa-user"></i> My Profile</a>
+                        <a href="/Admin/Settings" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;color:#1a1420;"><i class="fa-solid fa-gear"></i> Settings</a>
+                        <button type="button" onclick="logoutAdmin()" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;width:100%;border:0;background:transparent;cursor:pointer;color:#fb7185;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="mt-7 mb-5 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <div class="text-purple-600 text-[9px] font-extrabold uppercase tracking-widest mb-1">Financial Intelligence Center</div>
+                <h1 class="text-3xl lg:text-4xl font-black tracking-tight">Reports & Analytics</h1>
+                <p class="text-xs opacity-50 mt-1">Detailed evaluation of campus transactions, budgets, activity, and health indicators.</p>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <select id="timeframeSelect" onchange="clearDateRange(); loadReports()" class="filter-input">
+                    <option value="month">This Month</option>
+                    <option value="quarter">Last Quarter</option>
+                    <option value="year">Year to Date</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- FILTER BAR -->
+        <section class="ios-glass p-4 rounded-2xl mb-4">
+            <div class="flex flex-wrap items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-black uppercase opacity-60">From</span>
+                    <input id="dateFrom" type="date" onchange="loadReports()" class="filter-input">
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-black uppercase opacity-60">To</span>
+                    <input id="dateTo" type="date" onchange="loadReports()" class="filter-input">
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-black uppercase opacity-60">Category</span>
+                    <select id="categoryFilter" onchange="loadReports()" class="filter-input">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <button onclick="resetFilters()" class="glass-btn">
+                    <i class="fa-solid fa-filter-circle-xmark"></i>
+                    <span>Reset</span>
+                </button>
+                <span id="filterLabel" class="text-[10px] font-bold opacity-50 ml-auto"></span>
+            </div>
+        </section>
+
+        <!-- TABS -->
+        <section class="ios-glass p-3 rounded-2xl mb-6">
+            <div class="flex flex-wrap gap-1.5 text-xs font-bold">
+                <button onclick="switchTab('all')" id="tab-all" class="px-3.5 py-2 rounded-xl bg-purple-600 text-white shadow-md">All Analytics</button>
+                <button onclick="switchTab('income')" id="tab-income" class="px-3.5 py-2 rounded-xl bg-slate-500/10 opacity-70 hover:opacity-100">Income Report</button>
+                <button onclick="switchTab('expense')" id="tab-expense" class="px-3.5 py-2 rounded-xl bg-slate-500/10 opacity-70 hover:opacity-100">Expense Report</button>
+                <button onclick="switchTab('category')" id="tab-category" class="px-3.5 py-2 rounded-xl bg-slate-500/10 opacity-70 hover:opacity-100">Category Report</button>
+                <button onclick="switchTab('activity')" id="tab-activity" class="px-3.5 py-2 rounded-xl bg-slate-500/10 opacity-70 hover:opacity-100">Student Activity</button>
+                <button onclick="switchTab('budget')" id="tab-budget" class="px-3.5 py-2 rounded-xl bg-slate-500/10 opacity-70 hover:opacity-100">Budget vs Actual</button>
+                <button onclick="switchTab('savings')" id="tab-savings" class="px-3.5 py-2 rounded-xl bg-slate-500/10 opacity-70 hover:opacity-100">Saving Trends</button>
+                <button onclick="switchTab('health')" id="tab-health" class="px-3.5 py-2 rounded-xl bg-slate-500/10 opacity-70 hover:opacity-100">Financial Health</button>
+            </div>
+        </section>
+
+        <!-- KPI -->
+        <section class="kpi-grid mb-6">
+            <div class="kpi ios-glass">
+                <div class="kpi-icon text-emerald-500"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                <div class="text-[10px] opacity-50 font-bold">Total Inflow / Income</div>
+                <div class="text-2xl font-black mt-1" id="kpiIncome">Rs. 0</div>
+            </div>
+            <div class="kpi ios-glass">
+                <div class="kpi-icon text-rose-500"><i class="fa-solid fa-receipt"></i></div>
+                <div class="text-[10px] opacity-50 font-bold">Total Outflow / Expenses</div>
+                <div class="text-2xl font-black mt-1" id="kpiExpense">Rs. 0</div>
+            </div>
+            <div class="kpi ios-glass">
+                <div class="kpi-icon text-purple-600"><i class="fa-solid fa-piggy-bank"></i></div>
+                <div class="text-[10px] opacity-50 font-bold">Total Savings</div>
+                <div class="text-2xl font-black mt-1" id="kpiSavings">Rs. 0</div>
+            </div>
+            <div class="kpi ios-glass">
+                <div class="kpi-icon text-purple-500"><i class="fa-solid fa-heart-pulse"></i></div>
+                <div class="text-[10px] opacity-50 font-bold">Avg Campus Health Score</div>
+                <div class="text-2xl font-black mt-1" id="kpiHealth">0 / 100</div>
+            </div>
+        </section>
+
+        <!-- WEEKLY SUMMARY + MOST-USED CARDS -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="ios-glass p-5 rounded-[28px]">
+                <h3 class="font-black text-sm mb-1">This Week Summary</h3>
+                <p class="text-[10px] opacity-45 mb-4" id="weekRange">—</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="rounded-2xl p-3 bg-emerald-500/10">
+                        <p class="text-[9px] uppercase font-black text-emerald-600 dark:text-emerald-400">Income</p>
+                        <p class="text-lg font-black mt-1 text-emerald-600 dark:text-emerald-400" id="weekIncome">Rs. 0</p>
+                    </div>
+                    <div class="rounded-2xl p-3 bg-rose-500/10">
+                        <p class="text-[9px] uppercase font-black text-rose-600 dark:text-rose-400">Expense</p>
+                        <p class="text-lg font-black mt-1 text-rose-600 dark:text-rose-400" id="weekExpense">Rs. 0</p>
+                    </div>
+                    <div class="rounded-2xl p-3 bg-purple-600/10">
+                        <p class="text-[9px] uppercase font-black text-purple-700 dark:text-purple-400">Net</p>
+                        <p class="text-lg font-black mt-1 text-purple-700 dark:text-purple-400" id="weekNet">Rs. 0</p>
+                    </div>
+                    <div class="rounded-2xl p-3 bg-indigo-500/10">
+                        <p class="text-[9px] uppercase font-black text-indigo-600 dark:text-indigo-400">Transactions</p>
+                        <p class="text-lg font-black mt-1 text-indigo-600 dark:text-indigo-400" id="weekCount">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ios-glass p-5 rounded-[28px]">
+                <h3 class="font-black text-sm mb-1">Most-Used Categories</h3>
+                <p class="text-[10px] opacity-45 mb-4">Top 5 by transaction count</p>
+                <div id="mostUsedList" class="space-y-2"></div>
+            </div>
+        </section>
+
+        <!-- CHARTS -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8" id="chartsContainer">
+
+            <div class="ios-glass p-5 rounded-[28px] report-card" data-cat="income">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <h3 class="font-black text-sm">Income Growth Report</h3>
+                        <p class="text-[10px] opacity-45">Monthly income vs expense (last 6 months)</p>
+                    </div>
+                </div>
+                <div class="h-[220px]"><canvas id="incomeChart"></canvas></div>
+            </div>
+
+            <div class="ios-glass p-5 rounded-[28px] report-card" data-cat="expense">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <h3 class="font-black text-sm">Expense Analysis</h3>
+                        <p class="text-[10px] opacity-45">Outflow by category</p>
+                    </div>
+                </div>
+                <div class="h-[220px]"><canvas id="expenseChart"></canvas></div>
+            </div>
+
+            <div class="ios-glass p-5 rounded-[28px] report-card" data-cat="category">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <h3 class="font-black text-sm">Category Spending Share</h3>
+                        <p class="text-[10px] opacity-45">Proportional breakdown</p>
+                    </div>
+                </div>
+                <div class="h-[220px]"><canvas id="categoryChart"></canvas></div>
+            </div>
+
+            <div class="ios-glass p-5 rounded-[28px] report-card" data-cat="activity">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <h3 class="font-black text-sm">Daily Transaction Activity</h3>
+                        <p class="text-[10px] opacity-45">Transactions across last 7 days</p>
+                    </div>
+                </div>
+                <div class="h-[220px]"><canvas id="activityChart"></canvas></div>
+            </div>
+
+            <div class="ios-glass p-5 rounded-[28px] report-card" data-cat="budget">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <h3 class="font-black text-sm">Budget vs Actual Variance</h3>
+                        <p class="text-[10px] opacity-45">Planned budget vs actual money spent</p>
+                    </div>
+                </div>
+                <div class="h-[220px]"><canvas id="budgetVsActualChart"></canvas></div>
+            </div>
+
+            <div class="ios-glass p-5 rounded-[28px] report-card" data-cat="savings">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <h3 class="font-black text-sm">Saving Accumulation Trends</h3>
+                        <p class="text-[10px] opacity-45">Cumulative savings over 6 months</p>
+                    </div>
+                </div>
+                <div class="h-[220px]"><canvas id="savingTrendsChart"></canvas></div>
+            </div>
+
+            <div class="ios-glass p-5 rounded-[28px] report-card lg:col-span-2" data-cat="health">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <h3 class="font-black text-sm">Financial Health Index Gauge</h3>
+                        <p class="text-[10px] opacity-45">Campus-wide safety score</p>
+                    </div>
+                    <div class="text-xs font-bold text-purple-600" id="healthStatusText">Status: —</div>
+                </div>
+                <div class="h-[220px] flex justify-center"><canvas id="healthChart"></canvas></div>
+            </div>
+        </section>
+
+        <!-- TABLE -->
+        <section class="ios-glass p-6 rounded-[28px]">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-black text-sm">Detailed Category Analytics Summary</h3>
+                <span class="text-[10px] opacity-40">Updated Live</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="border-b border-slate-500/20 opacity-50 font-bold">
+                            <th class="pb-3">Category</th>
+                            <th class="pb-3">Budgeted</th>
+                            <th class="pb-3">Actual Spent</th>
+                            <th class="pb-3">Variance</th>
+                            <th class="pb-3">Health Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoryTableBody" class="divide-y divide-slate-500/10 font-medium"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        let charts = {};
+        let currentTab = "all";
+        let cachedData = null;
+        const REPORT_API = "/api/admin/reports";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initializeTheme();
+            loadReports();
+        });
+
+        /* ========== LOAD ========== */
+        async function loadReports() {
+            const tf = document.getElementById("timeframeSelect").value;
+            const df = document.getElementById("dateFrom").value;
+            const dt = document.getElementById("dateTo").value;
+            const cat = document.getElementById("categoryFilter").value;
+
+            const params = new URLSearchParams();
+            params.append("timeframe", tf);
+            if (df) params.append("dateFrom", df);
+            if (dt) params.append("dateTo", dt);
+            if (cat) params.append("categoryId", cat);
+
+            try {
+                const res = await fetch(`${REPORT_API}?${params.toString()}`, { credentials: "same-origin" });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                cachedData = await res.json();
+
+                renderKPIs(cachedData.summary);
+                renderWeeklySummary(cachedData.weeklySummary);
+                renderMostUsed(cachedData.mostUsedCategories || []);
+                populateCategoryDropdown(cachedData.allCategories || []);
+                renderAllCharts(cachedData);
+                renderCategoryTable(cachedData.categoryTable || []);
+
+                // filter label
+                if (cachedData.filter) {
+                    document.getElementById("filterLabel").innerText =
+                        `${cachedData.filter.fromDate} → ${cachedData.filter.toDate}`;
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("Load failed: " + err.message);
+            }
+        }
+
+        function renderKPIs(s) {
+            document.getElementById("kpiIncome").innerText  = "$" + fmt(s.totalIncome);
+            document.getElementById("kpiExpense").innerText = "$" + fmt(s.totalExpense);
+            document.getElementById("kpiSavings").innerText = "$" + fmt(s.savings);
+            document.getElementById("kpiHealth").innerText  = (s.avgHealth || 0) + " / 100";
+
+            const h = s.avgHealth || 0;
+            const st = document.getElementById("healthStatusText");
+            if (h >= 80) st.innerText = "Status: Optimal";
+            else if (h >= 60) st.innerText = "Status: Moderate";
+            else st.innerText = "Status: At Risk";
+        }
+
+        function renderWeeklySummary(w) {
+            document.getElementById("weekRange").innerText = `${w.weekStart} → ${w.weekEnd}`;
+            document.getElementById("weekIncome").innerText  = "$" + fmt(w.weeklyIncome);
+            document.getElementById("weekExpense").innerText = "$" + fmt(w.weeklyExpense);
+            document.getElementById("weekNet").innerText     = "$" + fmt(w.weeklyNet);
+            document.getElementById("weekCount").innerText   = w.weeklyCount;
+        }
+
+        function renderMostUsed(list) {
+            const el = document.getElementById("mostUsedList");
+            el.innerHTML = "";
+            if (!list.length) {
+                el.innerHTML = `<p class="text-xs opacity-50 text-center py-4">No data</p>`;
+                return;
+            }
+            const palette = ['#a486e0','#8b58b8','#6366f1','#a78bfa','#22d3ee'];
+            list.forEach((c, i) => {
+                const row = document.createElement("div");
+                row.className = "flex items-center gap-3";
+                row.innerHTML = `
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-black text-white shrink-0" style="background:${palette[i % palette.length]}">${i+1}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-xs font-black truncate">${c.name}</span>
+                            <span class="text-[10px] font-bold opacity-60">${c.count} txns</span>
+                        </div>
+                        <div class="h-1.5 rounded-full bg-slate-500/20 overflow-hidden">
+                            <div class="h-full rounded-full" style="width:${(c.count/list[0].count)*100}%;background:${palette[i % palette.length]}"></div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-bold opacity-50 shrink-0">Rs. ${fmt(c.volume)}</span>`;
+                el.appendChild(row);
+            });
+        }
+
+        function populateCategoryDropdown(cats) {
+            const sel = document.getElementById("categoryFilter");
+            const cur = sel.value;
+            sel.innerHTML = `<option value="">All Categories</option>`;
+            cats.forEach(c => {
+                const o = document.createElement("option");
+                o.value = c.categoryId;
+                o.textContent = `${c.name} (${c.type})`;
+                sel.appendChild(o);
+            });
+            sel.value = cur;
+        }
+
+        function fmt(n) {
+            return Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        /* ========== CHARTS ========== */
+        function renderAllCharts(d) {
+            Object.values(charts).forEach(c => { try { c.destroy(); } catch {} });
+            charts = {};
+
+            const grid = document.documentElement.classList.contains("dark")
+                ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)";
+
+            charts.income = new Chart(document.getElementById("incomeChart"), {
+                type: 'bar',
+                data: {
+                    labels: d.incomeTrend.labels,
+                    datasets: [
+                        { label: 'Income (Rs.)',  data: d.incomeTrend.income,  backgroundColor: '#10b981', borderRadius: 8 },
+                        { label: 'Expense (Rs.)', data: d.incomeTrend.expense, backgroundColor: '#f43f5e', borderRadius: 8 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+                    scales: { y: { grid: { color: grid }, beginAtZero: true }, x: { grid: { display: false } } } }
+            });
+
+            charts.expense = new Chart(document.getElementById("expenseChart"), {
+                type: 'doughnut',
+                data: {
+                    labels: d.categoryBreakdown.labels,
+                    datasets: [{ data: d.categoryBreakdown.values, backgroundColor: d.categoryBreakdown.colors, borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } } }
+            });
+
+            charts.category = new Chart(document.getElementById("categoryChart"), {
+                type: 'pie',
+                data: {
+                    labels: d.categoryBreakdown.labels,
+                    datasets: [{ data: d.categoryBreakdown.values, backgroundColor: d.categoryBreakdown.colors, borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } }
+            });
+
+            charts.activity = new Chart(document.getElementById("activityChart"), {
+                type: 'line',
+                data: {
+                    labels: d.studentActivity.labels,
+                    datasets: [{ label: 'Transactions', data: d.studentActivity.data,
+                        borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.15)', fill: true, tension: 0.35 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { grid: { color: grid }, beginAtZero: true }, x: { grid: { display: false } } } }
+            });
+
+            charts.budget = new Chart(document.getElementById("budgetVsActualChart"), {
+                type: 'bar',
+                data: {
+                    labels: d.budgetVsActual.labels,
+                    datasets: [
+                        { label: 'Budgeted',     data: d.budgetVsActual.planned, backgroundColor: 'rgba(107,58,146,0.4)', borderRadius: 6 },
+                        { label: 'Actual Spent', data: d.budgetVsActual.actual,  backgroundColor: '#8b58b8', borderRadius: 6 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+                    scales: { y: { grid: { color: grid }, beginAtZero: true }, x: { grid: { display: false } } } }
+            });
+
+            charts.savings = new Chart(document.getElementById("savingTrendsChart"), {
+                type: 'line',
+                data: {
+                    labels: d.savingTrends.labels,
+                    datasets: [{ label: 'Cumulative Savings (Rs.)', data: d.savingTrends.data,
+                        borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.15)', fill: true, tension: 0.4 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { grid: { color: grid }, beginAtZero: true }, x: { grid: { display: false } } } }
+            });
+
+            const healthVal = d.summary.avgHealth || 0;
+            const healthColor = healthVal >= 80 ? '#10b981' : healthVal >= 60 ? '#f59e0b' : '#f43f5e';
+
+            charts.health = new Chart(document.getElementById("healthChart"), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Health Score', 'Risk Margin'],
+                    datasets: [{ data: [healthVal, Math.max(0, 100 - healthVal)],
+                        backgroundColor: [healthColor, 'rgba(150,150,150,0.2)'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false,
+                    rotation: -90, circumference: 180,
+                    plugins: { legend: { display: false } } }
+            });
+        }
+
+        function renderCategoryTable(rows) {
+            const tbody = document.getElementById("categoryTableBody");
+            tbody.innerHTML = "";
+            if (!rows.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center opacity-50 text-xs">No budget data available</td></tr>`;
+                return;
+            }
+            rows.forEach(r => {
+                const isHealthy = r.variance >= 0;
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td class="py-3 font-bold">${r.category}</td>
+                    <td>Rs. ${fmt(r.budgeted)}</td>
+                    <td>Rs. ${fmt(r.actual)}</td>
+                    <td class="${isHealthy ? 'text-emerald-500' : 'text-rose-500'}">${isHealthy ? '+' : '-'}Rs. ${fmt(Math.abs(r.variance))}</td>
+                    <td><span class="px-2 py-1 rounded-lg ${isHealthy ? 'bg-emerald-500/15 text-emerald-500' : 'bg-amber-500/15 text-amber-500'} text-[10px] font-bold">${r.status}</span></td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* ========== TABS ========== */
+        function switchTab(tab) {
+            currentTab = tab;
+            const tabs = ['all','income','expense','category','activity','budget','savings','health'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                btn.className = t === tab
+                    ? "px-3.5 py-2 rounded-xl bg-purple-600 text-white shadow-md font-bold"
+                    : "px-3.5 py-2 rounded-xl bg-slate-500/10 opacity-70 hover:opacity-100 font-bold";
+            });
+            document.querySelectorAll(".report-card").forEach(card => {
+                const cat = card.getAttribute("data-cat");
+                card.style.display = (tab === "all" || cat === tab) ? "block" : "none";
+            });
+            setTimeout(() => Object.values(charts).forEach(c => { try { c.resize(); } catch {} }), 50);
+        }
+
+        /* ========== FILTERS ========== */
+        function clearDateRange() {
+            document.getElementById("dateFrom").value = "";
+            document.getElementById("dateTo").value = "";
+        }
+        function resetFilters() {
+            document.getElementById("dateFrom").value = "";
+            document.getElementById("dateTo").value = "";
+            document.getElementById("categoryFilter").value = "";
+            document.getElementById("timeframeSelect").value = "month";
+            loadReports();
+            showToast("Filters reset");
+        }
+
+        /* ========== EXPORT CSV ========== */
+        function exportCSV() {
+            if (!cachedData) return showToast("No data loaded");
+
+            const rows = [];
+            rows.push(["CampusCoin Report Export"]);
+            rows.push(["Generated", new Date().toISOString().slice(0, 19).replace("T", " ")]);
+            if (cachedData.filter) rows.push(["Range", `${cachedData.filter.fromDate} to ${cachedData.filter.toDate}`]);
+            rows.push([]);
+
+            rows.push(["SUMMARY"]);
+            rows.push(["Total Income", cachedData.summary.totalIncome]);
+            rows.push(["Total Expense", cachedData.summary.totalExpense]);
+            rows.push(["Net Savings", cachedData.summary.savings]);
+            rows.push(["Avg Health", cachedData.summary.avgHealth]);
+            rows.push([]);
+
+            rows.push(["WEEKLY SUMMARY"]);
+            rows.push(["Week Start", cachedData.weeklySummary.weekStart]);
+            rows.push(["Week End", cachedData.weeklySummary.weekEnd]);
+            rows.push(["Weekly Income", cachedData.weeklySummary.weeklyIncome]);
+            rows.push(["Weekly Expense", cachedData.weeklySummary.weeklyExpense]);
+            rows.push(["Weekly Net", cachedData.weeklySummary.weeklyNet]);
+            rows.push(["Transaction Count", cachedData.weeklySummary.weeklyCount]);
+            rows.push([]);
+
+            rows.push(["MONTHLY INCOME/EXPENSE TREND"]);
+            rows.push(["Month", "Income", "Expense"]);
+            cachedData.incomeTrend.labels.forEach((l, i) => {
+                rows.push([l, cachedData.incomeTrend.income[i], cachedData.incomeTrend.expense[i]]);
+            });
+            rows.push([]);
+
+            rows.push(["CATEGORY BREAKDOWN"]);
+            rows.push(["Category", "Amount"]);
+            cachedData.categoryBreakdown.labels.forEach((l, i) => {
+                rows.push([l, cachedData.categoryBreakdown.values[i]]);
+            });
+            rows.push([]);
+
+            rows.push(["CATEGORY TABLE"]);
+            rows.push(["Category", "Budgeted", "Actual", "Variance", "Status"]);
+            cachedData.categoryTable.forEach(r => {
+                rows.push([r.category, r.budgeted, r.actual, r.variance, r.status]);
+            });
+            rows.push([]);
+
+            rows.push(["MOST-USED CATEGORIES"]);
+            rows.push(["Category", "Count", "Volume"]);
+            cachedData.mostUsedCategories.forEach(c => {
+                rows.push([c.name, c.count, c.volume]);
+            });
+
+            const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `campuscoin-report-${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("CSV downloaded");
+        }
+
+        /* ========== EXPORT PDF ========== */
+        function exportPDF() {
+            const el = document.getElementById("reportContainer");
+            const btns = el.querySelector(".top-actions");
+            if (btns) btns.style.display = "none";
+
+            showToast("Generating PDF...");
+
+            html2pdf().set({
+                margin: 8,
+                filename: `campuscoin-report-${new Date().toISOString().slice(0,10)}.pdf`,
+                image: { type: 'jpeg', quality: 0.95 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fbf6f0' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).from(el).save().then(() => {
+                if (btns) btns.style.display = "";
+                showToast("PDF downloaded");
+            }).catch(err => {
+                if (btns) btns.style.display = "";
+                showToast("PDF failed: " + err.message);
+            });
+        }
+
+        /* ========== EXPORT IMAGE ========== */
+        function exportImage() {
+            const el = document.getElementById("reportContainer");
+            const btns = el.querySelector(".top-actions");
+            if (btns) btns.style.display = "none";
+
+            showToast("Generating image...");
+
+            html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#fbf6f0' }).then(canvas => {
+                const a = document.createElement("a");
+                a.href = canvas.toDataURL("image/png");
+                a.download = `campuscoin-report-${new Date().toISOString().slice(0,10)}.png`;
+                a.click();
+                if (btns) btns.style.display = "";
+                showToast("Image downloaded");
+            }).catch(err => {
+                if (btns) btns.style.display = "";
+                showToast("Image failed: " + err.message);
+            });
+        }
+
+        /* ========== THEME ========== */
+        function toggleTheme() {
+            const html = document.documentElement;
+            const dark = html.classList.contains("dark");
+            if (dark) {
+                html.classList.remove("dark"); html.classList.add("light");
+                document.body.classList.remove("dark-mesh");
+                localStorage.setItem("campuscoin-admin-theme", "light");
+            } else {
+                html.classList.remove("light"); html.classList.add("dark");
+                document.body.classList.add("dark-mesh");
+                localStorage.setItem("campuscoin-admin-theme", "dark");
+            }
+            updateThemeIcon();
+            loadReports();
+        }
+        function initializeTheme() {
+            if (localStorage.getItem("campuscoin-admin-theme") === "dark") {
+                document.documentElement.classList.add("dark");
+                document.body.classList.add("dark-mesh");
+            }
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            document.getElementById("themeIcon").className = document.documentElement.classList.contains("dark") ? "fa-solid fa-sun text-amber-300" : "fa-solid fa-moon";
+        }
+
+        /* ========== SIDEBAR / TOAST ========== */
+        function toggleSidebar() { document.getElementById("sidebar").classList.toggle("open"); document.getElementById("mobileOverlay").classList.remove("hidden"); }
+        function closeSidebar() { document.getElementById("sidebar").classList.remove("open"); document.getElementById("mobileOverlay").classList.add("hidden"); }
+
+        function showToast(msg) {
+            const c = document.getElementById("toastContainer");
+            const t = document.createElement("div");
+            t.className = "toast ios-glass";
+            t.innerHTML = `<div class="w-7 h-7 rounded-lg bg-purple-600/10 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-check text-xs"></i></div><div class="text-[10px] font-bold">${msg}</div>`;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 2500);
+        }
+    </script>
+
+<script>
+(function(){
+  if (typeof window.toggleDropdown !== 'function') {
+    window.toggleDropdown = function(id){
+      const t = document.getElementById(id);
+      if (!t) return;
+      document.querySelectorAll('.dropdown').forEach(d => {
+        if (d.id !== id) { d.classList.remove('show'); d.style.display = 'none'; }
+      });
+      const open = !t.classList.contains('show');
+      t.classList.toggle('show', open);
+      t.style.display = open ? 'block' : 'none';
+    };
+    document.addEventListener('click', function(e){
+      if (!e.target.closest('.dropdown-wrap')) {
+        document.querySelectorAll('.dropdown').forEach(d => { d.classList.remove('show'); d.style.display = 'none'; });
+      }
+    });
+  }
+  if (typeof window.logoutAdmin !== 'function') {
+    window.logoutAdmin = function(){ window.location.href = '/Auth/Logout'; };
+  }
+  if (typeof window.quickAction !== 'function') {
+    window.quickAction = function(action){
+      document.querySelectorAll('.dropdown').forEach(d => { d.classList.remove('show'); d.style.display='none'; });
+      const routes = {
+        'Add Student': '/Admin/Students',
+        'View Transactions': '/Admin/Transactions',
+        'Send Notification': '/Admin/Notifications',
+        'Generate Report': '/Admin/Reports'
+      };
+      if (routes[action]) window.location.href = routes[action];
+    };
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  window.toggleDropdown = function(id){
+    document.querySelectorAll('.dropdown').forEach(function(d){
+      if(d.id !== id){ d.classList.remove('show'); d.style.setProperty('display','none','important'); }
+    });
+    var t = document.getElementById(id);
+    if(!t) return;
+    var open = !(t.classList.contains('show'));
+    if(open){ t.classList.add('show'); t.style.setProperty('display','block','important'); }
+    else { t.classList.remove('show'); t.style.setProperty('display','none','important'); }
+  };
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.dropdown-wrap')){
+      document.querySelectorAll('.dropdown').forEach(function(d){
+        d.classList.remove('show'); d.style.setProperty('display','none','important');
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

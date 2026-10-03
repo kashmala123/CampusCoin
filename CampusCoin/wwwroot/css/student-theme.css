@@ -1,0 +1,281 @@
+/* ============================================================
+   CampusCoin — Unified Student Panel Theme
+   Matches homepage paper / plum palette (#fbf6f0, plum tones)
+   ============================================================ */
+
+:root {
+  --cc-paper: #fbf6f0;
+  --cc-paper-2: #f3ecdf;
+  --cc-ink: #1a1420;
+  --cc-ink-2: #3d2f48;
+  --cc-muted: #7a6d7f;
+  --cc-line: rgba(22, 11, 33, 0.09);
+  --cc-plum-950: #160b21;
+  --cc-plum-900: #241232;
+  --cc-plum-700: #4b2568;
+  --cc-plum-600: #6b3a92;
+  --cc-plum-500: #8b58b8;
+  --cc-plum-300: #c4aee0;
+  --cc-plum-100: #ede4f6;
+  --cc-plum-50: #f6effc;
+  --cc-mint-600: #047857;
+  --cc-mint-500: #10b981;
+  --cc-mint-100: #d4f3e4;
+  --cc-coral-500: #f43f5e;
+  --cc-coral-100: #ffe1e6;
+  --cc-amber-500: #f59e0b;
+  --cc-amber-100: #fef3d4;
+  --cc-bg-light: #fbf6f0;
+  --cc-bg-dark: #100a1a;
+  --cc-text-light: #1a1420;
+  --cc-text-dark: #f8fafc;
+  --cc-brand-400: #a486e0;
+  --cc-brand-500: #8b58b8;
+  --cc-brand-600: #6b3a92;
+  --cc-brand-indigo: #7b5ce7;
+  --cc-radius: 16px;
+  --cc-radius-lg: 24px;
+  --cc-scrollbar: 8px;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 88, 184, 0.45) transparent;
+}
+::-webkit-scrollbar {
+  width: var(--cc-scrollbar);
+  height: var(--cc-scrollbar);
+}
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(196, 174, 224, 0.65), rgba(139, 88, 184, 0.5));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(139, 88, 184, 0.75), rgba(107, 58, 146, 0.65));
+  background-clip: padding-box;
+}
+.dark ::-webkit-scrollbar-thumb,
+html.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(196, 174, 224, 0.35), rgba(139, 88, 184, 0.3));
+  background-clip: padding-box;
+}
+
+body.light-mesh,
+body:not(.dark-mesh),
+html.light body {
+  background-color: var(--cc-paper) !important;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(237, 228, 246, 0.9) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(196, 174, 224, 0.85) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(255, 225, 230, 0.85) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(246, 239, 252, 0.9) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(212, 243, 228, 0.4) 0px, transparent 50%) !important;
+  background-attachment: fixed !important;
+  color: var(--cc-ink);
+}
+body.dark-mesh,
+html.dark body,
+.dark body {
+  background-color: var(--cc-bg-dark) !important;
+  background-image:
+    radial-gradient(at 10% 10%, rgba(139, 111, 240, 0.28) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(155, 111, 216, 0.22) 0px, transparent 50%),
+    radial-gradient(at 90% 90%, rgba(109, 74, 255, 0.28) 0px, transparent 50%),
+    radial-gradient(at 10% 90%, rgba(212, 121, 159, 0.2) 0px, transparent 50%) !important;
+  background-attachment: fixed !important;
+  color: var(--cc-text-dark);
+}
+
+.brand-logo,
+.cc-brand-mark {
+  background: linear-gradient(135deg, #8b58b8, #6b3a92, #4b2568) !important;
+  box-shadow: 0 12px 25px rgba(107, 58, 146, 0.28) !important;
+}
+.student-avatar,
+.user-avatar {
+  background: linear-gradient(135deg, #8b58b8, #6b3a92) !important;
+}
+
+.nav-link.active,
+.sidebar .nav-link.active,
+a.nav-link.active {
+  color: var(--cc-plum-600) !important;
+  background: linear-gradient(135deg, rgba(237, 228, 246, 0.95), rgba(196, 174, 224, 0.35)) !important;
+}
+.dark .nav-link.active,
+html.dark .nav-link.active {
+  color: #c4aee0 !important;
+  background: linear-gradient(135deg, rgba(139, 88, 184, 0.25), rgba(107, 58, 146, 0.18)) !important;
+}
+
+.topbar, .top-bar, .student-topbar {
+  overflow: visible !important;
+}
+body.light-mesh .dropdown,
+body:not(.dark-mesh) .dropdown {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border: 1px solid rgba(22, 11, 33, 0.1) !important;
+  color: var(--cc-ink) !important;
+  box-shadow: 0 18px 40px rgba(22, 11, 33, 0.12) !important;
+  z-index: 10060 !important;
+}
+body.light-mesh .dropdown .dropdown-item,
+body:not(.dark-mesh) .dropdown .dropdown-item {
+  color: var(--cc-ink) !important;
+}
+body.dark-mesh .dropdown,
+html.dark .dropdown {
+  background: rgba(28, 18, 42, 0.94) !important;
+  color: #e2e8f0 !important;
+}
+
+.btn-primary,
+.btn-brand,
+button.primary {
+  background: linear-gradient(135deg, #8b58b8, #6b3a92) !important;
+  border-color: transparent !important;
+}
+.btn-primary:hover,
+.btn-brand:hover {
+  background: linear-gradient(135deg, #6b3a92, #4b2568) !important;
+}
+
+.text-sky-500, .text-sky-600, .text-blue-500, .text-blue-600,
+.text-brand-500, .text-brand-600 {
+  color: var(--cc-plum-600) !important;
+}
+.dark .text-sky-400, .dark .text-sky-300 {
+  color: #c4aee0 !important;
+}
+
+.ios-glass {
+  backdrop-filter: blur(32px) saturate(240%);
+  -webkit-backdrop-filter: blur(32px) saturate(240%);
+}
+.light .ios-glass,
+html.light .ios-glass {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 20px 40px -12px rgba(107, 74, 255, 0.12), 0 4px 16px -2px rgba(0, 0, 0, 0.04) !important;
+  color: #1a0b2e !important;
+}
+.dark .ios-glass,
+html.dark .ios-glass {
+  background: rgba(28, 18, 42, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #f8fafc !important;
+}
+
+.sidebar-logout-btn {
+  color: #e11d48 !important;
+  background: rgba(225, 29, 72, 0.08) !important;
+}
+.sidebar-logout-btn:hover {
+  background: rgba(225, 29, 72, 0.14) !important;
+}
+
+/* ---- Dropdowns stay closed unless .show (fixes animation leak) ---- */
+.dropdown:not(.show),
+.notifications-popover:not(.show),
+.cc-shared-dd:not(.show),
+.cc-notif-popover:not(.show),
+.cc-top-dd:not(.show) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  transform: translateY(-8px) scale(0.98) !important;
+}
+.dropdown.show,
+.notifications-popover.show,
+.cc-shared-dd.show,
+.cc-notif-popover.show,
+.cc-top-dd.show {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+
+/* Breathing room under page content */
+.main {
+  padding-bottom: 72px !important;
+}
+
+/* Card spacing — prevent KPI / glass cards from touching */
+.kpi-grid {
+  gap: 22px !important;
+}
+.two-grid, .three-grid, .charts-grid {
+  gap: 22px !important;
+}
+.ios-glass.stat-card,
+.kpi-grid > .ios-glass,
+.kpi-grid > div {
+  margin: 0 !important;
+}
+.page-header {
+  margin-bottom: 24px !important;
+}
+/* Section stacking space */
+.main > section + section,
+.main > .ios-glass + .ios-glass,
+.main > section + .ios-glass {
+  margin-top: 18px;
+}
+
+
+/* ---- Balanced readability (student) ---- */
+.kpi-label {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  opacity: 0.55 !important;
+  letter-spacing: 0.02em;
+}
+.panel-sub, .eyebrow, .brand-sub {
+  font-size: 12px !important;
+  opacity: 0.55 !important;
+  line-height: 1.4 !important;
+}
+.kpi-change {
+  font-size: 11px !important;
+  font-weight: 650 !important;
+}
+.nav-link {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+.dropdown-item, .cc-shared-dd-item {
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+}
+.panel-title, .chart-title {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+}
+.page-title {
+  font-size: 1.65rem !important;
+  font-weight: 900 !important;
+}
+.text-xs { font-size: 12px !important; }
+.text-sm { font-size: 13.5px !important; }
+.sidebar .nav-section {
+  font-size: 10px !important;
+  letter-spacing: 0.08em;
+  opacity: 0.45;
+}
+#topStudentName {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+
+a[href*="/Auth/Logout)"],
+a[href*="/Auth/Logout)"] i,
+button[onclick*="logout"],
+.sidebar-logout-btn,
+.sidebar-logout-btn i,
+.dropdown-item.text-rose-500 {
+  color: #e11d48 !important;
+}

@@ -100,23 +100,26 @@ namespace CampusCoin.Controllers
 
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { message = "Failed to load bookmarks", detail = ex.Message });
+                return StatusCode(500, new { message = "Failed to load bookmarks" });
             }
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add([FromBody] BookmarkCreateDto? model)
         {
             try
             {
+                int userId = GetCurrentUserId();
+                if (userId == 0 || User.Identity?.IsAuthenticated != true)
+                    return Unauthorized();
+
                 if (model == null || string.IsNullOrWhiteSpace(model.RefType))
                     return BadRequest(new { message = "Invalid data." });
-
-                int userId = GetCurrentUserId();
-                if (userId == 0) return Unauthorized();
+                if (model.RefType.Trim().Length > 50 || model.RefId < 0)
+                    return BadRequest(new { message = "Invalid data." });
 
                 var existing = await _context.Bookmarks
                     .FirstOrDefaultAsync(b => b.UserId == userId && b.RefType == model.RefType && b.RefId == model.RefId);
@@ -147,9 +150,9 @@ namespace CampusCoin.Controllers
 
                 return Ok(new { message = "Bookmarked successfully!", bookmarkId = bookmark.BookmarkId });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { message = "Failed to save bookmark", detail = ex.Message });
+                return StatusCode(500, new { message = "Failed to save bookmark" });
             }
         }
 

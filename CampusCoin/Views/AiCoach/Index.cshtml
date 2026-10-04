@@ -1,6 +1,9 @@
-﻿@{
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery Antiforgery
+@{
     ViewData["Title"] = "AI Coach & Support";
     Layout = null;
+    var _csrf = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 <!DOCTYPE html>
 <html lang="en" class="light">
@@ -1098,9 +1101,15 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
+                const csrfToken = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(_csrf));
                 const res = await fetch('/api/aicoach/ask', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'RequestVerificationToken': csrfToken
+                    },
+                    credentials: 'same-origin',
                     body: JSON.stringify({ message: message })
                 });
                 const data = await res.json().catch(() => ({}));

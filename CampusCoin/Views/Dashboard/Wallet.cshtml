@@ -1,5 +1,8 @@
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery Antiforgery
 @{
     Layout = null;
+    var _csrf = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 <!DOCTYPE html>
 <html lang="en" class="light">
@@ -951,6 +954,11 @@
             if (el) el.addEventListener("input", function () { renderTransactions(this.value); });
         }
 
+        const csrfToken = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(_csrf));
+        function csrfHeaders(extra) {
+            return Object.assign({ "Content-Type": "application/json", "RequestVerificationToken": csrfToken }, extra || {});
+        }
+
         async function handleTopUp(e) {
             e.preventDefault();
             const amt = parseFloat(document.getElementById("topUpAmount").value);
@@ -958,7 +966,7 @@
             try {
                 const res = await fetch("/api/wallet/topup", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: csrfHeaders(),
                     credentials: "same-origin",
                     body: JSON.stringify({ amount: amt, method: selectedTopUpMethod })
                 });
@@ -992,7 +1000,7 @@
             try {
                 const res = await fetch("/api/wallet/transfer", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: csrfHeaders(),
                     credentials: "same-origin",
                     body: JSON.stringify({ recipient, amount: amt, note, pin })
                 });
@@ -1020,7 +1028,7 @@
             try {
                 const res = await fetch(`/api/wallet/pay-fee/${fee.id}`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: csrfHeaders(),
                     credentials: "same-origin"
                 });
                 const data = await res.json();

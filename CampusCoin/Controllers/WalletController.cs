@@ -1,9 +1,12 @@
 using CampusCoin.Data;
 using CampusCoin.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace CampusCoin.Controllers
 {
@@ -11,10 +14,12 @@ namespace CampusCoin.Controllers
     public class WalletController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public WalletController(ApplicationDbContext context)
+        public WalletController(ApplicationDbContext context, IPasswordHasher<User> passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
         private int GetCurrentUserId()
@@ -23,7 +28,87 @@ namespace CampusCoin.Controllers
             return claim != null && int.TryParse(claim.Value, out int id) ? id : 0;
         }
 
+        /// <summary>Auth must succeed before any user-controlled input is trusted.</summary>
+        private bool TryGetAuthenticatedUserId(out int userId)
+        {
+            userId = GetCurrentUserId();
+            return userId > 0 && User.Identity?.IsAuthenticated == true;
+        }
+
         private static string AccountCode(int userId) => $"CC-{userId:D4}-PK";
+
+
+        /// <summary>
+        /// Store wallet PIN using ASP.NET Identity <see cref="IPasswordHasher{TUser}"/> (full hash, never truncated).
+        /// Legacy formats (plaintext 4-digit, previous truncated SHA256) are verified once and upgraded in place.
+        /// </summary>
+        private string HashNewWalletPin(User user, string pin) =>
+            _passwordHasher.HashPassword(user, pin.Trim());
+
+        /// <summary>
+        /// Legacy truncated-SHA256 format from an earlier CodeQL fix (20 hex chars).
+        /// Used only to verify and upgrade — never for new storage.
+        /// </summary>
+        private static string LegacyTruncatedSha256Pin(int userId, string pin)
+        {
+            var material = Encoding.UTF8.GetBytes($"CampusCoin|WalletPin|{userId}|{pin.Trim()}");
+            var hash = SHA256.HashData(material);
+            return Convert.ToHexString(hash).Substring(0, 20);
+        }
+
+        private static bool LooksLikeLegacyPlaintextPin(string stored) =>
+            stored.Length <= 6 && stored.All(char.IsDigit);
+
+        private static bool LooksLikeLegacyTruncatedSha256(string stored) =>
+            stored.Length == 20 && stored.All(c => Uri.IsHexDigit(c));
+
+        /// <summary>
+        /// Verify submitted PIN against stored value. When a legacy format matches, <paramref name="upgradedHash"/>
+        /// is set so the caller can persist the Identity password-hash upgrade.
+        /// </summary>
+        private bool TryVerifyWalletPin(User user, string provided, out string? upgradedHash)
+        {
+            upgradedHash = null;
+            if (string.IsNullOrWhiteSpace(provided))
+                return false;
+
+            var pin = provided.Trim();
+            var stored = user.WalletPin;
+
+            // First-time: no PIN stored yet — caller will hash and save
+            if (string.IsNullOrEmpty(stored))
+                return true;
+
+            // Legacy plaintext (4-digit)
+            if (LooksLikeLegacyPlaintextPin(stored))
+            {
+                if (stored != pin)
+                    return false;
+                upgradedHash = HashNewWalletPin(user, pin);
+                return true;
+            }
+
+            // Legacy truncated SHA256 (previous CodeQL interim format)
+            if (LooksLikeLegacyTruncatedSha256(stored))
+            {
+                if (!string.Equals(stored, LegacyTruncatedSha256Pin(user.UserId, pin), StringComparison.Ordinal))
+                    return false;
+                upgradedHash = HashNewWalletPin(user, pin);
+                return true;
+            }
+
+            // Current: ASP.NET Identity password hash
+            var result = _passwordHasher.VerifyHashedPassword(user, stored, pin);
+            if (result == PasswordVerificationResult.Failed)
+                return false;
+
+            if (result == PasswordVerificationResult.SuccessRehashNeeded)
+                upgradedHash = HashNewWalletPin(user, pin);
+
+            return true;
+        }
+
+
 
         [HttpGet("/Dashboard/Wallet")]
         public IActionResult Index() => View("~/Views/Dashboard/Wallet.cshtml");
@@ -177,18 +262,18 @@ namespace CampusCoin.Controllers
         }
 
         [HttpPost("/api/wallet/topup")]
-        [IgnoreAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> TopUp([FromBody] WalletTopUpDto? model)
         {
             try
             {
+                if (!TryGetAuthenticatedUserId(out int userId))
+                    return Unauthorized(new { success = false, message = "Not logged in." });
+
                 if (model == null || model.Amount <= 0)
                     return BadRequest(new { success = false, message = "Enter a valid amount." });
                 if (model.Amount > 500000)
                     return BadRequest(new { success = false, message = "Maximum top-up is PKR 500,000." });
-
-                int userId = GetCurrentUserId();
-                if (userId == 0) return Unauthorized();
 
                 var user = await _context.Users.FindAsync(userId);
                 if (user == null) return NotFound(new { success = false, message = "User not found." });
@@ -235,23 +320,25 @@ namespace CampusCoin.Controllers
                     referenceCode = refCode
                 });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { success = false, message = ex.Message });
+                return StatusCode(500, new { success = false, message = "Wallet operation failed. Please try again." });
             }
         }
 
         [HttpPost("/api/wallet/transfer")]
-        [IgnoreAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Transfer([FromBody] WalletTransferDto? model)
         {
             try
             {
+                if (!TryGetAuthenticatedUserId(out int userId))
+                    return Unauthorized(new { success = false, message = "Not logged in." });
+
                 if (model == null || model.Amount < 50)
                     return BadRequest(new { success = false, message = "Minimum transfer is PKR 50." });
-
-                int userId = GetCurrentUserId();
-                if (userId == 0) return Unauthorized();
+                if (model.Amount > 500000)
+                    return BadRequest(new { success = false, message = "Maximum transfer is PKR 500,000." });
 
                 var sender = await _context.Users.FindAsync(userId);
                 if (sender == null) return NotFound(new { success = false, message = "Sender not found." });
@@ -260,23 +347,30 @@ namespace CampusCoin.Controllers
                     return BadRequest(new { success = false, message = "Insufficient wallet balance." });
 
                 var target = (model.Recipient ?? "").Trim();
-                if (string.IsNullOrWhiteSpace(target))
+                if (string.IsNullOrWhiteSpace(target) || target.Length > 150)
                     return BadRequest(new { success = false, message = "Enter recipient email, name, or account ID (CC-XXXX-PK)." });
 
-                // Real wallet PIN (stored on Users.WalletPin)
-                if (string.IsNullOrWhiteSpace(model.Pin) || model.Pin.Trim().Length < 4)
+                if (string.IsNullOrWhiteSpace(model.Pin) || model.Pin.Trim().Length < 4 || model.Pin.Trim().Length > 12)
                     return BadRequest(new { success = false, message = "Enter your 4-digit wallet PIN." });
 
                 var pin = model.Pin.Trim();
-                if (!string.IsNullOrEmpty(sender.WalletPin))
+                // Keep 4-digit business rule when setting/using PIN (digits only)
+                if (pin.Length == 4 && !pin.All(char.IsDigit))
+                    return BadRequest(new { success = false, message = "Enter your 4-digit wallet PIN." });
+
+                if (string.IsNullOrEmpty(sender.WalletPin))
                 {
-                    if (sender.WalletPin != pin)
-                        return BadRequest(new { success = false, message = "Invalid wallet PIN." });
+                    // First-time PIN setup — store Identity password hash only (never plaintext)
+                    sender.WalletPin = HashNewWalletPin(sender, pin);
                 }
-                else
+                else if (!TryVerifyWalletPin(sender, pin, out var upgradedHash))
                 {
-                    // First successful PIN use sets the permanent wallet PIN
-                    sender.WalletPin = pin;
+                    return BadRequest(new { success = false, message = "Invalid wallet PIN." });
+                }
+                else if (upgradedHash != null)
+                {
+                    // Legacy plaintext / truncated-SHA256 / rehash-needed → upgrade in place
+                    sender.WalletPin = upgradedHash;
                 }
 
                 User? recipient = null;
@@ -383,19 +477,23 @@ namespace CampusCoin.Controllers
                     referenceCode = refCode
                 });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { success = false, message = ex.Message });
+                return StatusCode(500, new { success = false, message = "Wallet operation failed. Please try again." });
             }
         }
 
         [HttpPost("/api/wallet/pay-fee/{id}")]
-        [IgnoreAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> PayFee(int id)
         {
             try
             {
-                int userId = GetCurrentUserId();
+                if (!TryGetAuthenticatedUserId(out int userId))
+                    return Unauthorized(new { success = false, message = "Not logged in." });
+                if (id <= 0)
+                    return BadRequest(new { success = false, message = "Invalid voucher." });
+
                 var voucher = await _context.FeeVouchers
                     .FirstOrDefaultAsync(v => v.Id == id && v.UserId == userId);
 
@@ -458,9 +556,9 @@ namespace CampusCoin.Controllers
                     transactionRef = voucher.TransactionRef
                 });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { success = false, message = ex.Message });
+                return StatusCode(500, new { success = false, message = "Wallet operation failed. Please try again." });
             }
         }
 

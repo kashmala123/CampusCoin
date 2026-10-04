@@ -44,7 +44,9 @@ IF OBJECT_ID(N'dbo.Users', N'U') IS NOT NULL AND COL_LENGTH(N'dbo.Users', N'Mont
     ALTER TABLE dbo.Users ADD MonthlyAllowanceBaseline DECIMAL(10,2) NOT NULL CONSTRAINT DF_Users_MonthlyAllowanceBaseline DEFAULT 0;
 
 IF OBJECT_ID(N'dbo.Users', N'U') IS NOT NULL AND COL_LENGTH(N'dbo.Users', N'WalletPin') IS NULL
-    ALTER TABLE dbo.Users ADD WalletPin NVARCHAR(20) NULL;
+    ALTER TABLE dbo.Users ADD WalletPin NVARCHAR(256) NULL;
+ELSE IF OBJECT_ID(N'dbo.Users', N'U') IS NOT NULL AND COL_LENGTH(N'dbo.Users', N'WalletPin') IS NOT NULL
+    ALTER TABLE dbo.Users ALTER COLUMN WalletPin NVARCHAR(256) NULL;
 
 IF OBJECT_ID(N'dbo.Users', N'U') IS NOT NULL AND OBJECT_ID(N'dbo.UserSessions', N'U') IS NULL
     CREATE TABLE dbo.UserSessions (

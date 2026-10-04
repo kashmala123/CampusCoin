@@ -36,7 +36,7 @@ namespace CampusCoin.Services
         {
             if (!_settings.Enabled)
             {
-                _logger.LogWarning("Email is disabled in configuration. Skipping send to {To}", toEmail);
+                _logger.LogWarning("Email is disabled in configuration. Skipping send.");
                 return (false, "Email sending is disabled.");
             }
 
@@ -73,13 +73,13 @@ namespace CampusCoin.Services
                 };
 
                 await client.SendMailAsync(message);
-                _logger.LogInformation("Email sent to {To} subject={Subject}", toEmail, subject);
+                _logger.LogInformation("Email sent successfully (recipient redacted). Subject length={Len}", subject?.Length ?? 0);
                 return (true, null);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to send email to {To}", toEmail);
-                return (false, ex.Message);
+                _logger.LogError(ex, "Failed to send email (recipient redacted).");
+                return (false, "Email delivery failed.");
             }
         }
     }

@@ -24,8 +24,8 @@ namespace CampusCoin.Models
 
         public bool IsActive { get; set; } = true;
 
-        /// <summary>Optional 4-digit wallet transfer PIN.</summary>
-        [MaxLength(20)]
+        /// <summary>Optional wallet transfer PIN (Identity password-hash of the 4-digit PIN).</summary>
+        [MaxLength(256)]
         public string? WalletPin { get; set; }
 
         public int RoleId { get; set; }

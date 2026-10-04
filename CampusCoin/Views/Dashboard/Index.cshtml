@@ -1,5 +1,8 @@
-﻿@{
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery Antiforgery
+@{
     Layout = null;
+    var _csrf = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 <!DOCTYPE html>
 <html lang="en" class="light">
@@ -1915,9 +1918,10 @@ window.ccShowLoading=function(on){var el=document.getElementById('ccLoadingOverl
             }
 
             try {
+                const csrfToken = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(_csrf));
                 const res = await fetch('/api/bookmarks', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': csrfToken },
                     credentials: 'same-origin',
                     body: JSON.stringify({
                         refType: 'Tip',

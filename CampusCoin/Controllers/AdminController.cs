@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace CampusCoin.Controllers
 {
@@ -609,7 +610,7 @@ CREATE TABLE dbo.HomepageProofs (
                 }
                 var evt = new Event
                 {
-                    EventCode = "EVT-" + new Random().Next(100, 999),
+                    EventCode = "EVT-" + RandomNumberGenerator.GetInt32(100, 1000),
                     Title = model.Title.Trim(),
                     Category = string.IsNullOrWhiteSpace(model.Category) ? "Workshop" : model.Category.Trim(),
                     Status = "Upcoming",
@@ -768,7 +769,7 @@ CREATE TABLE dbo.HomepageProofs (
                 var voucher = new FeeVoucher
                 {
                     UserId = user.UserId,
-                    VoucherCode = "VOU-" + new Random().Next(1000, 9999),
+                    VoucherCode = "VOU-" + RandomNumberGenerator.GetInt32(1000, 10000),
                     Title = model.Title ?? "Semester Fee",
                     Semester = model.Semester ?? "Semester 4",
                     Amount = model.Tuition,
@@ -848,7 +849,7 @@ CREATE TABLE dbo.HomepageProofs (
                     newVouchers.Add(new FeeVoucher
                     {
                         UserId = student.UserId,
-                        VoucherCode = "VOU-" + new Random().Next(1000, 9999),
+                        VoucherCode = "VOU-" + RandomNumberGenerator.GetInt32(1000, 10000),
                         Title = "Semester Fee - " + model.Batch,
                         Semester = model.Batch ?? "Fall 2026",
                         Amount = model.Tuition,

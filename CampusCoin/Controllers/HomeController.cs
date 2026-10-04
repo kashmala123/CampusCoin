@@ -155,7 +155,7 @@ namespace CampusCoin.Controllers
 
             if (!sent)
             {
-                _logger.LogError("Contact form email failed: {Err}", err);
+                _logger.LogError("Contact form email failed (details redacted).");
                 return StatusCode(500, new { success = false, message = "Could not send your message right now. Please try again in a moment." });
             }
 
@@ -203,7 +203,7 @@ namespace CampusCoin.Controllers
             var (sent, err) = await _emailService.SendAsync(email, "Subscribed to Campus Coin updates", html);
             if (!sent)
             {
-                _logger.LogError("Newsletter email failed for {Email}: {Err}", email, err);
+                _logger.LogError("Newsletter email failed (recipient redacted): {Err}", err);
                 return StatusCode(500, new { success = false, message = "Could not complete subscription right now. Please try again." });
             }
 

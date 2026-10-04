@@ -103,6 +103,7 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
                 e.HasIndex(u => u.Email).IsUnique();
                 e.Property(u => u.MonthlySavingsGoal).HasColumnType("decimal(10,2)");
                 e.Property(u => u.MonthlyAllowanceBaseline).HasColumnType("decimal(10,2)");
+                e.Property(u => u.WalletPin).HasMaxLength(256);
 
                 e.HasOne(u => u.Role)
                     .WithMany(r => r.Users)

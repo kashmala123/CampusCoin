@@ -40,16 +40,19 @@ namespace CampusCoin.Controllers
         //  🔥 REAL AI ENDPOINT
         // ============================================================
         [HttpPost("/api/aicoach/ask")]
-        [IgnoreAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AskAI([FromBody] AskRequest request)
         {
             try
             {
+                int userId = GetCurrentUserId();
+                if (userId == 0 || User.Identity?.IsAuthenticated != true)
+                    return Unauthorized(new { success = false, message = "Not logged in" });
+
                 if (request == null || string.IsNullOrWhiteSpace(request.Message))
                     return BadRequest(new { success = false, message = "Message required" });
-
-                int userId = GetCurrentUserId();
-                if (userId == 0) return Unauthorized(new { success = false, message = "Not logged in" });
+                if (request.Message.Trim().Length > 4000)
+                    return BadRequest(new { success = false, message = "Message is too long." });
 
                 // Save user message
                 _context.ChatMessages.Add(new ChatMessage

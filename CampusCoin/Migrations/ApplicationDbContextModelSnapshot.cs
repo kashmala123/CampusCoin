@@ -1367,6 +1367,10 @@ namespace CampusCoin.Migrations
                     b.Property<decimal>("MonthlySavingsGoal")
                         .HasColumnType("decimal(10,2)");
 
+                    b.Property<string>("WalletPin")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(255)
